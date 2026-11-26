@@ -1,0 +1,147 @@
+{
+  "date": "2026-11-09",
+  "sourceHead": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+  "includesUncommittedSource": true,
+  "simulator": {
+    "xcode": "27.2 (27B52)",
+    "runtime": "iOS 27.0",
+    "ownedBlankDeviceDeleted": true,
+    "firstRun": {
+      "passed": 13,
+      "failed": 0
+    },
+    "finalRun": {
+      "passed": 14,
+      "failed": 0
+    },
+    "verified": [
+      "single downstream response crossing two exact Reader windows",
+      "KSPlayer H.264 decode and alignment through Reader",
+      "HEAD, suffix, finite and open ranges, If-Range and invalid ranges",
+      "exact capability path with no origin override",
+      "four active readers, fifth rejected, reset readmission",
+      "lease revocation and peer isolation; TCP write half-close",
+      "before-header failure, oversized body, and incomplete response",
+      "HTTP original, bridge, and initial response adoption regressions"
+    ]
+  },
+  "defaultHTTPOriginalResponseProbeEnabled": false,
+  "fullMatrixPassesAdded": 0,
+  "networkMediaPackage": {
+    "passed": 30,
+    "skipped": 6,
+    "failed": 0,
+    "skips": "SMB external test fixture not configured"
+  },
+  "signedIOSPackage": {
+    "configuration": "Debug",
+    "builtAt": "2026-11-09T14:06:44.223351+08:00",
+    "dylibSHA256": "fe63a3119a8949f49357e41d453bd0f9ed82b9746dbc9dbe482245f0051e58f4",
+    "mainSHA256": "82ffa5d56cfed3fec1fe7a9d1767473bcb9485d5fc745afce4106722ebccf944"
+  },
+  "ipad": {
+    "model": "iPad15,7",
+    "system": "26.6",
+    "controlTransport": "USB",
+    "installedAt": "2026-11-09T14:07:11.716644+08:00",
+    "installPreferencesEqual": true,
+    "normalHomeVisible": true,
+    "playback": {
+      "source": "SMB",
+      "network": "Wi-Fi",
+      "connectionAddressKind": "privateIP",
+      "sampleBytes": 13047776001,
+      "sampleContainer": "MKV",
+      "appRoute": "sharedReader",
+      "routeKind": "localRangeProxy",
+      "playMethod": "directPlay",
+      "decodeEngine": "ksPlayer",
+      "readerDeliveryHTTPStatus": 206,
+      "completedFiniteRangeBytes": [
+        85,
+        2122,
+        174254
+      ],
+      "internalFirstFrameMs": 2012,
+      "visibleFrameBeforeAndAfterSeek": true,
+      "seekForwardSeconds": 15,
+      "internalSeekRecoveryMs": 2757,
+      "ordinaryExit": true,
+      "prePlaybackHarnessStops": 4,
+      "seekTargetSeconds": 27.365,
+      "largestObservedOpenRangeDeliveryBytesBeforeClientDisconnect": 47185920
+    },
+    "cleanupVerifiedAt": "2026-11-09T14:18:21.557686+08:00",
+    "finalPreferenceKeysChanged": [
+      "diagnostics.entries.v1",
+      "playback.localResume.v1"
+    ],
+    "libraryIndexEqual": true,
+    "localForwarderStopped": true,
+    "ftpPlayback": {
+      "source": "FTP",
+      "network": "Wi-Fi",
+      "matchedIndexedPathNameAndSizeToSMB": true,
+      "connectionAddressKind": "privateIP",
+      "sampleBytes": 13047776001,
+      "sampleContainer": "MKV",
+      "appRoute": "sharedReader",
+      "routeKind": "localRangeProxy",
+      "playMethod": "directPlay",
+      "decodeEngine": "ksPlayer",
+      "readerDeliveryHTTPStatus": 206,
+      "completedFiniteRangeBytes": [
+        85,
+        2122,
+        174254
+      ],
+      "largestObservedOpenRangeDeliveryBytesBeforeClientDisconnect": 44065464,
+      "internalFirstFrameMs": 1719,
+      "visibleFrameBeforeAndAfterSeek": true,
+      "seekForwardSeconds": 15,
+      "internalSeekRecoveryMs": 1449,
+      "seekTargetSeconds": 27.962,
+      "ordinaryExit": true,
+      "cleanupVerifiedAt": "2026-11-09T14:18:21.557686+08:00",
+      "finalPreferenceKeysChanged": [
+        "diagnostics.entries.v1",
+        "playback.localResume.v1"
+      ],
+      "libraryIndexEqual": true,
+      "localForwarderStopped": true
+    }
+  },
+  "iphone13": {
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "controlTransport": "USB",
+    "installedAt": "2026-11-09T14:15:17.545018+08:00",
+    "installPreferencesEqual": true,
+    "normalHomeVisible": true,
+    "existingJellyfinLoginWorked": true,
+    "playback": {
+      "source": "Jellyfin",
+      "network": "Wi-Fi",
+      "sampleBytes": 128795641934,
+      "connectionAddressKind": "privateIP",
+      "connectionScheme": "http",
+      "decodeEngine": "ksPlayer",
+      "playMethod": "directPlay",
+      "routeKind": "localRangeProxy",
+      "httpStatus": 206,
+      "internalFirstFrameMs": 887,
+      "visibleFrame": true,
+      "steadyStateBufferEvents": 1,
+      "ordinaryExit": true,
+      "responseAdoptionEvents": 0
+    },
+    "readerPathTested": false,
+    "cleanupVerifiedAt": "2026-11-09T14:16:53.142758+08:00",
+    "finalPreferenceKeysChanged": [
+      "diagnostics.entries.v1",
+      "playback.localResume.v1"
+    ],
+    "localForwarderStopped": true
+  },
+  "comparisonLimit": "One window per protocol on the iPad, fixed order, different actual seek targets; internal times are not a speed ranking or display-latency measurement."
+}

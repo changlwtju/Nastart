@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import ssl
 import sys
 import urllib.error
 import urllib.parse
@@ -31,6 +32,7 @@ def request_json(
     token: str | None = None,
     body: dict[str, Any] | None = None,
     timeout: float = 8,
+    context: ssl.SSLContext | None = None,
 ) -> tuple[int, dict[str, Any]]:
     headers = {"Accept": "application/json"}
     payload: bytes | None = None
@@ -41,7 +43,7 @@ def request_json(
         headers["Content-Type"] = "application/json"
     request = urllib.request.Request(endpoint(base_url, path), data=payload, headers=headers)
     try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
+        with urllib.request.urlopen(request, timeout=timeout, context=context) as response:
             data = response.read()
             value = json.loads(data.decode("utf-8")) if data else {}
             return response.status, value
@@ -62,7 +64,7 @@ def require_status(label: str, status: int, payload: dict[str, Any], expected: i
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Check a Nastart Agent endpoint")
-    parser.add_argument("--base-url", required=True, help="Agent URL, for example http://192.168.1.20:8787")
+    parser.add_argument("--base-url", required=True, help="Agent URL, for example https://localhost:8787")
     parser.add_argument("--pairing-code", help="Pair once and use the returned token")
     parser.add_argument("--token", help="Existing Agent bearer token")
     args = parser.parse_args()

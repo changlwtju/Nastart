@@ -35,7 +35,9 @@ struct TVJellyfinEntry: View {
         Group {
             if let account = state.account,
                initialServer.map({ MediaServiceEndpoint.matches($0, account.server) }) ?? true {
-                TVLibraryView(client: TVJellyfinClient(account: account, deviceID: state.deviceID))
+                TVLibraryView(client: TVJellyfinClient(account: account, deviceID: state.deviceID),
+                              reconnect: { connect = true })
+                    .id(state.jellyfinSessionRevision)
             } else {
                 VStack(spacing: 30) {
                     Image(systemName: "play.rectangle.fill").font(.system(size: 90)).foregroundStyle(TVTheme.accent)
@@ -45,7 +47,10 @@ struct TVJellyfinEntry: View {
                     Button("连接 Jellyfin") { connect = true }.accessibilityIdentifier("tv.connect.jellyfin")
                 }.padding(90).frame(maxWidth: .infinity, maxHeight: .infinity).background(TVTheme.background)
             }
-        }.tvNavigationBack(enabled: canGoBack).sheet(isPresented: $connect) { TVLoginView(initialKind: "Jellyfin", initialServer: initialServer) }
+        }.tvNavigationBack(enabled: canGoBack).sheet(isPresented: $connect) {
+            TVLoginView(initialKind: "Jellyfin", initialServer: initialServer ?? state.account?.server,
+                        initialUser: state.account?.userName ?? "")
+        }
     }
 }
 
@@ -102,7 +107,7 @@ struct TVCloudSyncStatusView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {
-                TVPageHeading(title: "iCloud 同步", subtitle: "同步状态与数据保存")
+                TVPageHeading(title: "iCloud 同步", subtitle: "同步范围与数据保存")
                 NastartTVSyncOverview(surface: AnyView(Color.clear.tvCardSurface(radius: TVLayout.radius)))
             }.tvPageInsets()
         }.tvPageTheme().tvNavigationBack()
@@ -751,16 +756,14 @@ struct TVTaskDetail: View {
 
 struct TVNASOverview: View {
     @EnvironmentObject private var state: TVAppState
+    @EnvironmentObject private var serviceSync: TVCloudSyncStore
     let client: TVDSMClient
     @AppStorage("tv.show.service.details") private var showDetails = false
-    @AppStorage("tv.service.visibility.v1") private var visibility = Data()
     @AppStorage("appearance.launchpadTheme") private var theme = "cleanGrid"
     @AppStorage("appearance.compactMetrics") private var compactMetrics = true
     @State private var manageServices = false
     private var visibleServices: [TVDiscoveredService] {
-        let overrides = (try? JSONDecoder().decode([String: Bool].self, from: visibility)) ?? [:]
-        return discovery.services.filter { $0.kind == "容器" && (overrides[$0.id] ?? $0.defaultLaunchpadVisible) }
-            .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+        serviceSync.visibleContainers(in: discovery.services)
     }
     @State private var discovery = TVServiceDiscovery()
     @State private var discoveryAccount: TVNASAccount?
@@ -825,7 +828,9 @@ struct TVNASOverview: View {
                     }
                 }.frame(maxWidth: 1650, alignment: .leading).padding(.horizontal, 70).padding(.top, TVLayout.pageTop).padding(.bottom, 70)
             }.tvPageTheme()
-            .sheet(isPresented: $manageServices) { NavigationStack { TVServiceVisibilityView(services: discovery.services) } }
+            .navigationDestination(isPresented: $manageServices) {
+                TVServiceVisibilityView(services: discovery.services)
+            }
             .navigationDestination(isPresented: $openJellyfin) { TVJellyfinEntry() }
             .sheet(isPresented: $connectJF) { TVLoginView(initialKind: "Jellyfin", initialServer: initialJFServer) }
             .task(id: refresh.uuidString + client.server.absoluteString + (client.account?.user ?? "") + (client.account?.sid ?? "")) {
@@ -835,6 +840,7 @@ struct TVNASOverview: View {
                 do {
                     let result = try await client.discoverServices()
                     guard !Task.isCancelled, state.nasAccount == expected else { return }
+                    serviceSync.migrateLegacyVisibility(using: result)
                     discovery = result; discoveryAccount = expected
                 } catch {
                     if !Task.isCancelled, state.nasAccount == expected { discovery = TVServiceDiscovery(warnings: [nasError(error)]) }
@@ -1328,6 +1334,8 @@ struct TVServiceGroup: View {
     @AppStorage("appearance.showServiceStatus") private var showServiceStatus = true
     @AppStorage("appearance.card.showSubtitle") private var showCardSubtitle = false
     @State private var expanded = true
+    @State private var selectedService: TVDiscoveredService?
+    @State private var showingService = false
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Button { expanded.toggle() } label: {
@@ -1348,7 +1356,7 @@ struct TVServiceGroup: View {
                                 label: { row(service, action: "打开媒体库", interactive: true) }.buttonStyle(TVServiceInsetStyle(card: true))
                                 .accessibilityIdentifier("tv.service.item." + service.id)
                         } else {
-                            NavigationLink { TVServiceDetailView(service: service, client: client) }
+                            Button { selectedService = service; showingService = true }
                                 label: { row(service, action: "查看状态与连接资料", interactive: true) }.buttonStyle(TVServiceInsetStyle(card: true))
                                 .accessibilityIdentifier("tv.service.item." + service.id)
 
@@ -1358,6 +1366,11 @@ struct TVServiceGroup: View {
             }
         }.padding(12).frame(maxWidth: .infinity, alignment: .leading)
             .tvCardSurface(radius: TVLayout.radius)
+            // Register the destination outside LazyVGrid's cells. The stack
+            // owns the presentation and its native Menu pop.
+            .navigationDestination(isPresented: $showingService) {
+                if let selectedService { TVServiceDetailView(service: selectedService, client: client) }
+            }
     }
     private func row(_ service: TVDiscoveredService, action: String, interactive: Bool) -> some View {
         HStack(spacing: 20) {
@@ -1407,54 +1420,59 @@ private struct TVServiceInsetFocus: ViewModifier {
     }
 }
 struct TVServiceVisibilityView: View {
+    @EnvironmentObject private var serviceSync: TVCloudSyncStore
     let services: [TVDiscoveredService]
-    @AppStorage("tv.service.visibility.v1") private var visibility = Data()
-    private var overrides: [String: Bool] { (try? JSONDecoder().decode([String: Bool].self, from: visibility)) ?? [:] }
-    private func isVisible(_ service: TVDiscoveredService) -> Bool { overrides[service.id] ?? service.defaultLaunchpadVisible }
-    private func toggle(_ service: TVDiscoveredService) {
-        var saved = overrides
-        let value = !isVisible(service)
-        if value == service.defaultLaunchpadVisible { saved.removeValue(forKey: service.id) }
-        else { saved[service.id] = value }
-        visibility = (try? JSONEncoder().encode(saved)) ?? visibility
-    }
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 28) {
-                TVPageHeading(title: "管理显示", subtitle: "Docker 服务与设备中的容器清单一致")
-                Text("Docker 服务默认显示，可按需隐藏；套件请在设备页面查看。")
-                    .font(TVType.caption).foregroundStyle(.secondary)
-                ForEach(TVServiceCategory.allCases) { category in
-                    let rows = services.filter { $0.kind == "容器" && $0.category == category }
-                    if !rows.isEmpty {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Label(category.title, systemImage: category.symbol).font(TVType.section).padding(18)
-                            LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible())], spacing: 8) {
-                            ForEach(rows) { service in
-                                Button { toggle(service) } label: {
-                                    HStack(spacing: 20) {
-                                        Image(systemName: service.symbolName).font(.system(size: 28)).foregroundStyle(TVTheme.accent).frame(width: 36)
-                                        Image(systemName: isVisible(service) ? "checkmark.circle.fill" : "circle")
-                                            .foregroundStyle(TVTheme.accent).frame(width: 36)
-                                        Text(service.name).font(TVType.body).lineLimit(2)
-                                        Spacer()
-                                        Text(isVisible(service) ? "显示" : "隐藏").font(TVType.caption).foregroundStyle(.secondary)
-                                    }.padding(22).frame(maxWidth: .infinity, alignment: .leading)
-                                        .frame(minHeight: TVLayout.informationRowHeight)
-                                }.buttonStyle(TVServiceInsetStyle(card: true))
-                                    .accessibilityIdentifier("tv.visibility." + service.id)
-                                    .accessibilityLabel(service.name)
-                                    .accessibilityValue(isVisible(service) ? "显示" : "隐藏")
+        GeometryReader { viewport in
+            let horizontalInset: CGFloat = 70
+            let contentWidth = max(0, viewport.size.width - 2 * horizontalInset)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 28) {
+                    TVPageHeading(title: "管理显示", subtitle: "Docker 服务与设备中的容器清单一致")
+                    Text("Docker 服务默认显示，可按需隐藏；套件请在设备页面查看。")
+                        .font(TVType.caption).foregroundStyle(.secondary)
+                    ForEach(TVServiceCategory.allCases) { category in
+                        let rows = services.filter { $0.kind == "容器" && $0.category == category }
+                        if !rows.isEmpty {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Label(category.title, systemImage: category.symbol).font(TVType.section).padding(18)
+                                LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible())], spacing: 8) {
+                                    ForEach(rows) { service in
+                                        Button { Task { await serviceSync.toggle(service) } } label: {
+                                            HStack(spacing: 20) {
+                                                Image(systemName: service.symbolName).font(.system(size: 28)).foregroundStyle(TVTheme.accent).frame(width: 36)
+                                                Image(systemName: serviceSync.isVisible(service) ? "checkmark.circle.fill" : "circle")
+                                                    .foregroundStyle(TVTheme.accent).frame(width: 36)
+                                                Text(service.name).font(TVType.body).lineLimit(2)
+                                                Spacer()
+                                                Text(serviceSync.isVisible(service) ? "显示" : "隐藏").font(TVType.caption).foregroundStyle(.secondary)
+                                            }.padding(22).frame(maxWidth: .infinity, alignment: .leading)
+                                                .frame(minHeight: TVLayout.informationRowHeight)
+                                        }.buttonStyle(TVServiceInsetStyle(card: true))
+                                            .disabled(service.launchpadVisibilityKey == nil)
+                                            .accessibilityIdentifier("tv.visibility." + service.id)
+                                            .accessibilityLabel(service.name)
+                                            .accessibilityValue(serviceSync.isVisible(service) ? "显示" : "隐藏")
+                                    }
+                                }
                             }
-                            }
-                        }.padding(12).tvCardSurface()
+                            .padding(12)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .tvCardSurface()
+                        }
+                    }
+                    if !services.contains(where: { $0.kind == "容器" }) {
+                        Text("未读取到 Docker 容器，可在设备页面重新发现服务。").font(TVType.body).foregroundStyle(.secondary)
                     }
                 }
-                if !services.contains(where: { $0.kind == "容器" }) {
-                    Text("未读取到 Docker 容器，可在设备页面重新发现服务。").font(TVType.body).foregroundStyle(.secondary)
-                }
-            }.tvPageInsets()
-        }.tvPageTheme().tvNavigationBack()
+                .frame(width: contentWidth, alignment: .leading)
+                .padding(.horizontal, horizontalInset)
+                .padding(.top, TVLayout.pageTop)
+                .padding(.bottom, 40)
+            }
+            .accessibilityIdentifier("tv.services.visibility.page")
+        }
+        .tvPageTheme()
     }
 }
 struct TVServiceDetailView: View {
@@ -1462,23 +1480,40 @@ struct TVServiceDetailView: View {
     let client: TVDSMClient
     @State private var endpoint: URL?
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 28) {
-                TVPageHeading(title: service.name, subtitle: service.kind + " · " + (service.running.map { $0 ? "运行中" : "已停止" } ?? "状态未知"))
-                ForEach(service.managementEndpoints, id: \.self) { url in
-                    Button { endpoint = url } label: {
-                        TVFeatureTile(title: "在手机上管理", subtitle: url.host ?? "服务管理地址", symbol: "qrcode")
-                    }.buttonStyle(TVTileStyle())
-                }
-                VStack(alignment: .leading, spacing: 22) {
-                    Text("当前服务").font(TVType.section)
-                    Text(service.detail.isEmpty ? service.name : service.detail).font(TVType.body)
-                    Text("公布端口：" + (service.ports.isEmpty ? "无" : service.ports.map(String.init).joined(separator: "、"))).font(TVType.caption).foregroundStyle(.secondary)
-                    Text(service.managementEndpoints.isEmpty ? "当前未提供管理地址，可查看运行状态、服务信息和公布端口。" : "用手机扫码打开当前 NAS 提供的管理地址，访问范围取决于设备所在网络。")
-                        .font(TVType.caption).foregroundStyle(.secondary)
-                }.padding(30).frame(maxWidth: .infinity, alignment: .leading).tvCardSurface(radius: TVLayout.radius)
-            }.tvPageInsets()
-        }.tvPageTheme().tvNavigationBack().accessibilityIdentifier("tv.service.detail")
+        GeometryReader { viewport in
+            // Take the width outside the scroll content, where it is bounded.
+            let horizontalInset: CGFloat = 70
+            let contentWidth = max(0, viewport.size.width - 2 * horizontalInset)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 28) {
+                    TVPageHeading(title: service.name, subtitle: service.kind + " · " + (service.running.map { $0 ? "运行中" : "已停止" } ?? "状态未知"))
+                    ForEach(service.managementEndpoints, id: \.self) { url in
+                        Button { endpoint = url } label: {
+                            TVFeatureTile(title: "在手机上管理", subtitle: url.host ?? "服务管理地址", symbol: "qrcode")
+                        }.buttonStyle(TVTileStyle())
+                            .frame(width: contentWidth, alignment: .leading)
+                    }
+                    VStack(alignment: .leading, spacing: 22) {
+                        Text("当前服务").font(TVType.section)
+                        Text(service.detail.isEmpty ? service.name : service.detail).font(TVType.body)
+                        Text("公布端口：" + (service.ports.isEmpty ? "无" : service.ports.map(String.init).joined(separator: "、"))).font(TVType.caption).foregroundStyle(.secondary)
+                        Text(service.managementEndpoints.isEmpty ? "当前未提供管理地址，可查看运行状态、服务信息和公布端口。" : "用手机扫码打开当前 NAS 提供的管理地址，访问范围取决于设备所在网络。")
+                            .font(TVType.caption).foregroundStyle(.secondary)
+                    }
+                    .padding(30)
+                    .frame(width: contentWidth, alignment: .leading)
+                    .tvCardSurface(radius: TVLayout.radius)
+                    .contentShape(Rectangle())
+                    .focusable()
+                    .accessibilityElement(children: .combine)
+                    .accessibilityIdentifier("tv.service.info")
+                }.frame(width: contentWidth, alignment: .leading)
+                    .padding(.horizontal, horizontalInset)
+                    .padding(.top, TVLayout.pageTop)
+                    .padding(.bottom, 40)
+            }
+            .accessibilityIdentifier("tv.service.detail")
+        }.tvPageTheme()
         .sheet(isPresented: Binding(get: { endpoint != nil }, set: { if !$0 { endpoint = nil } })) {
             if let endpoint { TVServiceQRView(url: endpoint) }
         }

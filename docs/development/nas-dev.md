@@ -48,12 +48,14 @@ The useful NAS-side work is making that enhanced data more accurate:
 Deploy from a Mac or another shell that can SSH into the NAS:
 
 ```bash
-scripts/install_agent_via_ssh.sh --host NAS_HOST --user SSH_USER --pairing-code 123456
+NASTART_DOCKERHUB_NAMESPACE=YOUR_DOCKER_HUB_NAMESPACE \
+  scripts/install_agent_via_ssh.sh --host NAS_HOST --user SSH_USER --pairing-code 123456
 ```
 
-The installer uploads the fixed Agent payload, prefers Docker Compose, and
-falls back to Python 3 when Compose is unavailable. The app also has an in-app
-SSH installer that follows the same deployment shape.
+The shell installer pulls the published Agent image with Docker Compose and
+waits for it to become healthy. The explicit `--build` option uses a local
+build and retains the Python 3 fallback on hosts without Compose. See the
+[Agent README](../../agent/README.md) for upgrades and rollback.
 
 After deploying Agent, verify it from a Mac or NAS shell:
 

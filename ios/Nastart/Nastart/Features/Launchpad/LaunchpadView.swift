@@ -28,6 +28,7 @@ struct LaunchpadView: View {
     @AppStorage(AppearancePreferenceKeys.groupDefaultVersion) private var groupDefaultVersion = 0
     @State private var showSearch = false
     @State private var showConnectionFlow = false
+    @State private var showAgentPairing = false
     @State private var showManualServiceEditor = false
     @State private var showServiceManager = false
     @State private var refreshPulseID = UUID()
@@ -36,7 +37,7 @@ struct LaunchpadView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if connectionStore.isConnected || !dataStore.services.isEmpty {
+                if connectionStore.isConnected || !dataStore.services.isEmpty || pairedAgentHealth != nil {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 12) {
                             if !connectionStore.isConnected, dataStore.connectionRecoveryState != .idle {
@@ -63,6 +64,9 @@ struct LaunchpadView: View {
                                         }
                                     }
                                 )
+                            }
+                            LaunchpadAgentHealthRow(health: pairedAgentHealth) {
+                                showAgentPairing = true
                             }
                             launchpadContent
                                 .id("\(selectedTheme.rawValue)-\(groupExpansionSignature)-\(groupOrderSignature)-\(displayOptionsSignature)")
@@ -91,6 +95,9 @@ struct LaunchpadView: View {
             .nastartPageTheme()
             .navigationTitle(launchpadNavigationTitle)
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(isPresented: $showAgentPairing) {
+                AgentSetupGuideView()
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if !dataStore.services.isEmpty {
@@ -214,6 +221,12 @@ struct LaunchpadView: View {
     /// online before the same live session has reached the connection store.
     private var liveNASConnectionState: Bool {
         connectionStore.isConnected && dataStore.isDSMAvailableForDisplay
+    }
+
+    private var pairedAgentHealth: AgentHealthSnapshot? {
+        guard let health = dataStore.agentHealth,
+              connectionStore.agentConnection?.agentID == health.agentID else { return nil }
+        return health
     }
 
     private var launchpadServices: [LaunchpadService] {
@@ -4178,6 +4191,7 @@ struct PlaybackTimelineClock: View {
 /// surface, track menus and subtitle hierarchy for every slider value.
 private struct PlaybackSeekBar<Session: PlaybackUIEngineSession>: View {
     @ObservedObject var session: Session
+    @Environment(\.layoutDirection) private var layoutDirection
     let canSeek: Bool
     let playbackTraceID: String?
     let commit: (Double) -> Void
@@ -4198,21 +4212,68 @@ private struct PlaybackSeekBar<Session: PlaybackUIEngineSession>: View {
     var body: some View {
         HStack(spacing: 10) {
             PlaybackTimelineClock(timeText: timeText, durationText: session.durationText)
-            Slider(value: $position, in: 0...1, onEditingChanged: { active in
-                editing = active
-                recordEditingBoundary(active: active)
-                if !active { commit(position) }
-                editingChanged()
-            })
+            GeometryReader { proxy in
+                let width = proxy.size.width
+                let thumb = CGFloat(position) * max(0, width - 16) + 8
+                ZStack(alignment: .leading) {
+                    Capsule().fill(.secondary.opacity(0.4)).frame(height: 4)
+                    Capsule().fill(AppTheme.accent).frame(width: thumb, height: 4)
+                    Circle().fill(AppTheme.accent).frame(width: 16, height: 16)
+                        .padding(.leading, max(0, thumb - 8))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .contentShape(Rectangle())
+                .gesture(DragGesture(minimumDistance: 0)
+                    .onChanged { value in
+                        guard canSeek, width > 0 else { return }
+                        position = normalizedPosition(at: value.location.x, width: width)
+                        if !editing {
+                            editing = true
+                            recordEditingBoundary(active: true)
+                            editingChanged()
+                        }
+                    }
+                    .onEnded { value in
+                        guard editing else { return }
+                        if width > 0 { position = normalizedPosition(at: value.location.x, width: width) }
+                        editing = false
+                        recordEditingBoundary(active: false)
+                        if canSeek { commit(position) } else { followClock(session.position) }
+                        editingChanged()
+                    })
+            }
             .disabled(!canSeek)
-            .tint(AppTheme.accent)
-            .frame(minHeight: 44)
-            .contentShape(Rectangle())
+            .frame(height: 44)
+            .accessibilityElement()
+            .accessibilityLabel(Text("player.timeline"))
+            .accessibilityValue(Text(timeText))
+            .accessibilityIdentifier("playback.timeline.seek")
+            .accessibilityAdjustableAction { direction in
+                guard canSeek, session.durationSeconds.isFinite, session.durationSeconds > 0 else { return }
+                let step = 15 / session.durationSeconds
+                switch direction {
+                case .increment: commit(min(1, position + step))
+                case .decrement: commit(max(0, position - step))
+                @unknown default: break
+                }
+            }
             Text(session.durationText)
         }
         .font(.caption.monospacedDigit())
         .onAppear { followClock(session.position) }
         .onChange(of: session.position) { followClock($0) }
+        .onChange(of: canSeek) { enabled in
+            guard !enabled, editing else { return }
+            editing = false
+            followClock(session.position)
+            editingChanged()
+        }
+    }
+
+    private func normalizedPosition(at x: CGFloat, width: CGFloat) -> Double {
+        let fraction = width > 16 ? (x - 8) / (width - 16) : x / width
+        let physical = min(1, max(0, Double(fraction)))
+        return layoutDirection == .rightToLeft ? 1 - physical : physical
     }
 
     private func followClock(_ value: Double) {
@@ -4250,6 +4311,7 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
     let compatibilityFailed: (MediaPlaybackRuntimeState) -> Void
     let sourceTrackChange: ((Int?, Int?, MediaPlaybackRuntimeState) -> Void)?
     let sourceTrackChangeInProgress: Bool
+    private let acceptsTrackAndSeek: () -> Bool
     let serverSeek: ((Double, MediaPlaybackRuntimeState) -> Void)?
     let qualityChange: ((String, MediaPlaybackRuntimeState) -> Void)?
     let previousEpisode: (() -> Void)?
@@ -4288,6 +4350,7 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
         compatibilityFailed: @escaping (MediaPlaybackRuntimeState) -> Void,
         sourceTrackChange: ((Int?, Int?, MediaPlaybackRuntimeState) -> Void)?,
         sourceTrackChangeInProgress: Bool = false,
+        acceptsTrackAndSeek: @escaping () -> Bool = { true },
         serverSeek: ((Double, MediaPlaybackRuntimeState) -> Void)?,
         qualityChange: ((String, MediaPlaybackRuntimeState) -> Void)?,
         previousEpisode: (() -> Void)? = nil,
@@ -4305,6 +4368,7 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
         self.compatibilityFailed = compatibilityFailed
         self.sourceTrackChange = sourceTrackChange
         self.sourceTrackChangeInProgress = sourceTrackChangeInProgress
+        self.acceptsTrackAndSeek = acceptsTrackAndSeek
         self.serverSeek = serverSeek
         self.qualityChange = qualityChange
         self.openExternal = openExternal
@@ -4815,6 +4879,7 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
                     tracks: audioTrackOptions,
                     selectedID: Int32(clamping: selectedSourceAudioTrackID ?? -1)
                 ) { id in
+                    guard acceptsTrackAndSeek() else { return }
                     if !sourceTrackChangeInProgress,
                        Int(id) == selectedSourceAudioTrackID,
                        Int(id) == request.selectedSourceAudioTrackID {
@@ -4834,6 +4899,7 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
                     tracks: audioTrackOptions,
                     selectedID: session.selectedAudioTrackID
                 ) { id in
+                    guard acceptsTrackAndSeek() else { return }
                     guard let track = session.audioTracks.first(where: { $0.id == id }) else { return }
                     session.selectAudio(track)
                     dismissPanel()
@@ -4850,6 +4916,7 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
                     },
                     selectedID: Int32(clamping: selectedSourceSubtitleTrackID ?? -1)
                 ) { id in
+                    guard acceptsTrackAndSeek() else { return }
                     let sourceID = id < 0 ? nil : Int(id)
                     let sourceTrack = sourceID.flatMap { selectedID in
                         request.sourceSubtitleTracks.first { $0.id == selectedID }
@@ -4896,6 +4963,7 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
                     },
                     selectedID: session.selectedSubtitleTrackID
                 ) { id in
+                    guard acceptsTrackAndSeek() else { return }
                     guard let track = session.subtitleTracks.first(where: { $0.id == id }) else { return }
                     session.selectSubtitle(track)
                     dismissPanel()
@@ -5349,12 +5417,14 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
     }
 
     private func finishSeekGesture() {
-        defer { gestureStartPosition = nil }
-        guard let targetPosition = gestureTargetPosition else { return }
+        defer {
+            gestureStartPosition = nil
+            gestureTargetPosition = nil
+        }
+        guard acceptsTrackAndSeek(), let targetPosition = gestureTargetPosition else { return }
         commitSeek(to: targetPosition)
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         revealControls()
-        gestureTargetPosition = nil
     }
 
     private static func formatPlayerTime(_ seconds: Double) -> String {
@@ -5369,10 +5439,11 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
     }
 
     private var canSeek: Bool {
-        session.isSeekable || (serverSeek != nil && session.durationSeconds > 0)
+        acceptsTrackAndSeek() && (session.isSeekable || (serverSeek != nil && session.durationSeconds > 0))
     }
 
     private func commitSeek(to normalizedPosition: Double) {
+        guard acceptsTrackAndSeek() else { return }
         let position = min(max(normalizedPosition, 0), 1)
         let targetSeconds = session.durationSeconds * position
         if serverSeek != nil, session.seek(toAbsoluteSeconds: targetSeconds) {
@@ -5389,6 +5460,7 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
     }
 
     private func jump(by seconds: Int) {
+        guard acceptsTrackAndSeek() else { return }
         let targetSeconds = min(
             max(session.currentTimeSeconds + Double(seconds), 0),
             session.durationSeconds
@@ -5829,6 +5901,8 @@ private struct JellyfinMediaEntry: Identifiable, Hashable {
     let subtitleTracks: [JellyfinMediaTrack]
     var progress: Double?
     var playbackPositionTicks: Int?
+    var serverLastPlayedAt: Date? = nil
+    var serverMarkedPlayed = false
     let runTimeTicks: Int?
     let seriesID: String?
     let seasonNumber: Int?
@@ -5855,33 +5929,19 @@ private struct JellyfinMediaEntry: Identifiable, Hashable {
         [.movie, .episode, .audio, .video].contains(kind)
     }
 
-    /// Jellyfin normally returns both playedPercentage and playbackPositionTicks,
-    /// but older sessions can contain only one of them. Keep resume behavior
-    /// deterministic for both the direct and server-HLS routes.
     var effectivePlaybackProgress: Double? {
-        if let progress, progress > 0 {
-            return min(max(progress, 0), 1)
+        guard let runTimeTicks, runTimeTicks > 0, let ticks = effectivePlaybackPositionTicks else {
+            return nil
         }
-        if let positionTicks = playbackPositionTicks,
-              let runTimeTicks,
-              runTimeTicks > 0,
-              positionTicks > 0 {
-            return min(max(Double(positionTicks) / Double(runTimeTicks), 0), 1)
-        }
-        return progress.map { min(max($0, 0), 1) }
+        return Double(ticks) / Double(runTimeTicks)
     }
 
     var effectivePlaybackPositionTicks: Int? {
-        if let playbackPositionTicks, playbackPositionTicks > 0 {
-            return playbackPositionTicks
-        }
-        guard let effectivePlaybackProgress,
-              let runTimeTicks,
-              runTimeTicks > 0 else {
-            return playbackPositionTicks
-        }
-        return Int((Double(runTimeTicks) * effectivePlaybackProgress).rounded())
+        if serverMarkedPlayed && playbackPositionTicks == nil { return 0 }
+        return JellyfinResumePosition.serverTicks(position: playbackPositionTicks,
+            duration: runTimeTicks, playedFraction: progress)
     }
+
 }
 
 private final class JellyfinCertificateTrustDelegate: NSObject, URLSessionDelegate {
@@ -6148,6 +6208,7 @@ private final class JellyfinLibraryStore: ObservableObject {
     @Published private(set) var endpoint: URL
     private let configuredPlaybackEndpoint: URL?
     private var lanPlaybackRouteCache = JellyfinLANPlaybackRouteCache()
+    private var verifiedLANRestoreIdentity: (endpoint: URL, serverID: String)?
     private var verifiedLANPlaybackEndpoint: URL? {
         lanPlaybackRouteCache.endpoint(on: PlaybackNetworkObserver.shared.snapshot())
     }
@@ -6197,7 +6258,17 @@ private final class JellyfinLibraryStore: ObservableObject {
         session: UUID, observedAt: Date)?
     private var verifiedFallbackContext: (context: JellyfinPreparedContext, observedAt: Date)?
     private var userID: String?
+    /// The access token minted by the most recent silent re-authentication.
+    /// If that token is rejected, the same stored password cannot produce a
+    /// working token for it, so no second silent attempt is made for it.
+    private var silentReauthMintedToken: String?
+    private var silentReauthentication: (sessionID: UUID, task: Task<Bool, Never>)?
     private var didRestore = false
+    private var awaitingRestoredLibrary = false
+    private var restoredLibraryRejected = false
+    private var restoredSessionModificationDate: Date?
+    private var recoveringRestoredLibrary = false
+    private var attemptedRejectedPublicRestore = false
     private var trustDelegate: JellyfinCertificateTrustDelegate?
     private let endpointCandidates: [URL]
     private var bitrateMeasurements: [String: (bitrate: Int, rawBitrate: Int, measuredAt: Date, wasMeasured: Bool, capacityQualified: Bool)] = [:]
@@ -6294,9 +6365,11 @@ private final class JellyfinLibraryStore: ObservableObject {
             recordPlaybackRouteState(stage: "probeDiscarded", reason: "networkPathChanged")
             return
         }
+        verifiedLANRestoreIdentity = (origin, lanID)
         await refreshPlaybackRouteClassification()
         record("diagnostics.jellyfin.playback_route_verified", level: .info,
                details: ["route": "sameServerLAN", "target": DiagnosticLogStore.redactedURL(candidate)])
+        _ = await recoverRejectedStoredSessionIfNeeded()
     }
 
     private func recordPlaybackRouteState(stage: String, reason: String? = nil,
@@ -6343,7 +6416,7 @@ private final class JellyfinLibraryStore: ObservableObject {
         return components.url
     }
 
-    private static func publicServerID(at endpoint: URL) async -> String? {
+    private static func publicServerID(at endpoint: URL, rejectsRedirects: Bool = false) async -> String? {
         guard var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: false) else { return nil }
         let base = components.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         components.path = (base.isEmpty ? "" : "/\(base)") + "/System/Info/Public"
@@ -6352,7 +6425,18 @@ private final class JellyfinLibraryStore: ObservableObject {
         guard let url = components.url else { return nil }
         var request = URLRequest(url: url)
         request.timeoutInterval = 3
-        guard let (data, response) = try? await URLSession.shared.data(for: request),
+        let session: URLSession
+        if rejectsRedirects {
+            let configuration = URLSessionConfiguration.ephemeral
+            configuration.timeoutIntervalForResource = 5
+            session = URLSession(configuration: configuration,
+                delegate: JellyfinIdentityProbeDelegate(host: url.host, allowsSelfSignedCertificates: false),
+                delegateQueue: nil)
+        } else {
+            session = .shared
+        }
+        defer { if rejectsRedirects { session.invalidateAndCancel() } }
+        guard let (data, response) = try? await session.data(for: request),
               (response as? HTTPURLResponse)?.statusCode == 200,
               let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let id = object["Id"] as? String, !id.isEmpty else { return nil }
@@ -6389,24 +6473,26 @@ private final class JellyfinLibraryStore: ObservableObject {
     func restoreIfNeeded() async {
         guard !didRestore else { return }
         didRestore = true
-        let storedCandidates = endpointCandidates.compactMap { candidate in
-            KeychainStore.shared.loadJellyfinSession(endpoint: candidate).map {
-                (endpoint: candidate, session: $0)
-            }
+        var candidates = endpointCandidates
+        if let verifiedLANPlaybackEndpoint, !candidates.contains(verifiedLANPlaybackEndpoint) {
+            candidates.append(verifiedLANPlaybackEndpoint)
         }
+        let storedCandidates = candidates.compactMap {
+            KeychainStore.shared.loadJellyfinRestoreCandidate(endpoint: $0)
+        }
+        let selected = JellyfinSessionEndpointPolicy.preferredSavedSession(storedCandidates)
 #if DEBUG
         // Presence is deliberately separate from server/authentication validity.
         // Reuse the restore reads; never log account identifiers or credentials.
-        for (index, candidate) in endpointCandidates.enumerated() {
+        for (index, candidate) in candidates.enumerated() {
             let stored = storedCandidates.first { $0.endpoint == candidate }?.session
-            let selected = storedCandidates.first
             let accountMatch = stored.flatMap { session in
                 selected.map { session.userID == $0.session.userID ? "yes" : "no" }
             } ?? "unknown"
             let path = candidate.path
             record("diagnostics.jellyfin.playback_route_state", level: .info, details: [
                 "stage": "restoredCandidateScope", "candidateOrdinal": String(index),
-                "candidateCount": String(endpointCandidates.count),
+                "candidateCount": String(candidates.count),
                 "candidateAddressKind": PlaybackConnectionContext.make(url: candidate).addressKind.rawValue,
                 "candidateScheme": candidate.scheme ?? "unknown",
                 "candidatePort": candidate.port.map(String.init) ?? "default",
@@ -6421,19 +6507,250 @@ private final class JellyfinLibraryStore: ObservableObject {
             ])
         }
 #endif
-        guard let restored = storedCandidates.first else {
+        guard let restored = selected else {
+            if let borrowed = await borrowSameServerSessionForPublicCandidate() {
+                await activateStoredLibrarySession(borrowed, allowsRecovery: false)
+                return
+            }
             isLoading = false
             return
         }
+        await activateStoredLibrarySession(restored, allowsRecovery: true)
+    }
+
+    /// No candidate has its own login (for example on cellular, where only
+    /// public HTTPS candidates exist but the login was made on the LAN
+    /// address). Reuse a login whose recorded server ID matches the public
+    /// server, prove it on that endpoint, then save a separate copy there.
+    private func borrowSameServerSessionForPublicCandidate(
+        replacing rejected: JellyfinSessionEndpointPolicy.SavedCandidate? = nil
+    ) async -> JellyfinSessionEndpointPolicy.SavedCandidate? {
+        let session = responseScope.sessionID
+        let network = PlaybackNetworkObserver.shared.snapshot()
+        func isCurrent() -> Bool {
+            guard responseScope.acceptsSession(session), !Task.isCancelled else { return false }
+            guard let rejected else { return true }
+            return awaitingRestoredLibrary && restoredLibraryRejected && endpoint == rejected.endpoint
+                && JellyfinAuthenticatedIdentity.canPublish(startedOn: network,
+                    current: PlaybackNetworkObserver.shared.snapshot(), startedSession: session,
+                    currentSession: responseScope.sessionID, cancelled: Task.isCancelled)
+                && rejected.matchesSession(KeychainStore.shared.loadJellyfinSession(endpoint: rejected.endpoint))
+        }
+
+        let saved = KeychainStore.shared.loadAllJellyfinRestoreCandidates()
+        guard saved.contains(where: { $0.hasOwnSession && $0.session.serverID?.isEmpty == false }) else {
+            recordCrossEndpointRestore(saved.isEmpty ? "noSavedSession" : "noSavedServerID")
+            return nil
+        }
+        let targets = rejected.map { [$0.endpoint] } ?? endpointCandidates
+        for candidate in targets where candidate.scheme?.lowercased() == "https"
+            && !NetworkHostClassifier.isPrivate(candidate.host) {
+            guard isCurrent() else { return nil }
+            guard let publicID = await Self.publicServerID(at: candidate, rejectsRedirects: rejected != nil) else {
+                recordCrossEndpointRestore("publicInfoUnavailable", candidate: candidate)
+                continue
+            }
+            guard isCurrent() else { return nil }
+            guard let source = JellyfinSessionEndpointPolicy.crossEndpointSource(
+                for: candidate, publicServerID: publicID, saved: saved, replacing: rejected) else {
+                recordCrossEndpointRestore(rejected == nil ? "differentServer" : "noMatchingReplacement",
+                                           candidate: candidate)
+                continue
+            }
+            if rejected != nil,
+               !source.matchesSession(KeychainStore.shared.loadJellyfinSession(endpoint: source.endpoint)) {
+                recordCrossEndpointRestore("sourceSessionChanged", candidate: candidate)
+                return nil
+            }
+            let copy = JellyfinSessionEndpointPolicy.copy(source.session, for: candidate)
+            let probe = await probeAuthenticatedIdentity(endpoint: candidate, stored: copy)
+            guard isCurrent() else { return nil }
+            guard JellyfinSessionEndpointPolicy.acceptsCrossEndpointIdentity(probe.identity, source: source) else {
+                recordCrossEndpointRestore(probe.failure ?? (probe.identity == nil ? "httpRejected" : "identityMismatch"),
+                                           candidate: candidate, httpStatus: probe.status)
+                continue
+            }
+            if rejected != nil {
+                guard source.matchesSession(KeychainStore.shared.loadJellyfinSession(endpoint: source.endpoint)) else {
+                    recordCrossEndpointRestore("sourceSessionChanged", candidate: candidate)
+                    return nil
+                }
+            } else if let current = KeychainStore.shared.loadJellyfinRestoreCandidate(endpoint: candidate),
+                      current.hasOwnSession {
+                recordCrossEndpointRestore("ownSessionAppeared", candidate: candidate)
+                return current
+            }
+            do {
+                try KeychainStore.shared.saveJellyfinSession(copy, endpoint: candidate)
+            } catch {
+                recordCrossEndpointRestore("saveFailed", candidate: candidate)
+                return nil
+            }
+            recordCrossEndpointRestore(rejected == nil ? "accepted" : "replacedRejected", candidate: candidate,
+                                       httpStatus: probe.status,
+                                       sourceAddressKind: PlaybackConnectionContext.make(url: source.endpoint).addressKind.rawValue)
+            return KeychainStore.shared.loadJellyfinRestoreCandidate(endpoint: candidate)
+        }
+        return nil
+    }
+
+    private func recordCrossEndpointRestore(_ result: String, candidate: URL? = nil, httpStatus: Int? = nil,
+                                            sourceAddressKind: String? = nil) {
+        var details = ["stage": "crossEndpointRestore", "result": result,
+                       "network": PlaybackNetworkObserver.shared.snapshot().cacheKey]
+        if let candidate {
+            details["candidateAddressKind"] = PlaybackConnectionContext.make(url: candidate).addressKind.rawValue
+            details["candidatePort"] = candidate.port.map(String.init) ?? "default"
+        }
+        if let httpStatus { details["httpStatus"] = String(httpStatus) }
+        if let sourceAddressKind { details["sourceAddressKind"] = sourceAddressKind }
+        record("diagnostics.jellyfin.playback_route_state", level: .info, details: details)
+    }
+
+    /// Record the server ID of the active login from an authenticated
+    /// `/Users/Me` on its own endpoint, so it can later be matched against a
+    /// public candidate. The probe also backfills the account name, so the
+    /// login form prefills the current server-side name after a rename. The
+    /// saved token must be unchanged when written back; nothing is written
+    /// when the probe reports no change.
+    private func recordServerIDIfMissing() async {
+        guard let client = libraryClient, let expectedUser = userID else { return }
+        let ownEndpoint = client.configuration.url
+        guard let saved = KeychainStore.shared.loadJellyfinSession(endpoint: ownEndpoint),
+              saved.endpointString == ownEndpoint.absoluteString,
+              saved.userID == expectedUser, saved.accessToken == client.accessToken else { return }
+        let probe = await probeAuthenticatedIdentity(endpoint: ownEndpoint, stored: saved)
+        guard let identity = probe.identity, identity.userID == expectedUser,
+              var current = KeychainStore.shared.loadJellyfinSession(endpoint: ownEndpoint),
+              current.accessToken == saved.accessToken, current.userID == saved.userID else {
+            recordCrossEndpointRestore("serverIDBackfillSkipped", candidate: ownEndpoint, httpStatus: probe.status)
+            return
+        }
+        var changed = false
+        if current.serverID == nil {
+            current.serverID = identity.serverID
+            changed = true
+        }
+        if let name = identity.name, !name.isEmpty, name != current.username {
+            current.username = name
+            changed = true
+        }
+        guard changed else { return }
+        do {
+            try KeychainStore.shared.saveJellyfinSession(current, endpoint: ownEndpoint)
+            if self.username != current.username {
+                self.username = current.username
+            }
+            recordCrossEndpointRestore("serverIDRecorded", candidate: ownEndpoint, httpStatus: probe.status)
+        } catch {
+            recordCrossEndpointRestore("serverIDSaveFailed", candidate: ownEndpoint)
+        }
+    }
+
+    private func activateStoredLibrarySession(_ restored: JellyfinSessionEndpointPolicy.SavedCandidate,
+                                              allowsRecovery: Bool, rejectsRedirects: Bool = false) async {
         endpoint = restored.endpoint
-        await refreshPlaybackRouteClassification()
         let stored = restored.session
         username = stored.username
         userID = stored.userID
-        client = makeClient(accessToken: stored.accessToken)
+        client = makeClient(accessToken: stored.accessToken, at: rejectsRedirects ? restored.endpoint : nil)
         isAuthenticated = true
+        awaitingRestoredLibrary = allowsRecovery
+        restoredLibraryRejected = false
+        attemptedRejectedPublicRestore = false
+        restoredSessionModificationDate = restored.modificationDate
+        let session = responseScope.sessionID
+        await refreshPlaybackRouteClassification()
+        guard responseScope.acceptsSession(session), !Task.isCancelled else { return }
         scheduleAuthenticatedOriginVerification(stage: "libraryRestore")
+        Task { [weak self] in await self?.recordServerIDIfMissing() }
         await refresh()
+    }
+
+    private func recoverRejectedStoredSessionIfNeeded() async -> Bool {
+        guard awaitingRestoredLibrary, restoredLibraryRejected, !recoveringRestoredLibrary else { return false }
+        recoveringRestoredLibrary = true
+        defer { recoveringRestoredLibrary = false }
+        let session = responseScope.sessionID
+        if await recoverRejectedStoredSessionOnLAN() { return true }
+        guard responseScope.acceptsSession(session), !Task.isCancelled, awaitingRestoredLibrary,
+              restoredLibraryRejected, !attemptedRejectedPublicRestore,
+              endpointCandidates.contains(endpoint), endpoint.scheme?.lowercased() == "https",
+              !NetworkHostClassifier.isPrivate(endpoint.host),
+              let rejected = KeychainStore.shared.loadJellyfinRestoreCandidate(endpoint: endpoint),
+              rejected.hasOwnSession, rejected.session.userID == userID,
+              rejected.session.accessToken == libraryClient?.accessToken else { return false }
+        attemptedRejectedPublicRestore = true
+        let network = PlaybackNetworkObserver.shared.snapshot()
+        guard let replacement = await borrowSameServerSessionForPublicCandidate(replacing: rejected),
+              awaitingRestoredLibrary, restoredLibraryRejected, endpoint == rejected.endpoint,
+              JellyfinAuthenticatedIdentity.canPublish(startedOn: network,
+                current: PlaybackNetworkObserver.shared.snapshot(), startedSession: session,
+                currentSession: responseScope.sessionID, cancelled: Task.isCancelled),
+              replacement.matchesSession(KeychainStore.shared.loadJellyfinSession(endpoint: replacement.endpoint))
+        else { return false }
+        await activateStoredLibrarySession(replacement, allowsRecovery: false, rejectsRedirects: true)
+        return true
+    }
+
+    private func recoverRejectedStoredSessionOnLAN() async -> Bool {
+        guard let rejectedUserID = userID, let verified = verifiedLANRestoreIdentity else {
+            recordStoredLibraryRecovery("waitingForIdentity")
+            return false
+        }
+        guard let candidate = KeychainStore.shared.loadJellyfinRestoreCandidate(endpoint: verified.endpoint) else {
+            recordStoredLibraryRecovery("noSavedLANSession")
+            return false
+        }
+        guard JellyfinSessionEndpointPolicy.canRecoverRejectedSession(candidate, from: endpoint,
+                restoredUserID: rejectedUserID, savedAt: restoredSessionModificationDate,
+                verifiedLANEndpoint: verifiedLANPlaybackEndpoint) else {
+            recordStoredLibraryRecovery("candidateIneligible")
+            return false
+        }
+        let session = responseScope.sessionID
+        let network = PlaybackNetworkObserver.shared.snapshot()
+        // The LAN server proof alone does not authenticate its saved account.
+        // Probe only that endpoint's own session before changing the library.
+        let probe = await probeAuthenticatedIdentity(endpoint: candidate.endpoint, stored: candidate.session)
+        guard awaitingRestoredLibrary, restoredLibraryRejected,
+              JellyfinAuthenticatedIdentity.canPublish(startedOn: network,
+                current: PlaybackNetworkObserver.shared.snapshot(), startedSession: session,
+                currentSession: responseScope.sessionID, cancelled: Task.isCancelled),
+              verifiedLANPlaybackEndpoint == candidate.endpoint,
+              verifiedLANRestoreIdentity?.serverID == verified.serverID else {
+            recordStoredLibraryRecovery("contextChanged", httpStatus: probe.status)
+            return false
+        }
+        guard let identity = probe.identity else {
+            recordStoredLibraryRecovery(probe.failure ?? (probe.status == 200 ? "identityMissing" : "httpRejected"),
+                                        httpStatus: probe.status)
+            return false
+        }
+        guard identity.serverID == verified.serverID, identity.userID == candidate.session.userID else {
+            recordStoredLibraryRecovery("identityMismatch", httpStatus: probe.status)
+            return false
+        }
+        guard let current = KeychainStore.shared.loadJellyfinSession(endpoint: candidate.endpoint),
+              current.userID == candidate.session.userID,
+              current.accessToken == candidate.session.accessToken else {
+            recordStoredLibraryRecovery("savedSessionChanged", httpStatus: probe.status)
+            return false
+        }
+        recordStoredLibraryRecovery("accepted", httpStatus: probe.status)
+        let reason = candidate.session.userID == rejectedUserID ? "sameAccountVerifiedLAN" : "newerVerifiedOwnSession"
+        recordPlaybackRouteState(stage: "recoveredStoredLibrarySession", reason: reason)
+        await activateStoredLibrarySession(candidate, allowsRecovery: false)
+        return true
+    }
+
+    private func recordStoredLibraryRecovery(_ result: String, httpStatus: Int? = nil) {
+#if DEBUG
+        var details = ["stage": "storedLibraryRecovery", "result": result]
+        if let httpStatus { details["httpStatus"] = String(httpStatus) }
+        DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                                         messageKey: "diagnostics.jellyfin.playback_route_state", details: details)
+#endif
     }
 
     private func scheduleAuthenticatedOriginVerification(stage: String) {
@@ -6533,7 +6850,11 @@ private final class JellyfinLibraryStore: ObservableObject {
         let session = URLSession(configuration: config, delegate: delegate, delegateQueue: nil)
         defer { session.invalidateAndCancel() }
         var request = URLRequest(url: url)
-        request.setValue(stored.accessToken, forHTTPHeaderField: "X-Emby-Token")
+        let tokenCharacters = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "-._~"))
+        guard let token = stored.accessToken.addingPercentEncoding(withAllowedCharacters: tokenCharacters) else {
+            return (nil, nil, "invalidStoredScope")
+        }
+        request.setValue("MediaBrowser Token=\"\(token)\"", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         do {
             let (data, response) = try await session.data(for: request)
@@ -6552,6 +6873,9 @@ private final class JellyfinLibraryStore: ObservableObject {
             errorMessage = NSLocalizedString("jellyfin.login.required", comment: "")
             return
         }
+        silentReauthentication?.task.cancel()
+        responseScope.invalidateSession()
+        awaitingRestoredLibrary = false
         isLoading = true
         errorMessage = nil
         do {
@@ -6559,6 +6883,7 @@ private final class JellyfinLibraryStore: ObservableObject {
             var authenticatedAccessToken: String?
             var authenticatedUserID: String?
             var authenticatedUsername: String?
+            var authenticatedServerID: String?
             var lastError: Error?
             for candidate in endpointCandidates {
                 endpoint = candidate
@@ -6576,6 +6901,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                     authenticatedAccessToken = accessToken
                     authenticatedUserID = userID
                     authenticatedUsername = result.user?.name
+                    authenticatedServerID = result.serverID
                     break
                 } catch {
                     lastError = error
@@ -6592,16 +6918,27 @@ private final class JellyfinLibraryStore: ObservableObject {
             userID = authenticatedUserID
             self.username = authenticatedUsername ?? cleanedUsername
             isAuthenticated = true
+            silentReauthMintedToken = nil
             try KeychainStore.shared.saveJellyfinSession(
                 StoredJellyfinSession(
                     endpointString: endpoint.absoluteString,
                     userID: authenticatedUserID,
                     username: self.username,
-                    accessToken: accessToken
+                    accessToken: accessToken,
+                    serverID: authenticatedServerID
                 ),
                 endpoint: endpoint
             )
-            record("diagnostics.jellyfin.login_succeeded", level: .info)
+            // Keep the password in the keychain (never in UserDefaults or
+            // logs) so a later revoked token can be renewed silently. A
+            // missing server ID leaves the password unstorable; the next
+            // rejection then falls back to the login page as before.
+            if let authenticatedServerID, !authenticatedServerID.isEmpty {
+                try? KeychainStore.shared.saveJellyfinPassword(
+                    password, serverID: authenticatedServerID, userID: authenticatedUserID)
+            }
+            record("diagnostics.jellyfin.login_succeeded", level: .info, details: ["stage": "signIn"])
+            Task { [weak self] in await self?.recordServerIDIfMissing() }
             await refreshPlaybackRouteClassification()
             await loadHome()
         } catch {
@@ -6631,11 +6968,17 @@ private final class JellyfinLibraryStore: ObservableObject {
     }
 
     func signOut() async {
+        silentReauthentication?.task.cancel()
+        awaitingRestoredLibrary = false
         originalRouteWarmup?.task.cancel()
         originalRouteWarmup = nil
         playbackStopSnapshot = nil
         let activeClient = client
         KeychainStore.shared.clearJellyfinSession(endpoint: endpoint)
+        if let userID {
+            KeychainStore.shared.clearJellyfinPasswords(userID: userID)
+        }
+        silentReauthMintedToken = nil
         client = nil
         userID = nil
         username = ""
@@ -6758,25 +7101,129 @@ private final class JellyfinLibraryStore: ObservableObject {
         }
     }
 
-    func search(query: String) async throws -> [JellyfinMediaEntry] {
+    func search(query: String, allowSilentRenewal: Bool = true) async throws -> [JellyfinMediaEntry] {
         let cleanedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !cleanedQuery.isEmpty else { return [] }
-        let items = try await loadItems(
-            parentID: nil,
-            kinds: [.movie, .series, .episode, .audio, .video, .musicAlbum, .musicVideo],
-            limit: 80,
-            searchTerm: cleanedQuery
-        )
-        registerFavoriteState(from: items)
-        return items
+        let sessionID = responseScope.sessionID
+        do {
+            let items = try await loadItems(
+                parentID: nil,
+                kinds: [.movie, .series, .episode, .audio, .video, .musicAlbum, .musicVideo],
+                limit: 80,
+                searchTerm: cleanedQuery
+            )
+            registerFavoriteState(from: items)
+            return items
+        } catch {
+            guard JellyfinSessionRejectionPolicy.requiresSignIn(after: error),
+                  responseScope.acceptsSession(sessionID), !Task.isCancelled else {
+                throw error
+            }
+            record("diagnostics.jellyfin.session_unauthorized", level: .warning,
+                   details: ["stage": "search", "httpStatus": "401"])
+            if allowSilentRenewal, await attemptSilentReauthentication(stage: "search") {
+                return try await search(query: cleanedQuery, allowSilentRenewal: false)
+            }
+            if responseScope.acceptsSession(sessionID) { expireRejectedSession(stage: "search") }
+            throw error
+        }
     }
 
-    func loadDetail(itemID: String) async throws -> JellyfinMediaEntry {
+    /// Renew a rejected token with the password stored at sign-in, without
+    /// showing the login page. Returns true when the store is authenticated
+    /// again; the caller retries the failed request once on true, and falls
+    /// through to `expireRejectedSession` on false.
+    private func attemptSilentReauthentication(stage: String) async -> Bool {
+        let sessionID = responseScope.sessionID
+        if let existing = silentReauthentication, existing.sessionID == sessionID {
+            return await existing.task.value
+        }
+        guard isAuthenticated, let rejectedUserID = userID, !username.isEmpty,
+              let rejectedToken = libraryClient?.accessToken else { return false }
+        let rejectedEndpoint = endpoint
+        let rejectedUsername = username
+        let serverID = KeychainStore.shared.loadJellyfinSession(endpoint: rejectedEndpoint)?.serverID
+        let details = ["stage": stage]
+        record("diagnostics.jellyfin.session_silent_reauth_attempt", level: .info, details: details)
+        guard rejectedToken != silentReauthMintedToken,
+              let serverID, let password = KeychainStore.shared.loadJellyfinPassword(
+                serverID: serverID, userID: rejectedUserID) else {
+            record("diagnostics.jellyfin.session_silent_reauth_failed", level: .warning,
+                   details: ["stage": stage, "reason": rejectedToken == silentReauthMintedToken
+                       ? "renewedTokenRejected" : "passwordUnavailable"])
+            return false
+        }
+        let task = Task { @MainActor [weak self] () -> Bool in
+            guard let self else { return false }
+            let candidate = makeClient(accessToken: nil, at: rejectedEndpoint)
+            do {
+                let result = try await candidate.signIn(username: rejectedUsername, password: password)
+                guard !Task.isCancelled, responseScope.acceptsSession(sessionID), endpoint == rejectedEndpoint,
+                      userID == rejectedUserID, libraryClient?.accessToken == rejectedToken,
+                      isAuthenticated else { return false }
+                guard let token = result.accessToken, !token.isEmpty,
+                      result.user?.id == rejectedUserID,
+                      result.serverID == nil || result.serverID == serverID else {
+                    throw JellyfinLibraryError.missingSession
+                }
+                try KeychainStore.shared.saveJellyfinSession(.init(
+                    endpointString: rejectedEndpoint.absoluteString, userID: rejectedUserID,
+                    username: rejectedUsername, accessToken: token, serverID: serverID),
+                    endpoint: rejectedEndpoint)
+                libraryClient = candidate
+                silentReauthMintedToken = token
+                awaitingRestoredLibrary = false
+                errorMessage = nil
+                record("diagnostics.jellyfin.session_silent_reauth_succeeded", level: .info, details: details)
+                return true
+            } catch {
+                guard !Task.isCancelled, responseScope.acceptsSession(sessionID) else { return false }
+                let status = JellyfinHTTPStatus.code(for: error)
+                if status == 401 {
+                    KeychainStore.shared.clearJellyfinPassword(serverID: serverID, userID: rejectedUserID)
+                }
+                record("diagnostics.jellyfin.session_silent_reauth_failed", level: .warning,
+                       details: ["stage": stage, "httpStatus": status.map(String.init) ?? "none"])
+                return false
+            }
+        }
+        silentReauthentication = (sessionID, task)
+        let result = await task.value
+        if silentReauthentication?.sessionID == sessionID { silentReauthentication = nil }
+        return result
+    }
+
+    /// The server rejected the held token. Return to sign-in with the account
+    /// name kept and say why, instead of leaving pages that fail one by one.
+    /// The rejected token stays in the Keychain untouched; a successful sign-in
+    /// replaces it, and a verified same-server LAN recovery may still reactivate
+    /// a working saved session (it needs `userID`, which is kept).
+    private func expireRejectedSession(stage: String) {
+        guard isAuthenticated else { return }
+        record("diagnostics.jellyfin.session_rejected", level: .warning, details: ["stage": stage, "httpStatus": "401"])
+        originalRouteWarmup?.task.cancel()
+        originalRouteWarmup = nil
+        isAuthenticated = false
+        isLoading = false
+        errorMessage = NSLocalizedString("jellyfin.login.session_expired", comment: "")
+    }
+
+    func loadDetail(itemID: String, allowSilentRenewal: Bool = true) async throws -> JellyfinMediaEntry {
         guard let client, let userID else { throw JellyfinLibraryError.missingSession }
         let sessionID = responseScope.sessionID
-        let response = try await client.send(
-            Paths.getItem(itemID: itemID, userID: userID)
-        ).value
+        let response: BaseItemDto
+        do {
+            response = try await client.send(Paths.getItem(itemID: itemID, userID: userID)).value
+        } catch where JellyfinSessionRejectionPolicy.requiresSignIn(after: error) {
+            guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { throw CancellationError() }
+            record("diagnostics.jellyfin.session_unauthorized", level: .warning,
+                   details: ["stage": "detail", "httpStatus": "401"])
+            if allowSilentRenewal, await attemptSilentReauthentication(stage: "detail") {
+                return try await loadDetail(itemID: itemID, allowSilentRenewal: false)
+            }
+            if responseScope.acceptsSession(sessionID) { expireRejectedSession(stage: "detail") }
+            throw error
+        }
         try Task.checkCancellation()
         guard responseScope.acceptsSession(sessionID) else { throw CancellationError() }
         guard let item = mapItem(response) else {
@@ -6851,6 +7298,8 @@ private final class JellyfinLibraryStore: ObservableObject {
         usesGreenfieldPlayback: Bool = false
     ) async throws -> MediaPlaybackRequest? {
         let preferenceKey = playbackPreferenceKey(for: entry)
+        let resumeEntry = usesGreenfieldPlayback && forcedStartTimeTicks == nil && forcedServerReason == nil
+            ? entryWithLocalCheckpoint(entry) : entry
         var effectiveSelection = selection
         if usesGreenfieldPlayback, selection == nil,
            let saved = savedPlaybackTrackSelection(for: entry) {
@@ -6872,7 +7321,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                     let prepared = try await { () async throws -> (request: MediaPlaybackRequest?,
                         reference: (identity: JellyfinAuthenticatedIdentity, observedAt: Date)?) in
                         async let libraryReference = preparedLibraryReference(context)
-                        let request = try await makePlaybackRequest(for: entry, selection: effectiveSelection,
+                        let request = try await makePlaybackRequest(for: resumeEntry, selection: effectiveSelection,
                             forcedServerBitrate: forcedServerBitrate, forcedStartTimeTicks: forcedStartTimeTicks,
                             forcedServerReason: forcedServerReason, forcesOriginalPlayback: forcesOriginalPlayback,
                             forcesExperimentalOriginalPlayback: forcesExperimentalOriginalPlayback,
@@ -7261,6 +7710,18 @@ private final class JellyfinLibraryStore: ObservableObject {
         }
     }
 
+    func entryWithLocalCheckpoint(_ entry: JellyfinMediaEntry) -> JellyfinMediaEntry {
+        guard let key = playbackPreferenceKey(for: entry),
+              let local = LocalPlaybackResumeStore.shared.entry(for: key),
+              JellyfinResumePosition.prefersLocal(updatedAt: local.updatedAt,
+                serverPlayedAt: entry.serverLastPlayedAt,
+                serverHasPosition: entry.effectivePlaybackPositionTicks != nil,
+                serverMarkedPlayed: entry.serverMarkedPlayed) else { return entry }
+        var resolved = entry
+        resolved.playbackPositionTicks = PlaybackPositionPolicy.ticks(for: local.positionSeconds)
+        return resolved
+    }
+
     func savedPlaybackTrackSelection(for entry: JellyfinMediaEntry) -> JellyfinPlaybackSelection? {
         guard let key = playbackPreferenceKey(for: entry),
               let saved = LocalPlaybackResumeStore.shared.entry(for: key) else { return nil }
@@ -7390,26 +7851,45 @@ private final class JellyfinLibraryStore: ObservableObject {
             entry.subtitleTracks.firstIndex { $0.index == selectedIndex }
         }
 
-        // A fresh measurement from browsing the library can rule out an
-        // original whose bitrate is far beyond the route's delivery capacity.
+        // The route's delivery evidence can rule out an original whose
+        // bitrate is far beyond what the route delivers. Start, resume and
+        // restart read the same assessment, so they make the same choice.
         // Never wait for a new probe on the Play path.
         let startupNetwork = PlaybackNetworkObserver.shared.snapshot()
         let startupRoute = playbackEndpoint ?? endpoint
         recordPlaybackRouteState(stage: "playRequested", extra: ["playbackTraceID": playbackTraceID])
         let startupOrigin = Self.originURL(for: startupRoute)?.absoluteString
             ?? startupRoute.absoluteString
-        let startupSample = bitrateMeasurements["\(startupOrigin)|\(startupNetwork.cacheKey)"]
-        let knownCapacity = startupSample.flatMap { sample -> Int? in
-            sample.wasMeasured && sample.capacityQualified && Date().timeIntervalSince(sample.measuredAt) < 120
-                ? sample.rawBitrate : nil
-        }
+        let startupRouteKey = "\(startupOrigin)|\(startupNetwork.cacheKey)"
+        let routeAssessment = routeCapacityAssessment(
+            routeKey: startupRouteKey, networkKey: startupNetwork.cacheKey)
+        let knownCapacity = routeAssessment.capacity
+        let originalVerdict = PlaybackRouteDecisionPolicy.originalVerdict(
+            sourceBitrate: entry.mediaBitrate, assessment: routeAssessment)
+        PlaybackRecentThroughputStore.shared.bindRoute(traceID: playbackTraceID, routeKey: startupRouteKey)
+        record("diagnostics.jellyfin.playback_preparing", level: .info, details: [
+            "stage": "routeCapacityEvidence", "playbackTraceID": playbackTraceID,
+            "network": startupNetwork.cacheKey,
+            "capacitySource": routeAssessment.basis.rawValue,
+            "capacity": knownCapacity.map(String.init) ?? "none",
+            "capacityBoundsBothSides": String(routeAssessment.boundsBothSides),
+            "playbackCapacity": routeAssessment.sustained.map(String.init) ?? "none",
+            "renditionLowerBound": routeAssessment.renditionLowerBound.map(String.init) ?? "none",
+            "probeCapacity": routeAssessment.probe.map(String.init) ?? "none",
+            "probeAgeSeconds": bitrateMeasurements[startupRouteKey].map {
+                String(Int(Date().timeIntervalSince($0.measuredAt)))
+            } ?? "none",
+            "sourceBitrate": entry.mediaBitrate.map(String.init) ?? "unknown",
+            "originalVerdict": originalVerdict.rawValue,
+            "restoredSamples": String(PlaybackRecentThroughputStore.shared.restoredRouteSampleCount)
+        ])
+        // Private routes and an explicit original keep the original whatever
+        // the evidence says.
         let knownInsufficientOriginalBandwidth = usesGreenfieldPlayback
             && forcedServerBitrate == nil
-            && PlaybackAdaptiveBitratePolicy.isOriginalClearlyUnsustainable(
-                sourceBitrate: entry.mediaBitrate,
-                measuredCapacity: knownCapacity,
-                isPrivateRoute: playbackRouteIsPrivate,
-                forcesOriginal: forcesOriginalPlayback || forcesExperimentalOriginalPlayback)
+            && !playbackRouteIsPrivate
+            && !forcesOriginalPlayback && !forcesExperimentalOriginalPlayback
+            && originalVerdict.prefersServerRendition
         let prefersOriginalStream = usesGreenfieldPlayback
             && forcedServerBitrate == nil && !knownInsufficientOriginalBandwidth
         // Probe without creating a proxy or opening a decoder.
@@ -7459,7 +7939,10 @@ private final class JellyfinLibraryStore: ObservableObject {
            forcedServerBitrate == nil,
            forcedServerReason == nil,
            !forcesOriginalPlayback,
-           !forcesExperimentalOriginalPlayback {
+           !forcesExperimentalOriginalPlayback,
+           // Greenfield takes its rendition from the route assessment, so
+           // its first frame does not wait behind a new probe.
+           !usesGreenfieldPlayback {
             await ensureBitrateMeasurementIfNeeded(client: client,
                 originalSourceBitrate: originalSourceBitrate)
         }
@@ -7476,6 +7959,16 @@ private final class JellyfinLibraryStore: ObservableObject {
         let automaticCeiling = playbackRouteIsPrivate
             ? directPlayBudget
             : min(directPlayBudget, 20_000_000)
+        // Greenfield on a public route takes its automatic rendition from
+        // the same route assessment as the original verdict, under the
+        // policy ceiling. The legacy probe budget above no longer caps it.
+        let renditionCeiling = PlaybackRouteDecisionPolicy.renditionCeiling(
+            networkBitrateCap: startupNetwork.bitrateCap)
+        let assessedRendition: Int? = usesGreenfieldPlayback && !playbackRouteIsPrivate
+            ? PlaybackRouteDecisionPolicy.startupBitrate(
+                capacity: knownCapacity, ceiling: renditionCeiling,
+                unknownCapacityBitrate: startupNetwork.fallbackBitrate)
+            : nil
 #if DEBUG
         // A one-process, explicitly launched test fixture can hold the initial
         // rendition constant while the media proxy changes delivery speed.
@@ -7488,12 +7981,8 @@ private final class JellyfinLibraryStore: ObservableObject {
 #endif
         let maxBitrate = forcedServerBitrate
             ?? (usesGreenfieldPlayback ? testStartupCeiling : nil)
-            ?? (knownInsufficientOriginalBandwidth
-                ? PlaybackAdaptiveBitratePolicy.target(
-                    currentCeiling: automaticCeiling,
-                    capacity: knownCapacity,
-                    networkKey: startupNetwork.cacheKey) ?? automaticCeiling
-                : automaticCeiling)
+            ?? assessedRendition
+            ?? automaticCeiling
         let sourceBitrateFitsDirectBudget = entry.mediaBitrate.map {
             $0 <= directPlayBudget
         } ?? false
@@ -7507,6 +7996,9 @@ private final class JellyfinLibraryStore: ObservableObject {
             sourceBitrate: entry.mediaBitrate, originalBudget: directPlayBudget))
         let automaticSourceBitrateFitsDirectBudget = sourceBitrateFitsDirectBudget
             && !largeRemoteOriginalRisk
+            // One verdict per request: the legacy budget does not reopen an
+            // original the route assessment has ruled out.
+            && !knownInsufficientOriginalBandwidth
         let canUseExperimentalOriginalPlayback = forcesExperimentalOriginalPlayback
             && forcedServerBitrate == nil
             && forcedServerReason == nil
@@ -7555,6 +8047,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                 "audioStreamIndex": selectedAudioStreamIndex.map(String.init) ?? "default",
                 "bitrateBasis": bitrateDecision.basis,
                 "maximumBitrate": "\(maxBitrate)",
+                "originalVerdict": originalVerdict.rawValue,
+                "renditionCeiling": assessedRendition == nil ? "legacyBudget" : "\(renditionCeiling)",
                 "networkMaximumBitrate": "\(bitrateDecision.maximumBitrate)",
                 "directPlayMaximumBitrate": "\(directPlayBudget)",
                     "largeRemoteOriginalRisk": largeRemoteOriginalRisk ? "yes" : "no",
@@ -7718,7 +8212,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                 let originalRouteWasSkipped = !shouldAttemptDirectPlayback
                 let automaticFallbackReason: String
                 if knownInsufficientOriginalBandwidth {
-                    automaticFallbackReason = "measuredBandwidthInsufficient"
+                    automaticFallbackReason = originalVerdict == .lowerBoundTooFar
+                        ? "lowerBoundFarBelowSource" : "measuredBandwidthInsufficient"
                 } else if largeRemoteOriginalRisk,
                    !playbackRouteIsPrivate,
                    !forcesOriginalPlayback,
@@ -7811,8 +8306,11 @@ private final class JellyfinLibraryStore: ObservableObject {
             // transcode. Compatibility startup is latency-oriented, so cap
             // the direct-play fallback envelope before applying the one-step
             // bitrate reduction. Explicit quality choices remain unchanged.
+            // On a public Greenfield route the envelope is the policy ceiling:
+            // the rendition figured for a start that then played the original
+            // must not cap the fallback from it.
             let compatibilityFallbackInitialBitrate = prepared.playMethod == .directPlay
-                ? min(maxBitrate, 20_000_000)
+                ? min(assessedRendition == nil ? maxBitrate : renditionCeiling, 20_000_000)
                 : maxBitrate
             // Direct-play ASS/SSA subtitles are normalized to an external SRT
             // so VLC does not draw tofu glyphs from the embedded styled track.
@@ -7885,7 +8383,9 @@ private final class JellyfinLibraryStore: ObservableObject {
                             Self.jellyfinTicks(for: $0)
                         },
                         forcedServerReason: "sourceTrackSwitch",
+                        forcesOriginalPlayback: forcesOriginalPlayback,
                         forcesExperimentalOriginalPlayback: forcesExperimentalOriginalPlayback,
+                        selectedQualityID: selectedQualityID,
                         usesGreenfieldPlayback: usesGreenfieldPlayback
                     )
                     return replacement?.applyingSourceTrackRuntimePreferences(runtimeState)
@@ -8003,8 +8503,10 @@ private final class JellyfinLibraryStore: ObservableObject {
                 fileExtensionOverride: prepared.resource.fileExtensionOverride,
                 initialPosition: prepared.playMethod == .transcode
                     ? nil
-                    : forcedStartTimeTicks.map { min(max(Double($0) / Double(max(1, entry.runTimeTicks ?? 1)), 0), 1) }
-                        ?? entry.effectivePlaybackProgress,
+                    : entry.runTimeTicks.flatMap { duration in
+                        guard duration > 0 else { return nil }
+                        return min(Double(requestedStartTimeTicks) / Double(duration), 1)
+                    },
                 externalSubtitleURL: prepared.resource.subtitleURL,
                 // Jellyfin has already selected the requested source audio track for HLS.
                 // Its single output track can receive a transient VLC identifier while the
@@ -8140,12 +8642,13 @@ private final class JellyfinLibraryStore: ObservableObject {
             traceID: sourceTraceID, now: ProcessInfo.processInfo.systemUptime)
         let route = playbackEndpoint ?? endpoint
         let origin = Self.originURL(for: route)?.absoluteString ?? route.absoluteString
-        let measuredCapacity = bitrateMeasurements["\(origin)|\(network.cacheKey)"].flatMap {
-            sample -> Int? in
-            sample.wasMeasured && sample.capacityQualified && Date().timeIntervalSince(sample.measuredAt) < 120
-                ? sample.rawBitrate : nil
-        }
-        let capacity = [observedCapacity, measuredCapacity].compactMap { $0 }.min()
+        // The same route assessment the start used, held to what the
+        // struggling stream is getting now.
+        let routeAssessment = routeCapacityAssessment(
+            routeKey: "\(origin)|\(network.cacheKey)", networkKey: network.cacheKey)
+        let measuredCapacity = routeAssessment.capacity
+        let capacity = PlaybackRouteDecisionPolicy.fallbackCapacity(
+            live: observedCapacity, route: measuredCapacity)
         guard let fallbackBitrate = PlaybackAdaptiveBitratePolicy.target(
             currentCeiling: initialBitrate, capacity: capacity,
             networkKey: network.cacheKey) else { return nil }
@@ -8170,7 +8673,10 @@ private final class JellyfinLibraryStore: ObservableObject {
                     "toBitrate": "\(fallbackBitrate)",
                     "capacityBitrate": capacity.map(String.init) ?? "unknown",
                     "capacityBasis": observedCapacity != nil ? "recentTransfer" :
-                        (measuredCapacity != nil ? "recentJellyfinProbe" : "conservativeFallback"),
+                        (measuredCapacity != nil ? "routeEvidence" : "conservativeFallback"),
+                    "liveCapacity": observedCapacity.map(String.init) ?? "none",
+                    "routeCapacity": measuredCapacity.map(String.init) ?? "none",
+                    "routeCapacitySource": routeAssessment.basis.rawValue,
                     "playbackTraceID": replacement.playbackTraceID ?? "-",
                     "network": network.cacheKey,
                     "mode": "serverNegotiatedHLS",
@@ -8473,6 +8979,23 @@ private final class JellyfinLibraryStore: ObservableObject {
             bitrateMeasurementTasks.values.forEach { $0.cancel() }
             bitrateMeasurementTasks.removeAll()
         }
+    }
+
+    /// Everything known about what this route delivers, as one assessment:
+    /// the latest pre-play probe for as long as its measurement counts, and
+    /// the delivery recorded while playing on the route.
+    private func routeCapacityAssessment(routeKey: String, networkKey: String)
+        -> PlaybackRouteCapacityPolicy.Assessment {
+        let probe = bitrateMeasurements[routeKey].flatMap { sample -> PlaybackRouteCapacityPolicy.Probe? in
+            guard sample.wasMeasured, sample.capacityQualified else { return nil }
+            return PlaybackRouteCapacityPolicy.Probe(bitrate: sample.rawBitrate,
+                age: Date().timeIntervalSince(sample.measuredAt),
+                boundsBothSides: PlaybackRouteCapacityPolicy.probeBoundsBothSides(networkKey: networkKey))
+        }
+        let evidence = PlaybackRecentThroughputStore.shared.routeEvidence(
+            routeKey: routeKey, now: ProcessInfo.processInfo.systemUptime)
+        return PlaybackRouteCapacityPolicy.assess(
+            sustained: evidence.sustained, rendition: evidence.rendition, probe: probe)
     }
 
     private func playbackBitrateDecision(originalSourceBitrate: Int? = nil,
@@ -9055,7 +9578,7 @@ private final class JellyfinLibraryStore: ObservableObject {
             )
             }
         }
-        return MediaPlaybackTracker(releaseResources: {
+        return MediaPlaybackTracker(progressIntervalSeconds: 4, releaseResources: {
             if let proxyURL { AuthenticatedMediaStreamProxy.shared.unregister(proxyURL) }
             guard let encodingClient, let playSessionID, playMethod == .transcode else { return }
             Task {
@@ -9363,6 +9886,7 @@ private final class JellyfinLibraryStore: ObservableObject {
         do {
             let loadedLibraries = try await loadViews()
             guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { return }
+            awaitingRestoredLibrary = false
             libraries = loadedLibraries
             isLoading = false
             record(
@@ -9376,16 +9900,36 @@ private final class JellyfinLibraryStore: ObservableObject {
             )
         } catch {
             guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { return }
-            isLoading = false
             if isExpectedCancellation(error) {
+                isLoading = false
                 return
             }
-            errorMessage = NSLocalizedString("jellyfin.library.load_failed", comment: "")
+            let sessionRejected = JellyfinSessionRejectionPolicy.requiresSignIn(after: error)
+            if sessionRejected {
+                record("diagnostics.jellyfin.session_unauthorized", level: .warning,
+                       details: ["stage": "library", "httpStatus": "401"])
+            }
+            if awaitingRestoredLibrary, sessionRejected {
+                guard !recoveringRestoredLibrary else { return }
+                restoredLibraryRejected = true
+                if await recoverRejectedStoredSessionIfNeeded() { return }
+                guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { return }
+            }
+            isLoading = false
             record(
                 "diagnostics.jellyfin.library_failed",
                 level: .error,
                 details: diagnosticDetails(for: error)
             )
+            if sessionRejected {
+                if await attemptSilentReauthentication(stage: "library") {
+                    await loadHome()
+                    return
+                }
+                if responseScope.acceptsSession(sessionID) { expireRejectedSession(stage: "library") }
+                return
+            }
+            errorMessage = NSLocalizedString("jellyfin.library.load_failed", comment: "")
             return
         }
 
@@ -9670,6 +10214,8 @@ private final class JellyfinLibraryStore: ObservableObject {
             subtitleTracks: subtitleTracks,
             progress: item.userData?.playedPercentage.map { min(max($0 / 100, 0), 1) },
             playbackPositionTicks: item.userData?.playbackPositionTicks,
+            serverLastPlayedAt: item.userData?.lastPlayedDate,
+            serverMarkedPlayed: item.userData?.isPlayed == true,
             runTimeTicks: item.runTimeTicks ?? mediaSource?.runTimeTicks,
             seriesID: item.seriesID,
             seasonNumber: item.parentIndexNumber,
@@ -9796,7 +10342,7 @@ private final class JellyfinLibraryStore: ObservableObject {
         )
         if target == nil { trustDelegate = delegate }
         let configuration = JellyfinPlaybackSessionPolicy.configuration()
-        let deviceID = Self.persistentDeviceID()
+        let deviceID = JellyfinDeviceIdentity.persistentDeviceID
         let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1"
         return JellyfinClient(
             configuration: .init(
@@ -9813,27 +10359,22 @@ private final class JellyfinLibraryStore: ObservableObject {
         )
     }
 
-    private static func persistentDeviceID() -> String {
-        let key = "jellyfin.client.device-id"
-        if let current = UserDefaults.standard.string(forKey: key) { return current }
-        let value = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
-        UserDefaults.standard.set(value, forKey: key)
-        return value
-    }
-
     private func record(
         _ messageKey: String,
         level: DiagnosticLogLevel,
         details: [String: String] = [:]
     ) {
-        DiagnosticLogStore.shared.record(
-            level,
-            categoryKey: "diagnostics.category.media",
-            messageKey: messageKey,
-            details: details.merging([
-                "target": DiagnosticLogStore.redactedURL(endpoint)
-            ]) { current, _ in current }
-        )
+        var fields = details
+        fields["target"] = fields["target"] ?? DiagnosticLogStore.redactedURL(endpoint)
+        if messageKey == "diagnostics.jellyfin.login_succeeded" ||
+            messageKey == "diagnostics.jellyfin.session_rejected" ||
+            messageKey.hasPrefix("diagnostics.jellyfin.session_silent_reauth_") || fields["httpStatus"] == "401" {
+            let id = client?.configuration.deviceID ?? JellyfinDeviceIdentity.persistentDeviceID
+            fields["deviceIDPrefix"] = String(id.prefix(8))
+            fields["deviceIDStorage"] = JellyfinDeviceIdentity.storageStatus
+        }
+        DiagnosticLogStore.shared.record(level, categoryKey: "diagnostics.category.media",
+                                         messageKey: messageKey, details: fields)
     }
 
     func recordPlaybackPreparationFailure(_ error: Error, preparationID: UUID) {
@@ -10050,6 +10591,10 @@ private struct JellyfinLoginView: View {
                 .disabled(store.isLoading || username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
             .padding(24)
+        }
+        .onAppear {
+            // After the server rejects a saved session, keep the account name.
+            if username.isEmpty { username = store.username }
         }
     }
 
@@ -11163,8 +11708,9 @@ private struct JellyfinMediaDetailView: View {
             result.progress = result.runTimeTicks.flatMap { duration in
                 duration > 0 ? min(Double(ticks) / Double(duration), 1) : nil
             }
+            return result
         }
-        return result
+        return store.entryWithLocalCheckpoint(result)
     }
 
     @MainActor
@@ -11213,19 +11759,23 @@ private struct JellyfinMediaDetailView: View {
                         Text(
                             LocalizedStringKey(
                                 isPreparingPlayback ? "jellyfin.player.preparing"
-                                    : (mediaItem.effectivePlaybackProgress ?? 0) > 0
+                                    : (mediaItem.effectivePlaybackPositionTicks ?? 0) > 0
                                         ? "media.continue.title" : "player.play_in_app"
                             )
                         )
                             .font(.subheadline.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.85)
                     }
+                    .frame(maxWidth: .infinity, minHeight: 48)
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(NastartMediaActionButtonStyle())
                 .accessibilityIdentifier("jellyfin.detail.continue")
-                if (mediaItem.effectivePlaybackProgress ?? 0) > 0 {
+                if (mediaItem.effectivePlaybackPositionTicks ?? 0) > 0 {
                     Button { preparePlayback(fromBeginning: true) } label: {
                         Label("player.play_from_beginning", systemImage: PlaybackControlDesign.restartSymbol)
                             .font(.subheadline.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.85)
+                            .frame(maxWidth: .infinity, minHeight: 48)
+                            .contentShape(Rectangle())
                     }.buttonStyle(NastartMediaActionButtonStyle())
                         .accessibilityIdentifier("jellyfin.detail.restart")
                 }
@@ -11257,7 +11807,14 @@ private struct JellyfinMediaDetailView: View {
                 }
                 .accessibilityLabel(Text("devices.files.open_external"))
             }
+            .accessibilityElement(children: .contain)
             .disabled(isPreparingPlayback)
+            if let ticks = mediaItem.effectivePlaybackPositionTicks, ticks > 0,
+               let duration = mediaItem.runTimeTicks, duration > 0 {
+                Text("\(Self.resumeClock(ticks)) / \(Self.resumeClock(duration))")
+                    .font(.caption.monospacedDigit())
+                    .accessibilityIdentifier("jellyfin.detail.resumePosition")
+            }
             if isPreparingPlayback {
                 Button("action.cancel") { preparation.cancel() }
                     .font(.subheadline)
@@ -11288,6 +11845,11 @@ private struct JellyfinMediaDetailView: View {
     }
 #endif
 
+    private static func resumeClock(_ ticks: Int) -> String {
+        let seconds = max(0, ticks / 10_000_000)
+        return String(format: "%02ld:%02ld:%02ld", seconds / 3600, seconds / 60 % 60, seconds % 60)
+    }
+
     private func preparePlayback(fromBeginning: Bool = false) {
         var itemToPlay = mediaItem
         if fromBeginning {
@@ -11304,6 +11866,7 @@ private struct JellyfinMediaDetailView: View {
                         audioStreamIndex: selectedAudioStreamIndex,
                         subtitleStreamIndex: selectedSubtitleStreamIndex
                     ),
+                    forcedStartTimeTicks: fromBeginning ? 0 : nil,
                     prefersFastStartupDirectPlay: requestsGreenfield,
                     usesGreenfieldPlayback: requestsGreenfield
                 )

@@ -58,8 +58,11 @@ class PlaybackLabHandler(BaseHTTPRequestHandler):
             return
         start, end = parsed_range or (0, file_size - 1)
         content_length = end - start + 1
+        apply_fault = settings.fault_range_start is None or (
+            send_body and parsed_range is not None and start == settings.fault_range_start
+        )
 
-        if settings.latency_ms:
+        if apply_fault and settings.latency_ms:
             time.sleep(settings.latency_ms / 1000)
         self.send_response(206 if parsed_range else 200)
         self.send_header("Accept-Ranges", "bytes")
@@ -78,13 +81,14 @@ class PlaybackLabHandler(BaseHTTPRequestHandler):
         remaining = content_length
         sent = 0
         chunk_size = 64 * 1024
-        bytes_per_second = settings.kbps * 1000 // 8 if settings.kbps else 0
+        bytes_per_second = settings.kbps * 1000 // 8 if apply_fault else 0
+        disconnect_after = settings.disconnect_after if apply_fault else 0
         started_at = time.monotonic()
         try:
             with settings.file.open("rb") as media:
                 media.seek(start)
                 while remaining:
-                    if settings.disconnect_after and sent >= settings.disconnect_after:
+                    if disconnect_after and sent >= disconnect_after:
                         self.close_connection = True
                         return
                     chunk = media.read(min(chunk_size, remaining))
@@ -143,9 +147,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--latency-ms", type=int, default=0)
     parser.add_argument("--kbps", type=int, default=0)
     parser.add_argument("--disconnect-after", type=int, default=0)
+    parser.add_argument("--fault-range-start", type=int,
+                        help="Apply latency, throttling and disconnect only to GET ranges starting at this byte")
     parser.add_argument("--username")
     parser.add_argument("--password", default="")
-    return parser.parse_args()
+    settings = parser.parse_args()
+    if settings.fault_range_start is not None and settings.fault_range_start < 0:
+        parser.error("--fault-range-start must be nonnegative")
+    return settings
 
 
 def main() -> None:

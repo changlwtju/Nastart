@@ -98,7 +98,7 @@ ENUMS = {
 for key in ("eligible ready playing buffering pendingSeek changingSource clockAdvanced "
             "graceAllowsPrediction cooldownAllowsPrediction predictiveEligible "
             "predictsReserveDepletion predictsUnsustainableDelivery repeatedStalls "
-            "recordedForAdaptiveEstimate bodyWindowPressured envelopeSuccess hasData callbackAfterClientFinish upstreamCancellationRequested upstreamCompletionObserved clientReadComplete clientReadAfterFinish").split():
+            "recordedForAdaptiveEstimate bodyWindowPressured envelopeSuccess hasData callbackAfterClientFinish upstreamCancellationRequested upstreamCompletionObserved clientReadComplete clientReadAfterFinish startupPrimer").split():
     ENUMS[key] = {"true", "false"}
 ENUMS["bodyWindowIncludesRangeBoundaries"] = {"true", "false"}
 ENUMS["measurementBoundary"] = {"receivedBodyWindow"}
@@ -321,8 +321,8 @@ def candidate_preparation(events):
     return result
 
 
-def startup_segment_attempts(events):
-    """Keep every ordinal-zero request; child identity distinguishes retries.
+def startup_segment_attempts(events, *, segment_ordinal=0):
+    """Keep requests for one segment ordinal; child identity distinguishes retries.
 
     A receive EOF and a send failure are independent observations. In particular,
     do not promote receive EOF to a cancellation or discard a late failed request
@@ -332,7 +332,7 @@ def startup_segment_attempts(events):
     missing = 0
     for event in sorted(events, key=lambda e: e["actionSeconds"]):
         f = event["fields"]
-        if f.get("hlsRole") != "segment" or f.get("segmentOrdinal") != 0:
+        if f.get("hlsRole") != "segment" or f.get("segmentOrdinal") != segment_ordinal:
             continue
         if not f.get("transferID"):
             missing += 1
@@ -376,6 +376,38 @@ def startup_segment_attempts(events):
         rows.append(row)
     return {"requests": rows, "unidentifiedEvents": missing,
             "meaning": "Read EOF is receive-direction completion, not proof of full peer closure or cancellation. Overlapping attempts must not be summed. Missing child identity cannot prove retry ownership."}
+
+
+def first_observed_segment_attempts(traces):
+    reports = []
+    for trace, events in traces.items():
+        segments = sorted((e for e in events if e["fields"].get("hlsRole") == "segment"
+                           and e["fields"].get("startupPrimer") != "true"),
+                          key=lambda e: e["actionSeconds"])
+        frame = min((e["actionSeconds"] for e in events if e["event"] == "first_frame"
+                     and e["actionSeconds"] >= 0), default=float("inf"))
+        issues = [e for e in segments if 0 <= e["actionSeconds"] < frame
+                  and e["fields"].get("stage") == "upstreamRequestIssued"]
+        if not issues:
+            continue
+        initial = issues[0]["fields"]
+        ordinal = initial.get("segmentOrdinal")
+        child = initial.get("playlistChildID")
+        if child:
+            selected = [e for e in segments if e["fields"].get("playlistChildID") == child]
+        else:
+            transfer = initial.get("transferID")
+            selected = [e for e in segments if transfer and e["fields"].get("transferID") == transfer]
+            if not transfer:
+                selected = [issues[0]]
+        # Keep late headers and terminals for attempts issued during startup.
+        # New requests after the frame marker may be caused by a seek or replay.
+        selected = [e for e in selected if e["fields"].get("stage") != "upstreamRequestIssued"
+                    or e["actionSeconds"] < frame]
+        evidence = startup_segment_attempts(selected, segment_ordinal=ordinal)
+        reports.append({"traceID": trace, "segmentOrdinal": ordinal,
+                        "firstIssueActionSeconds": issues[0]["actionSeconds"], **evidence})
+    return reports
 
 
 def analyze(events):
@@ -471,6 +503,7 @@ def analyze(events):
                 "missingMarker": "No engine marker is unknown or censored, never zero startup time.",
             },
             "startupSegmentAttempts": startup_segment_attempts(events),
+            "firstObservedSegmentAttempts": first_observed_segment_attempts(traces),
             "candidatePreparation": candidate_preparation(events),
             "directoryResponses": [e for e in events if e["event"] == "folder_response"],
             "tracesWithoutTelemetry": [trace for trace, items in traces.items()

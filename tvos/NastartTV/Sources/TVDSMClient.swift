@@ -1,4 +1,5 @@
 import Foundation
+import CoreFoundation
 import NetworkMedia
 
 struct TVDSMAPI: Codable, Equatable {
@@ -201,6 +202,7 @@ struct TVDiscoveredService: Identifiable {
     let ports: [Int]
     var endpoints: [URL] = []
     var verifiedJellyfin: URL?
+    var launchpadVisibilityKey: String?
     var managementEndpoints: [URL] {
         endpoints.filter { url in
             guard ["http", "https"].contains(url.scheme?.lowercased() ?? ""), url.host != nil,
@@ -260,11 +262,7 @@ extension TVDSMClient {
                 let object = try JSONSerialization.jsonObject(with: data) as? [String: Any] ?? [:]
                 guard let rows = Self.serviceRows(object, keys: ["packages", "items", "list"]) else { throw TVDSMError.invalidResponse }
                 result.packageInventoryAvailable = true
-                result.services += rows.compactMap { row in
-                    guard let id = Self.string(row, ["id", "name", "package"]) else { return nil }
-                    return TVDiscoveredService(id: "package:" + id, name: Self.string(row, ["dname", "display_name", "name"]) ?? id,
-                        detail: Self.string(row, ["version", "description"]) ?? "", kind: "套件", running: Self.running(row), ports: [])
-                }
+                result.services += Self.packageServices(rows)
             } catch { try Task.checkCancellation(); result.warnings.append("套件查询未完成：" + discoveryError(error)) }
         } else { result.warnings.append("此 DSM 未提供套件查询接口，或当前账号没有权限。") }
         if apis["SYNO.Core.AppPortal.ReverseProxy"] != nil {
@@ -332,9 +330,39 @@ extension TVDSMClient {
     static func containerServices(_ rows: [[String: Any]]) -> [TVDiscoveredService] {
         rows.enumerated().map { index, row in
             let name = string(row, ["name", "Name", "container_name", "containerName", "title", "id"]) ?? "容器 \(index + 1)"
+            let image = discoveryText(row, keys: DSMServiceIdentity.containerImageKeys) ?? DSMServiceIdentity.missingImage
+            let visibilityKey = discoveryText(row, keys: DSMServiceIdentity.containerNameKeys).map {
+                LaunchpadVisibilityKey.container(name: DSMServiceIdentity.containerDisplayName(name: $0, image: image), detail: image)
+            }
             return TVDiscoveredService(id: "container:" + (string(row, ["id", "Id", "container_id"]) ?? name), name: name,
-                detail: string(row, ["image", "Image", "image_name"]) ?? "", kind: "容器", running: running(row), ports: publishedPorts(row))
+                detail: string(row, ["image", "Image", "image_name"]) ?? "", kind: "容器", running: running(row), ports: publishedPorts(row),
+                launchpadVisibilityKey: visibilityKey)
         }
+    }
+    static func packageServices(_ rows: [[String: Any]]) -> [TVDiscoveredService] {
+        rows.compactMap { row in
+            guard let id = string(row, ["id", "name", "package"]) else { return nil }
+            let visibilityKey = discoveryText(row, keys: DSMServiceIdentity.packageNameKeys).map {
+                LaunchpadVisibilityKey.package(detail: $0)
+            }
+            return TVDiscoveredService(id: "package:" + id, name: string(row, ["dname", "display_name", "name"]) ?? id,
+                detail: string(row, ["version", "description"]) ?? "", kind: "套件", running: running(row), ports: [],
+                launchpadVisibilityKey: visibilityKey)
+        }
+    }
+
+    private static func discoveryText(_ row: [String: Any], keys: [String]) -> String? {
+        func text(_ value: Any) -> String? {
+            if let value = value as? String { return value }
+            guard let number = value as? NSNumber else { return nil }
+            if CFGetTypeID(number) == CFBooleanGetTypeID() { return number.boolValue ? "true" : "false" }
+            let value = number.doubleValue
+            if let integer = Int(exactly: value) { return String(integer) }
+            return String(format: "%.1f", value)
+        }
+        guard let value = keys.lazy.compactMap({ row[$0] }).first else { return nil }
+        let rawText = text(value) ?? (value as? [Any])?.lazy.compactMap(text).first
+        return DSMServiceIdentity.discoveryText(rawText)
     }
     static func reverseProxyEndpoints(_ rows: [[String: Any]], ports: [Int], fallbackHost: String?) -> [URL] {
         rows.compactMap { row in

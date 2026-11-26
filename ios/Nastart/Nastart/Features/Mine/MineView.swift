@@ -724,6 +724,42 @@ private struct PlayerSettingsView: View {
     }
 }
 
+struct SyncSettingsPresentation {
+    enum LastSuccess: Equatable { case waiting, time(Date) }
+    enum SyncNow: Equatable { case hidden, ready, syncing }
+
+    let canUseSync: Bool
+    let isEnabled: Bool
+    let status: CloudSyncAvailability
+    let lastSuccessfulSyncAt: Date?
+    let hasPendingChanges: Bool
+
+    var isToggleDisabled: Bool { !canUseSync }
+    var showsPlusLink: Bool { !canUseSync }
+    var syncNow: SyncNow {
+        guard isEnabled else { return .hidden }
+        return status == .syncing ? .syncing : .ready
+    }
+    var lastSuccess: LastSuccess {
+        lastSuccessfulSyncAt.map(LastSuccess.time) ?? .waiting
+    }
+    var statusTitleKey: String {
+        status == .available && hasPendingChanges ? "mine.sync.status.ready" : status.titleKey
+    }
+
+    var syncErrorDetailKey: String? {
+        guard case .failed(let code) = status else { return nil }
+        switch code {
+        case "missing-icloud-entitlement": return "mine.sync.error.missing_entitlement"
+        case CloudSyncError.payloadTooLarge.diagnosticCode: return "mine.sync.error.payload_too_large"
+        case CloudSyncError.conflictRetryLimit.diagnosticCode: return "mine.sync.error.conflict_retry_limit"
+        case CloudSyncError.incompatibleRemoteSnapshot.diagnosticCode: return "mine.sync.error.incompatible_remote_snapshot"
+        case CloudSyncError.localChangesDuringSync.diagnosticCode: return "mine.sync.error.local_changes_during_sync"
+        default: return "mine.sync.error.generic"
+        }
+    }
+}
+
 private struct SyncSettingsView: View {
     @EnvironmentObject private var entitlementStore: EntitlementStore
     @EnvironmentObject private var cloudSyncStore: CloudSyncStore
@@ -731,12 +767,19 @@ private struct SyncSettingsView: View {
     @EnvironmentObject private var appearanceStore: AppearanceStore
 
     var body: some View {
+        let presentation = SyncSettingsPresentation(
+            canUseSync: entitlementStore.canUse(.iCloudSync),
+            isEnabled: cloudSyncStore.isEnabled,
+            status: cloudSyncStore.status,
+            lastSuccessfulSyncAt: cloudSyncStore.lastSuccessfulSyncAt,
+            hasPendingChanges: cloudSyncStore.hasPendingChanges
+        )
         Form {
             Section {
                 Toggle(isOn: syncBinding) {
                     Label("mine.sync.enable", systemImage: "icloud")
                 }
-                .disabled(!entitlementStore.canUse(.iCloudSync))
+                .disabled(presentation.isToggleDisabled)
 
                 LabeledContent("mine.sync.status") {
                     HStack(spacing: 7) {
@@ -744,21 +787,29 @@ private struct SyncSettingsView: View {
                             ProgressView()
                                 .controlSize(.small)
                         }
-                        Text(LocalizedStringKey(cloudSyncStore.status.titleKey))
+                        Text(LocalizedStringKey(presentation.statusTitleKey))
                             .foregroundStyle(syncStatusColor)
                     }
                 }
 
-                if let lastSync = cloudSyncStore.lastSuccessfulSyncAt {
-                    LabeledContent("mine.sync.last_success") {
-                        Text(lastSync, style: .relative)
-                            .foregroundStyle(.secondary)
+                LabeledContent("mine.sync.last_success") {
+                    Group {
+                        switch presentation.lastSuccess {
+                        case .waiting: Text("mine.sync.waiting")
+                        case .time(let lastSync): Text(lastSync, style: .relative)
+                        }
+                    }
+                    .foregroundStyle(.secondary)
+                }
+
+                if presentation.hasPendingChanges {
+                    LabeledContent("mine.sync.pending") {
+                        Text("mine.sync.pending_detail").foregroundStyle(.secondary)
                     }
                 }
 
-                if case .failed = cloudSyncStore.status,
-                   let detail = syncErrorDetail {
-                    Text(detail)
+                if let detail = presentation.syncErrorDetailKey {
+                    Text(LocalizedStringKey(detail))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .textSelection(.enabled)
@@ -773,7 +824,7 @@ private struct SyncSettingsView: View {
                 Text("mine.sync.scope.title")
             }.nastartListSection()
 
-            if cloudSyncStore.isEnabled {
+            if presentation.syncNow != .hidden {
                 Section {
                     Button {
                         Task {
@@ -785,11 +836,11 @@ private struct SyncSettingsView: View {
                     } label: {
                         Label("mine.sync.now", systemImage: "arrow.triangle.2.circlepath")
                     }
-                    .disabled(cloudSyncStore.status == .syncing)
+                    .disabled(presentation.syncNow == .syncing)
                 }.nastartListSection()
             }
 
-            if !entitlementStore.canUse(.iCloudSync) {
+            if presentation.showsPlusLink {
                 Section {
                     NavigationLink {
                         PlusView()
@@ -807,14 +858,6 @@ private struct SyncSettingsView: View {
         .task {
             await cloudSyncStore.refreshAccountStatus()
         }
-    }
-
-    private var syncErrorDetail: String? {
-        guard let detail = cloudSyncStore.lastErrorDetail else { return nil }
-        if detail == "missing-icloud-entitlement" {
-            return NSLocalizedString("mine.sync.error.missing_entitlement", comment: "")
-        }
-        return detail
     }
 
     private var syncBinding: Binding<Bool> {

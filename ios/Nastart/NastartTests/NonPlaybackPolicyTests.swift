@@ -1,6 +1,82 @@
 import XCTest
+import CloudKit
 import Get
+import SwiftUI
 @testable import Nastart
+
+final class LaunchpadAgentHealthTests: XCTestCase {
+    func testFreshSnapshotUsesConnectedCopy() {
+        let health = Self.healthySnapshot(seenAt: Date())
+        let text = LaunchpadAgentHealthText(state: health.state, failureReasonKey: health.failureReasonKey)
+        XCTAssertEqual(health.state, .connected)
+        XCTAssertEqual(text.titleKey, "agent.health.connected")
+        XCTAssertNil(text.detailKey)
+    }
+
+    func testSnapshotOutsideFifteenMinuteWindowUsesStaleCopy() {
+        let seenAt = Date().addingTimeInterval(-15 * 60 - 1)
+        let health = Self.healthySnapshot(seenAt: seenAt)
+        let text = LaunchpadAgentHealthText(state: health.state, failureReasonKey: health.failureReasonKey)
+        XCTAssertEqual(health.state(at: seenAt.addingTimeInterval(899)), .connected)
+        XCTAssertEqual(health.state(at: seenAt.addingTimeInterval(900)), .stale)
+        XCTAssertEqual(health.state, .stale)
+        XCTAssertEqual(text.titleKey, "devices.agent.state.stale")
+        XCTAssertEqual(text.detailKey, "devices.agent.state.stale_detail")
+    }
+
+    func testFailedSnapshotUsesFailedCopy() {
+        let health = Self.failedSnapshot(.unsupportedAPIVersion)
+        let text = LaunchpadAgentHealthText(state: health.state, failureReasonKey: health.failureReasonKey)
+        XCTAssertEqual(health.state, .failed)
+        XCTAssertEqual(text.titleKey, "devices.agent.state.failed")
+        XCTAssertEqual(text.detailKey, "agent.health.unsupported")
+    }
+
+    func testUnauthorizedHasDedicatedRepairCopy() {
+        let health = Self.failedSnapshot(.unauthorized)
+        let text = LaunchpadAgentHealthText(state: health.state, failureReasonKey: health.failureReasonKey)
+        XCTAssertEqual(text.detailKey, "agent.health.identity_changed")
+        XCTAssertNotEqual(text.detailKey, AgentClientError.pairingRejected.healthReasonKey)
+        XCTAssertNotEqual(text.detailKey, AgentClientError.invalidResponse.healthReasonKey)
+    }
+
+    func testUnreachableAgentUsesNetworkFailureCopy() {
+        let health = Self.failedSnapshot(.invalidResponse)
+        let text = LaunchpadAgentHealthText(state: health.state, failureReasonKey: health.failureReasonKey)
+        XCTAssertEqual(text.titleKey, "devices.agent.state.failed")
+        XCTAssertEqual(text.detailKey, "agent.health.unreachable")
+    }
+
+    func testUnknownFailureUsesLocalizedFallback() {
+        let text = LaunchpadAgentHealthText(state: .failed, failureReasonKey: "fixture.diagnostic.401")
+        XCTAssertEqual(text.detailKey, "agent.health.unknown")
+    }
+
+    @MainActor
+    func testNilSnapshotRendersNoRow() {
+        let empty = UIHostingController(rootView: LaunchpadAgentHealthRow(health: nil, repair: {}))
+        let connected = UIHostingController(rootView: LaunchpadAgentHealthRow(
+            health: Self.healthySnapshot(seenAt: Date()), repair: {}
+        ))
+        let proposedSize = CGSize(width: 360, height: 640)
+        XCTAssertEqual(empty.sizeThatFits(in: proposedSize).height, 0)
+        XCTAssertGreaterThan(connected.sizeThatFits(in: proposedSize).height, 0)
+    }
+
+    private static func healthySnapshot(seenAt: Date) -> AgentHealthSnapshot {
+        let handshake = AgentHandshake(agentId: "test-agent", apiVersion: 1, agentVersion: "fixture",
+                                       hostIdentity: "test-host", providerHint: "fixture",
+                                       permissionLevel: "read", capabilities: [], containerCount: 0, timestamp: 0)
+        return AgentHealthSnapshot(handshake: handshake, seenAt: seenAt)
+    }
+
+    private static func failedSnapshot(_ error: AgentClientError) -> AgentHealthSnapshot {
+        let connection = StoredAgentConnection(baseURLString: "https://agent.example.test", agentID: "test-agent",
+                                               token: "fixture-token", hostIdentity: "test-host", providerHint: "fixture",
+                                               capabilities: [], allowsSelfSignedCertificates: false, pairedAt: Date())
+        return AgentHealthSnapshot(connection: connection, failure: error)
+    }
+}
 
 final class NonPlaybackPolicyTests: XCTestCase {
     @MainActor
@@ -1983,6 +2059,18 @@ final class NonPlaybackPolicyTests: XCTestCase {
             userInfo: [NSUnderlyingErrorKey: URLError(.cancelled)])
         for error: Error in [CancellationError(), URLError(.cancelled), wrapped] {
             XCTAssertNil(JellyfinPlaybackPreparationErrorPolicy.messageKey(for: error))
+        }
+    }
+
+    func testOnlyAServer401SendsTheJellyfinLibraryBackToSignIn() {
+        XCTAssertTrue(JellyfinSessionRejectionPolicy.requiresSignIn(after: APIError.unacceptableStatusCode(401)))
+        for status in [403, 404, 500, 502, 503] {
+            XCTAssertFalse(JellyfinSessionRejectionPolicy.requiresSignIn(after: APIError.unacceptableStatusCode(status)),
+                "HTTP \(status) is server or permission state, not an expired sign-in")
+        }
+        for error: Error in [URLError(.timedOut), URLError(.notConnectedToInternet), CancellationError(),
+                             JellyfinLibraryError.missingSession] {
+            XCTAssertFalse(JellyfinSessionRejectionPolicy.requiresSignIn(after: error))
         }
     }
 
@@ -4042,5 +4130,954 @@ final class OfflineRootFixtureTests: XCTestCase {
         XCTAssertTrue(connection.isConnected)
         XCTAssertNil(connection.agentConnection)
         XCTAssertNil(connection.dsmSession)
+    }
+}
+
+@MainActor
+final class CloudSyncRecordSplitTests: XCTestCase {
+    func testChangingTasksLeavesServicesAndPreferencesUntouched() async throws {
+        let fixture = CloudSyncFixture()
+        defer { fixture.cleanUp() }
+        let endpoint = URL(string: "https://media.example.test/path?token=local")!
+        let serviceName = "Cloud sync fixture service"
+        fixture.dataStore.addManualService(name: serviceName, endpoint: endpoint, category: .media, iconText: "M")
+        let service = try XCTUnwrap(fixture.dataStore.services.first { $0.name == serviceName && $0.source == .manual })
+        XCTAssertEqual(service.endpoint, endpoint)
+        await fixture.sync()
+        let original = try fixture.record(.services)
+        let services: CloudSyncServices = try fixture.payload(.services)
+        XCTAssertEqual(services.manualServices.first { $0.id == service.id }?.endpointString,
+                       "https://media.example.test/path")
+        fixture.database.writes.removeAll()
+
+        let task = Self.task("New task")
+        fixture.dataStore.addTask(task)
+        await fixture.sync()
+
+        XCTAssertEqual(fixture.store.status, .available)
+        XCTAssertEqual(fixture.database.writes, ["tasks-workspace"])
+        XCTAssertEqual(try fixture.record(.services)["updatedAt"] as? Date, original["updatedAt"] as? Date)
+        XCTAssertEqual(try fixture.record(.services)["payload"] as? Data, original["payload"] as? Data)
+        XCTAssertEqual(fixture.dataStore.services.first { $0.id == service.id }?.endpoint, endpoint)
+        let tasks: CloudSyncTasks = try fixture.payload(.tasks)
+        XCTAssertTrue(tasks.pendingTasks.contains { $0.id == task.id })
+    }
+
+    func testChangingVisibilityLeavesTasksAndPreferencesUntouched() async throws {
+        let fixture = CloudSyncFixture()
+        defer { fixture.cleanUp() }
+        await fixture.sync()
+        let original = try fixture.record(.tasks)
+        fixture.database.writes.removeAll()
+
+        let service = try XCTUnwrap(fixture.dataStore.services.first)
+        fixture.dataStore.setService(service, visibleOnLaunchpad: !service.isLaunchpadVisible)
+        await fixture.sync()
+
+        XCTAssertEqual(fixture.store.status, .available)
+        XCTAssertEqual(fixture.database.writes, ["services-workspace"])
+        XCTAssertEqual(try fixture.record(.tasks)["updatedAt"] as? Date, original["updatedAt"] as? Date)
+        XCTAssertEqual(try fixture.record(.tasks)["payload"] as? Data, original["payload"] as? Data)
+        let services: CloudSyncServices = try fixture.payload(.services)
+        XCTAssertEqual(services.serviceVisibilityOverrides[service.launchpadVisibilityKey], !service.isLaunchpadVisible)
+    }
+
+    func testMigratesAllSixFieldsAndStopsReadingLegacyRecord() async throws {
+        let fixture = CloudSyncFixture()
+        defer { fixture.cleanUp() }
+        let legacy = LegacyCloudSyncFixture.sample()
+        try fixture.installLegacy(legacy)
+
+        await fixture.sync()
+
+        XCTAssertEqual(fixture.store.status, .available)
+        try Self.assertPayload(fixture.payload(.services), matches: legacy.services)
+        try Self.assertPayload(fixture.payload(.tasks), matches: legacy.tasks)
+        try Self.assertPayload(fixture.payload(.preferences), matches: legacy.preferences)
+        for domain in CloudSyncDomain.allCases {
+            XCTAssertEqual(try fixture.record(domain)["schemaVersion"] as? Int, 2)
+            XCTAssertEqual(try fixture.record(domain)["updatedAt"] as? Date, legacy.updatedAt)
+            XCTAssertNotNil(fixture.store.lastSuccessfulSyncAt(for: domain))
+        }
+        XCTAssertEqual(try fixture.record(.services).recordType, "NastartServices")
+        XCTAssertEqual(try fixture.record(.tasks).recordType, "NastartTasks")
+        XCTAssertEqual(try fixture.record(.preferences).recordType, "NastartPreferences")
+        XCTAssertEqual(fixture.database.records["primary-workspace"]?["migratedToSchemaVersion"] as? Int, 2)
+        XCTAssertEqual(fixture.dataStore.tasks.map(\.id), legacy.tasks.pendingTasks.map(\.id))
+        XCTAssertEqual(fixture.dataStore.completedTasks.map(\.id), legacy.tasks.completedTasks.map(\.id))
+        XCTAssertEqual(fixture.dataStore.serviceVisibilityOverrides, legacy.services.serviceVisibilityOverrides)
+
+        fixture.database.reads.removeAll()
+        fixture.database.writes.removeAll()
+        let restarted = CloudSyncStore(defaults: fixture.defaults, database: fixture.database)
+        await restarted.syncNow(dataStore: fixture.dataStore, appearanceStore: fixture.appearanceStore)
+
+        XCTAssertFalse(fixture.database.reads.contains("primary-workspace"))
+        XCTAssertTrue(fixture.database.writes.isEmpty)
+    }
+
+    func testEachDomainChoosesItsOwnClock() async throws {
+        let fixture = CloudSyncFixture()
+        defer { fixture.cleanUp() }
+        await fixture.sync()
+        let initialTaskDate = try XCTUnwrap(try fixture.record(.tasks)["updatedAt"] as? Date)
+        let initialServiceDate = try XCTUnwrap(try fixture.record(.services)["updatedAt"] as? Date)
+        let initialPreferenceDate = try XCTUnwrap(try fixture.record(.preferences)["updatedAt"] as? Date)
+
+        let localService = try XCTUnwrap(fixture.dataStore.services.first)
+        fixture.dataStore.setService(localService, visibleOnLaunchpad: !localService.isLaunchpadVisible)
+        fixture.dataStore.addTask(Self.task("Local task"))
+        fixture.defaults.set(AppThemeMode.dark.rawValue, forKey: AppThemeMode.storageKey)
+        fixture.store.observePreferencesChange()
+
+        let remoteTask = Self.task("Newer remote task")
+        try fixture.install(CloudSyncTasks(pendingTasks: [remoteTask], completedTasks: []),
+                            in: .tasks, at: initialTaskDate.addingTimeInterval(120))
+        try fixture.install(CloudSyncServices(manualServices: [], serviceVisibilityOverrides: ["remote-only": true]),
+                            in: .services, at: initialServiceDate.addingTimeInterval(-120))
+        try fixture.install(CloudSyncPreferences(stringPreferences: [AppThemeMode.storageKey: AppThemeMode.light.rawValue],
+                                                 booleanPreferences: [:]),
+                            in: .preferences, at: initialPreferenceDate.addingTimeInterval(-120))
+        fixture.database.writes.removeAll()
+
+        await fixture.sync()
+
+        XCTAssertEqual(fixture.store.status, .available)
+        XCTAssertEqual(Set(fixture.database.writes), ["services-workspace", "preferences-workspace"])
+        XCTAssertEqual(fixture.dataStore.tasks.map(\.id), [remoteTask.id])
+        let services: CloudSyncServices = try fixture.payload(.services)
+        XCTAssertEqual(services.serviceVisibilityOverrides,
+                       [localService.launchpadVisibilityKey: !localService.isLaunchpadVisible])
+        let preferences: CloudSyncPreferences = try fixture.payload(.preferences)
+        XCTAssertEqual(preferences.stringPreferences[AppThemeMode.storageKey], AppThemeMode.dark.rawValue)
+    }
+
+    func testPartialMigrationRetriesOnlyMissingDomainBeforeMarkingLegacy() async throws {
+        let fixture = CloudSyncFixture()
+        defer { fixture.cleanUp() }
+        let legacy = LegacyCloudSyncFixture.sample()
+        try fixture.installLegacy(legacy)
+        let existing = CloudSyncServices(manualServices: [], serviceVisibilityOverrides: ["already-on-v2": true])
+        try fixture.install(existing, in: .services, at: legacy.updatedAt.addingTimeInterval(1))
+        fixture.database.failingWrites = ["tasks-workspace"]
+
+        await fixture.sync()
+
+        XCTAssertTrue(fixture.database.writes.contains("preferences-workspace"))
+        XCTAssertNotNil(fixture.store.lastSuccessfulSyncAt(for: .preferences))
+        XCTAssertNotNil(fixture.store.lastSuccessfulSyncAt(for: .services))
+        XCTAssertNil(fixture.store.lastSuccessfulSyncAt(for: .tasks))
+        XCTAssertNil(fixture.database.records["primary-workspace"]?["migratedToSchemaVersion"])
+        try Self.assertPayload(fixture.payload(.services), matches: existing)
+
+        fixture.database.failingWrites.removeAll()
+        fixture.database.writes.removeAll()
+        await fixture.sync()
+
+        XCTAssertEqual(fixture.store.status, .available)
+        XCTAssertEqual(fixture.database.writes, ["tasks-workspace", "primary-workspace"])
+        XCTAssertNotNil(fixture.store.lastSuccessfulSyncAt(for: .tasks))
+        try Self.assertPayload(fixture.payload(.tasks), matches: legacy.tasks)
+        try Self.assertPayload(fixture.payload(.services), matches: existing)
+    }
+
+    func testTaskEditDuringSaveIsRetriedWithoutRewritingOtherDomains() async throws {
+        let fixture = CloudSyncFixture()
+        defer { fixture.cleanUp() }
+        await fixture.sync()
+        fixture.database.writes.removeAll()
+        let first = Self.task("First edit")
+        let second = Self.task("Edit during save")
+        fixture.dataStore.addTask(first)
+        fixture.database.afterStore = { name in
+            if name == "tasks-workspace" {
+                fixture.database.afterStore = nil
+                fixture.dataStore.addTask(second)
+            }
+        }
+
+        await fixture.sync()
+
+        XCTAssertEqual(fixture.store.status, .available)
+        XCTAssertEqual(fixture.database.writes, ["tasks-workspace", "tasks-workspace"])
+        let tasks: CloudSyncTasks = try fixture.payload(.tasks)
+        XCTAssertTrue(tasks.pendingTasks.contains { $0.id == first.id })
+        XCTAssertTrue(tasks.pendingTasks.contains { $0.id == second.id })
+    }
+
+    func testConflictingSaveRefetchesOnlyTheAffectedDomain() async throws {
+        let fixture = CloudSyncFixture()
+        defer { fixture.cleanUp() }
+        await fixture.sync()
+        let remoteDate = try XCTUnwrap(try fixture.record(.tasks)["updatedAt"] as? Date).addingTimeInterval(120)
+        let remoteTask = Self.task("Newer concurrent task")
+        fixture.dataStore.addTask(Self.task("Overtaken edit"))
+        fixture.database.writes.removeAll()
+        fixture.database.reads.removeAll()
+        fixture.database.beforeStore = { name in
+            guard name == "tasks-workspace" else { return }
+            fixture.database.beforeStore = nil
+            try fixture.install(CloudSyncTasks(pendingTasks: [remoteTask], completedTasks: []),
+                                in: .tasks, at: remoteDate)
+            throw CKError(.serverRecordChanged)
+        }
+
+        await fixture.sync()
+
+        XCTAssertEqual(fixture.store.status, .available)
+        XCTAssertTrue(fixture.database.writes.isEmpty)
+        XCTAssertEqual(fixture.database.reads.filter { $0 == "tasks-workspace" }.count, 2)
+        XCTAssertEqual(fixture.database.reads.filter { $0 == "services-workspace" }.count, 1)
+        XCTAssertEqual(fixture.database.reads.filter { $0 == "preferences-workspace" }.count, 1)
+        XCTAssertEqual(fixture.dataStore.tasks.map(\.id), [remoteTask.id])
+    }
+
+    private static func task(_ title: String) -> TaskItem {
+        TaskItem(id: UUID(), title: title, subtitle: "", symbol: "bell", isUrgent: false,
+                 createdAt: Date(timeIntervalSince1970: 100))
+    }
+
+    private static func assertPayload<Payload: Encodable>(
+        _ payload: Payload, matches expected: Payload, file: StaticString = #filePath, line: UInt = #line
+    ) throws {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
+        XCTAssertEqual(try encoder.encode(payload), try encoder.encode(expected), file: file, line: line)
+    }
+}
+
+@MainActor
+final class CloudSyncTwoDeviceTests: XCTestCase {
+    func testTaskEditReachesBWithoutChangingServicesOrPreferences() async throws {
+        let devices = CloudSyncTwoDeviceHarness()
+        defer { devices.cleanUp() }
+        let (a, b) = (devices.a, devices.b)
+        a.dataStore.addManualService(name: "Local fixture service", endpoint: URL(string: "https://media.example.test")!,
+                                     category: .media, iconText: "M")
+        a.defaults.set(AppThemeMode.dark.rawValue, forKey: AppThemeMode.storageKey)
+        a.store.observePreferencesChange()
+        await devices.syncBoth()
+        XCTAssertTrue(b.dataStore.services.contains { $0.name == "Local fixture service" && $0.source == .manual })
+        XCTAssertEqual(b.defaults.string(forKey: AppThemeMode.storageKey), AppThemeMode.dark.rawValue)
+        let beforeB = try devices.localContents(of: b)
+        let beforeCloud = try devices.cloudContents()
+        devices.database.writes.removeAll()
+
+        let task = Self.task("Created on A")
+        a.dataStore.addTask(task)
+        try devices.assertContents(of: b, matches: beforeB)
+        await devices.syncA()
+        XCTAssertEqual(devices.database.writes, ["tasks-workspace"])
+        try devices.assertContents(of: b, matches: beforeB)
+        await devices.syncB()
+
+        let expected = try CloudSyncTwoDeviceHarness.Contents(
+            services: beforeB.services, tasks: devices.localContents(of: a).tasks, preferences: beforeB.preferences
+        )
+        try devices.assertContents(of: b, matches: expected)
+        XCTAssertTrue(b.dataStore.tasks.contains { $0.id == task.id })
+        XCTAssertEqual(devices.database.writes, ["tasks-workspace"])
+        let afterCloud = try devices.cloudContents()
+        XCTAssertEqual(afterCloud.services, beforeCloud.services)
+        XCTAssertEqual(afterCloud.preferences, beforeCloud.preferences)
+        devices.assertState(of: b)
+    }
+
+    func testVisibilityEditReachesBWithoutChangingTasksOrPreferences() async throws {
+        let devices = CloudSyncTwoDeviceHarness()
+        defer { devices.cleanUp() }
+        let (a, b) = (devices.a, devices.b)
+        let task = Self.task("Keep this task")
+        a.dataStore.addTask(task)
+        a.defaults.set(AppThemeMode.dark.rawValue, forKey: AppThemeMode.storageKey)
+        a.store.observePreferencesChange()
+        await devices.syncBoth()
+        XCTAssertTrue(b.dataStore.tasks.contains { $0.id == task.id })
+        XCTAssertEqual(b.defaults.string(forKey: AppThemeMode.storageKey), AppThemeMode.dark.rawValue)
+        let beforeB = try devices.localContents(of: b)
+        let beforeCloud = try devices.cloudContents()
+        devices.database.writes.removeAll()
+
+        let service = try XCTUnwrap(a.dataStore.services.first)
+        let visible = !service.isLaunchpadVisible
+        a.dataStore.setService(service, visibleOnLaunchpad: visible)
+        await devices.syncA()
+        XCTAssertEqual(devices.database.writes, ["services-workspace"])
+        try devices.assertContents(of: b, matches: beforeB)
+        await devices.syncB()
+
+        let expected = try CloudSyncTwoDeviceHarness.Contents(
+            services: devices.localContents(of: a).services, tasks: beforeB.tasks, preferences: beforeB.preferences
+        )
+        try devices.assertContents(of: b, matches: expected)
+        XCTAssertEqual(b.dataStore.serviceVisibilityOverrides[service.launchpadVisibilityKey], visible)
+        XCTAssertEqual(devices.database.writes, ["services-workspace"])
+        let afterCloud = try devices.cloudContents()
+        XCTAssertEqual(afterCloud.tasks, beforeCloud.tasks)
+        XCTAssertEqual(afterCloud.preferences, beforeCloud.preferences)
+        devices.assertState(of: b)
+    }
+
+    func testASeedsV2FromLegacyAndBReadsAllThreeRecordsWithoutRewriting() async throws {
+        let devices = CloudSyncTwoDeviceHarness()
+        defer { devices.cleanUp() }
+        let (a, b) = (devices.a, devices.b)
+        let legacy = LegacyCloudSyncFixture.sample()
+        try a.installLegacy(legacy)
+        let beforeB = try devices.localContents(of: b)
+        XCTAssertNotEqual(a.suiteName, b.suiteName)
+        let expected = try CloudSyncTwoDeviceHarness.Contents(
+            services: CloudSyncRecord.encode(legacy.services), tasks: CloudSyncRecord.encode(legacy.tasks),
+            preferences: CloudSyncRecord.encode(legacy.preferences)
+        )
+
+        await devices.syncA()
+        devices.assertState(of: a)
+        XCTAssertEqual(try devices.cloudContents(), expected)
+        XCTAssertEqual(Set(devices.database.writes),
+                       ["services-workspace", "tasks-workspace", "preferences-workspace", "primary-workspace"])
+        XCTAssertEqual(devices.database.records["primary-workspace"]?["migratedToSchemaVersion"] as? Int, 2)
+        let migratedA = try devices.localContents(of: a)
+        try devices.assertContents(of: b, matches: beforeB)
+        devices.database.writes.removeAll()
+        devices.database.reads.removeAll()
+
+        await devices.syncB()
+        devices.assertState(of: b)
+        XCTAssertEqual(try devices.cloudContents(), expected)
+        XCTAssertTrue(devices.database.writes.isEmpty)
+        XCTAssertEqual(devices.database.reads.sorted(),
+                       ["preferences-workspace", "primary-workspace", "services-workspace", "tasks-workspace"])
+        for domain in CloudSyncDomain.allCases {
+            XCTAssertEqual(try b.record(domain)["schemaVersion"] as? Int, 2)
+            XCTAssertEqual(try b.record(domain)["updatedAt"] as? Date, legacy.updatedAt)
+            XCTAssertNotNil(b.store.lastSuccessfulSyncAt(for: domain))
+        }
+        try devices.assertContents(of: b, matches: migratedA)
+    }
+
+    func testPendingAndFailureStayLocalUntilTheSuccessfulRetryReachesB() async throws {
+        let devices = CloudSyncTwoDeviceHarness()
+        defer { devices.cleanUp() }
+        let (a, b) = (devices.a, devices.b)
+        await devices.syncBoth()
+        let beforeB = try devices.localContents(of: b)
+        devices.database.writes.removeAll()
+        let task = Self.task("Retry on A")
+        a.dataStore.addTask(task)
+        devices.assertState(of: a, pending: true)
+        devices.assertState(of: b)
+        XCTAssertTrue(devices.database.writes.isEmpty)
+
+        devices.database.beforeStore = { name in
+            if name == "tasks-workspace" { throw CloudSyncError.payloadTooLarge }
+        }
+        await devices.syncA()
+        let diagnostic = CloudSyncError.payloadTooLarge.diagnosticCode
+        devices.assertState(of: a, status: .failed(diagnostic), pending: true)
+        let key = try XCTUnwrap(devices.presentation(for: a).syncErrorDetailKey)
+        XCTAssertEqual(key, "mine.sync.error.payload_too_large")
+        let message = Bundle(for: AppDataStore.self).localizedString(forKey: key, value: nil, table: nil)
+        XCTAssertNotEqual(message, key)
+        XCTAssertFalse(message.contains(diagnostic))
+        await devices.syncB()
+        devices.assertState(of: b)
+        try devices.assertContents(of: b, matches: beforeB)
+        XCTAssertTrue(devices.database.writes.isEmpty)
+
+        devices.database.beforeStore = nil
+        await devices.syncA()
+        devices.assertState(of: a)
+        XCTAssertEqual(devices.database.writes, ["tasks-workspace"])
+        XCTAssertNil(devices.presentation(for: a).syncErrorDetailKey)
+        XCTAssertFalse(b.dataStore.tasks.contains { $0.id == task.id })
+        await devices.syncB()
+        devices.assertState(of: b)
+        XCTAssertEqual(devices.presentation(for: b).statusTitleKey, "mine.sync.status.available")
+        XCTAssertTrue(b.dataStore.tasks.contains { $0.id == task.id })
+        XCTAssertEqual(devices.database.writes, ["tasks-workspace"])
+    }
+
+    func testADeletesAndBWritesNewerStaleSnapshot() async throws {
+        let devices = CloudSyncTwoDeviceHarness(observesDataStoreChanges: false)
+        defer { devices.cleanUp() }
+        let (a, b) = (devices.a, devices.b)
+        let task = Self.task("Deleted on A")
+        a.dataStore.addTask(task)
+        await devices.syncBoth()
+        XCTAssertTrue(b.dataStore.tasks.contains { $0.id == task.id })
+
+        a.dataStore.deleteTask(task)
+        await devices.syncA()
+        b.dataStore.setTask(task, muted: true)
+        let otherTask = Self.task("Keep B's newer task")
+        b.dataStore.addTask(otherTask)
+        b.defaults.set(Date().addingTimeInterval(120), forKey: CloudSyncDomain.tasks.changeKey)
+        b.database.writes.removeAll()
+        await devices.syncB()
+
+        XCTAssertEqual(b.store.status, .available)
+        XCTAssertEqual(b.database.writes, ["tasks-workspace"])
+        XCTAssertFalse(b.dataStore.tasks.contains { $0.id == task.id })
+        XCTAssertTrue(b.dataStore.tasks.contains { $0.id == otherTask.id })
+        let cloud: CloudSyncTasks = try b.payload(.tasks)
+        XCTAssertFalse(cloud.pendingTasks.contains { $0.id == task.id })
+        XCTAssertEqual(cloud.deletedTasks.map(\.id), [task.id])
+        await devices.syncA()
+        XCTAssertFalse(a.dataStore.tasks.contains { $0.id == task.id })
+        XCTAssertTrue(a.dataStore.tasks.contains { $0.id == otherTask.id })
+    }
+
+    func testBDeletesAndARepairsNewerVersionTwoSnapshotWithoutDeletedTasksField() async throws {
+        struct OriginalTasksPayload: Encodable {
+            let pendingTasks: [TaskItem]
+            let completedTasks: [TaskItem]
+        }
+        let devices = CloudSyncTwoDeviceHarness(observesDataStoreChanges: false)
+        defer { devices.cleanUp() }
+        let (a, b) = (devices.a, devices.b)
+        let task = Self.task("Deleted on B")
+        a.dataStore.addTask(task)
+        await devices.syncBoth()
+        XCTAssertTrue(a.dataStore.tasks.contains { $0.id == task.id })
+        XCTAssertTrue(b.dataStore.tasks.contains { $0.id == task.id })
+
+        b.dataStore.deleteTask(task)
+        await devices.syncB()
+        await devices.syncA()
+        XCTAssertFalse(a.dataStore.tasks.contains { $0.id == task.id })
+        XCTAssertEqual(a.dataStore.makeCloudSyncTasks().deletedTasks.map(\.id), [task.id])
+
+        let otherTask = Self.task("Keep the newer remote task")
+        try a.install(OriginalTasksPayload(pendingTasks: [task, otherTask], completedTasks: []),
+                      in: .tasks, at: Date().addingTimeInterval(120))
+        a.database.writes.removeAll()
+        await devices.syncA()
+
+        XCTAssertEqual(a.store.status, .available)
+        XCTAssertEqual(a.database.writes, ["tasks-workspace"])
+        XCTAssertEqual(a.dataStore.tasks.map(\.id), [otherTask.id])
+        let cloud: CloudSyncTasks = try a.payload(.tasks)
+        XCTAssertEqual(cloud.pendingTasks.map(\.id), [otherTask.id])
+        XCTAssertEqual(cloud.deletedTasks.map(\.id), [task.id])
+    }
+
+    func testHistoryDeletionWinsOverStalePendingAndCompletedCopies() async throws {
+        let devices = CloudSyncTwoDeviceHarness(observesDataStoreChanges: false)
+        defer { devices.cleanUp() }
+        let (a, b) = (devices.a, devices.b)
+        let task = Self.task("Completed")
+        a.dataStore.addTask(task)
+        a.dataStore.completeTask(task)
+        let completed = try XCTUnwrap(a.dataStore.completedTasks.first { $0.id == task.id })
+        XCTAssertTrue(a.dataStore.makeCloudSyncTasks().deletedTasks.isEmpty)
+        await devices.syncBoth()
+        XCTAssertTrue(b.dataStore.completedTasks.contains { $0.id == task.id })
+
+        a.dataStore.deleteTask(completed)
+        await devices.syncA()
+        let cloud: CloudSyncTasks = try a.payload(.tasks)
+        XCTAssertTrue(cloud.completedTasks.isEmpty)
+        XCTAssertEqual(cloud.deletedTasks.map(\.id), [task.id])
+
+        try a.install(CloudSyncTasks(pendingTasks: [task], completedTasks: [completed],
+                                    deletedTasks: cloud.deletedTasks),
+                      in: .tasks, at: Date().addingTimeInterval(120))
+        await devices.syncB()
+
+        XCTAssertEqual(b.store.status, .available)
+        XCTAssertTrue(b.dataStore.tasks.isEmpty)
+        XCTAssertTrue(b.dataStore.completedTasks.isEmpty)
+        let repaired: CloudSyncTasks = try b.payload(.tasks)
+        XCTAssertTrue(repaired.pendingTasks.isEmpty)
+        XCTAssertTrue(repaired.completedTasks.isEmpty)
+        XCTAssertEqual(repaired.deletedTasks, cloud.deletedTasks)
+    }
+
+    private static func task(_ title: String) -> TaskItem {
+        TaskItem(id: UUID(), title: title, subtitle: "", symbol: "bell", isUrgent: false)
+    }
+}
+
+@MainActor
+final class CloudSyncTaskTombstoneTests: XCTestCase {
+    func testSavingAndApplyingPrunesExpiredDeletions() async throws {
+        let fixture = CloudSyncFixture()
+        defer { fixture.cleanUp() }
+        let now = Date()
+        let yesterday = now.addingTimeInterval(-86_400)
+        let expired = DeletedTask(id: UUID(), deletedAt: now.addingTimeInterval(-31 * 86_400))
+        let retained = DeletedTask(id: UUID(), deletedAt: yesterday)
+        let boundary = DeletedTask(id: UUID(), deletedAt: now.addingTimeInterval(-30 * 86_400))
+        XCTAssertEqual(CloudSyncStore.retainedTaskDeletions([boundary], now: now), [boundary])
+        let local = LocalTaskStore(defaults: fixture.defaults)
+        _ = local.save(pending: [], history: [], deletedTasks: [expired, retained])
+        let persisted = try XCTUnwrap(fixture.defaults.data(forKey: "tasks.deleted.v1"))
+        XCTAssertEqual(try JSONDecoder().decode([DeletedTask].self, from: persisted), [retained])
+        XCTAssertEqual(local.load()?.deletedTasks, [retained])
+
+        await fixture.sync()
+        try fixture.install(CloudSyncTasks(pendingTasks: [], completedTasks: [], deletedTasks: [expired, retained]),
+                            in: .tasks, at: now.addingTimeInterval(120))
+        await fixture.sync()
+
+        XCTAssertEqual(fixture.store.status, .available)
+        let cloud: CloudSyncTasks = try fixture.payload(.tasks)
+        XCTAssertEqual(cloud.deletedTasks, [retained])
+        XCTAssertEqual(local.load()?.deletedTasks, [retained])
+    }
+
+    func testDeleteTaskCancelsReminderAndPersistsRemovalFromBothLists() async throws {
+        var cancellations: [UUID] = []
+        let fixture = CloudSyncFixture(cancelReminder: { cancellations.append($0.id) })
+        defer { fixture.cleanUp() }
+        let pending = Self.task("Remove both copies")
+        let otherTask = Self.task("Keep this task")
+        var completed = pending
+        completed.completedAt = Date()
+        fixture.dataStore.applyCloudSyncTasks(
+            CloudSyncTasks(pendingTasks: [pending, otherTask], completedTasks: [completed])
+        )
+        let local = LocalTaskStore(defaults: fixture.defaults)
+        let listsBeforeDelete = try XCTUnwrap(fixture.defaults.data(forKey: "tasks.localState.v1"))
+        fixture.defaults.removeObject(forKey: "tasks.deleted.v1")
+        XCTAssertEqual(local.load()?.pending.map(\.id), [pending.id, otherTask.id])
+        XCTAssertEqual(local.load()?.deletedTasks, [])
+        cancellations.removeAll()
+
+        let before = Date()
+        fixture.dataStore.deleteTask(pending)
+
+        XCTAssertEqual(cancellations, [pending.id])
+        XCTAssertEqual(fixture.dataStore.tasks.map(\.id), [otherTask.id])
+        XCTAssertTrue(fixture.dataStore.completedTasks.isEmpty)
+        let saved = try XCTUnwrap(local.load())
+        XCTAssertEqual(saved.pending.map(\.id), [otherTask.id])
+        XCTAssertTrue(saved.history.isEmpty)
+        XCTAssertEqual(saved.deletedTasks.map(\.id), [pending.id])
+        let mark = try XCTUnwrap(saved.deletedTasks.first)
+        XCTAssertGreaterThanOrEqual(mark.deletedAt, before)
+        XCTAssertLessThanOrEqual(mark.deletedAt, Date())
+
+        // Restore the older lists while keeping the deletion, as if restoration
+        // occurred between the two defaults writes.
+        fixture.defaults.set(listsBeforeDelete, forKey: "tasks.localState.v1")
+        XCTAssertEqual(local.load()?.pending.map(\.id), [otherTask.id])
+        XCTAssertEqual(local.load()?.history.map(\.id), [])
+
+        fixture.dataStore.deleteTask(pending)
+        fixture.dataStore.addTask(pending)
+        XCTAssertEqual(local.load()?.deletedTasks, [mark])
+        XCTAssertEqual(fixture.dataStore.tasks.map(\.id), [otherTask.id])
+    }
+
+    func testDeleteOnlyWritesTasksRecord() async throws {
+        let fixture = CloudSyncFixture()
+        defer { fixture.cleanUp() }
+        let task = Self.task("Delete without changing other records")
+        fixture.dataStore.addTask(task)
+        await fixture.sync()
+        let otherDomains: [CloudSyncDomain] = [.services, .preferences]
+        let originals = try otherDomains.map { try fixture.record($0) }
+        fixture.database.writes.removeAll()
+
+        fixture.dataStore.deleteTask(task)
+        await fixture.sync()
+
+        XCTAssertEqual(fixture.store.status, .available)
+        XCTAssertEqual(fixture.database.writes, ["tasks-workspace"])
+        for (domain, original) in zip(otherDomains, originals) {
+            let record = try fixture.record(domain)
+            XCTAssertEqual(record["updatedAt"] as? Date, original["updatedAt"] as? Date)
+            XCTAssertEqual(record["payload"] as? Data, original["payload"] as? Data)
+        }
+    }
+
+    func testUnionKeepsEarliestDeletionAndSurvivesFailedWrite() async throws {
+        let fixture = CloudSyncFixture()
+        defer { fixture.cleanUp() }
+        let common = Self.task("Deleted on both devices")
+        let localOnly = Self.task("Deleted locally")
+        let remoteOnly = Self.task("Deleted remotely")
+        fixture.dataStore.addTask(remoteOnly)
+        fixture.dataStore.deleteTask(common)
+        fixture.dataStore.deleteTask(localOnly)
+        let localDeletions = fixture.dataStore.makeCloudSyncTasks().deletedTasks
+        let localMark = try XCTUnwrap(localDeletions.first { $0.id == common.id })
+        let earlier = DeletedTask(id: common.id, deletedAt: localMark.deletedAt.addingTimeInterval(-60))
+        let remoteMark = DeletedTask(id: remoteOnly.id, deletedAt: Date())
+        try fixture.install(CloudSyncTasks(pendingTasks: [localOnly], completedTasks: [],
+                                          deletedTasks: [remoteMark, earlier]),
+                            in: .tasks, at: Date().addingTimeInterval(120))
+        fixture.database.failingWrites = ["tasks-workspace"]
+        await fixture.sync()
+
+        let expected = [earlier, remoteMark, try XCTUnwrap(localDeletions.first { $0.id == localOnly.id })]
+            .sorted { $0.id.uuidString < $1.id.uuidString }
+        XCTAssertEqual(LocalTaskStore(defaults: fixture.defaults).load()?.deletedTasks, expected)
+        XCTAssertTrue(fixture.dataStore.tasks.isEmpty)
+        XCTAssertNotEqual(fixture.store.status, .available)
+
+        fixture.database.failingWrites = []
+        await fixture.sync()
+        let cloud: CloudSyncTasks = try fixture.payload(.tasks)
+        XCTAssertTrue(cloud.pendingTasks.isEmpty)
+        XCTAssertEqual(cloud.deletedTasks, expected)
+        XCTAssertEqual(fixture.store.status, .available)
+        fixture.database.writes.removeAll()
+        await fixture.sync()
+        XCTAssertTrue(fixture.database.writes.isEmpty)
+    }
+
+    private static func task(_ title: String) -> TaskItem {
+        TaskItem(id: UUID(), title: title, subtitle: "", symbol: "bell", isUrgent: false)
+    }
+}
+
+@MainActor
+final class CloudSyncStatusTests: XCTestCase {
+    func testEachDomainBecomesPendingOnLocalEditAndClearsAfterSync() async throws {
+        let fixture = CloudSyncFixture(observesDataStoreChanges: true)
+        defer { fixture.cleanUp() }
+        XCTAssertFalse(fixture.store.hasPendingChanges)
+        XCTAssertNil(fixture.store.lastSuccessfulSyncAt)
+        await fixture.sync()
+        XCTAssertFalse(fixture.store.hasPendingChanges)
+
+        let service = try XCTUnwrap(fixture.dataStore.services.first)
+        fixture.database.writes.removeAll()
+        fixture.dataStore.setService(service, visibleOnLaunchpad: !service.isLaunchpadVisible)
+        XCTAssertTrue(fixture.store.hasPendingChanges)
+        XCTAssertTrue(fixture.database.writes.isEmpty)
+        await fixture.sync()
+        XCTAssertFalse(fixture.store.hasPendingChanges)
+        XCTAssertEqual(fixture.database.writes, ["services-workspace"])
+
+        fixture.database.writes.removeAll()
+        fixture.dataStore.addTask(Self.task("Task added offline"))
+        XCTAssertTrue(fixture.store.hasPendingChanges)
+        XCTAssertTrue(fixture.database.writes.isEmpty)
+        await fixture.sync()
+        XCTAssertFalse(fixture.store.hasPendingChanges)
+        XCTAssertEqual(fixture.database.writes, ["tasks-workspace"])
+
+        fixture.database.writes.removeAll()
+        fixture.defaults.set(AppThemeMode.dark.rawValue, forKey: AppThemeMode.storageKey)
+        fixture.store.observePreferencesChange()
+        XCTAssertTrue(fixture.store.hasPendingChanges)
+        XCTAssertTrue(fixture.database.writes.isEmpty)
+        await fixture.sync()
+        XCTAssertFalse(fixture.store.hasPendingChanges)
+        XCTAssertEqual(fixture.database.writes, ["preferences-workspace"])
+        XCTAssertNotNil(fixture.store.lastSuccessfulSyncAt)
+    }
+
+    func testFailedDomainStaysPendingAfterRestartAndOnlyItRetries() async throws {
+        let fixture = CloudSyncFixture(observesDataStoreChanges: true)
+        defer { fixture.cleanUp() }
+        await fixture.sync()
+        let taskSuccess = fixture.store.lastSuccessfulSyncAt(for: .tasks)
+        let service = try XCTUnwrap(fixture.dataStore.services.first)
+        fixture.dataStore.setService(service, visibleOnLaunchpad: !service.isLaunchpadVisible)
+        fixture.dataStore.addTask(Self.task("Upload fails"))
+        fixture.database.writes.removeAll()
+        fixture.database.beforeStore = { recordName in
+            if recordName == "tasks-workspace" { throw CloudSyncError.payloadTooLarge }
+        }
+
+        await fixture.sync()
+        XCTAssertEqual(fixture.store.status, .failed(CloudSyncError.payloadTooLarge.diagnosticCode))
+        XCTAssertEqual(Self.presentation(status: fixture.store.status).syncErrorDetailKey, "mine.sync.error.payload_too_large")
+        XCTAssertEqual(fixture.database.writes, ["services-workspace"])
+        XCTAssertEqual(fixture.store.lastSuccessfulSyncAt(for: .tasks), taskSuccess)
+        XCTAssertTrue(fixture.store.hasPendingChanges)
+
+        let restarted = CloudSyncStore(defaults: fixture.defaults, database: fixture.database)
+        XCTAssertTrue(restarted.hasPendingChanges)
+        fixture.database.beforeStore = nil
+        fixture.database.writes.removeAll()
+        await restarted.syncNow(dataStore: fixture.dataStore, appearanceStore: fixture.appearanceStore)
+        XCTAssertEqual(restarted.status, .available)
+        XCTAssertEqual(fixture.database.writes, ["tasks-workspace"])
+        XCTAssertFalse(restarted.hasPendingChanges)
+    }
+
+    func testLocalEditsDuringEveryUploadRemainPendingAfterRetryLimit() async throws {
+        let fixture = CloudSyncFixture(observesDataStoreChanges: true)
+        defer { fixture.cleanUp() }
+        await fixture.sync()
+        fixture.dataStore.addTask(Self.task("Initial task"))
+        fixture.database.afterStore = { name in
+            guard name == "tasks-workspace" else { return }
+            fixture.dataStore.addTask(Self.task("Edited during upload"))
+            XCTAssertTrue(fixture.store.hasPendingChanges)
+        }
+
+        await fixture.sync()
+        fixture.database.afterStore = nil
+        XCTAssertEqual(fixture.store.status, .failed(CloudSyncError.localChangesDuringSync.diagnosticCode))
+        XCTAssertTrue(fixture.store.hasPendingChanges)
+        await fixture.sync()
+        XCTAssertEqual(fixture.store.status, .available)
+        XCTAssertFalse(fixture.store.hasPendingChanges)
+    }
+
+    func testAcknowledgedRemoteNormalizationDoesNotShowPending() async throws {
+        let fixture = CloudSyncFixture(observesDataStoreChanges: true)
+        defer { fixture.cleanUp() }
+        await fixture.sync()
+        let invalid = StoredManualLaunchpadService(
+            id: UUID(), name: "", endpointString: "https://service.example.test",
+            categoryRawValue: ServiceCategory.tools.rawValue, iconText: "T", createdAt: Date()
+        )
+        try fixture.install(CloudSyncServices(manualServices: [invalid], serviceVisibilityOverrides: [:]),
+                            in: .services, at: Date() + 120)
+        fixture.database.writes.removeAll()
+        await fixture.sync()
+        XCTAssertEqual(fixture.store.status, .available)
+        XCTAssertTrue(fixture.dataStore.makeCloudSyncServices().manualServices.isEmpty)
+        XCTAssertFalse(fixture.store.hasPendingChanges)
+        XCTAssertTrue(fixture.database.writes.isEmpty)
+    }
+
+    func testKnownAndUnknownFailuresResolveOnlyToLocalizedMessages() async throws {
+        let known = [
+            (CloudSyncError.payloadTooLarge.diagnosticCode, "mine.sync.error.payload_too_large"),
+            (CloudSyncError.conflictRetryLimit.diagnosticCode, "mine.sync.error.conflict_retry_limit"),
+            (CloudSyncError.incompatibleRemoteSnapshot.diagnosticCode, "mine.sync.error.incompatible_remote_snapshot"),
+            (CloudSyncError.localChangesDuringSync.diagnosticCode, "mine.sync.error.local_changes_during_sync"),
+            ("missing-icloud-entitlement", "mine.sync.error.missing_entitlement")
+        ]
+        let generic = "mine.sync.error.generic"
+        let unknown = ["unknown", "cloudkit:3", "unreachable", "account-status-unavailable",
+                       "account-status-unknown", "Untrusted text https://example.invalid/private"]
+        let appBundle = Bundle(for: AppDataStore.self)
+        for (diagnostic, key) in known + unknown.map({ ($0, generic) }) {
+            XCTAssertEqual(Self.presentation(status: .failed(diagnostic)).syncErrorDetailKey, key)
+            for language in ["en", "zh-Hans"] {
+                let url = try XCTUnwrap(appBundle.url(forResource: language, withExtension: "lproj"))
+                let bundle = try XCTUnwrap(Bundle(url: url))
+                let message = bundle.localizedString(forKey: key, value: nil, table: nil)
+                XCTAssertNotEqual(message, key)
+                XCTAssertFalse(message.contains(diagnostic))
+            }
+        }
+        XCTAssertNil(Self.presentation(status: .available).syncErrorDetailKey)
+    }
+
+    func testFirstSyncPendingTitleAndControlsRespectExistingGates() async throws {
+        let locked = Self.presentation(canUseSync: false, isEnabled: false, status: .disabled)
+        XCTAssertTrue(locked.isToggleDisabled)
+        XCTAssertTrue(locked.showsPlusLink)
+        XCTAssertEqual(locked.syncNow, .hidden)
+        XCTAssertEqual(locked.lastSuccess, .waiting)
+        let appBundle = Bundle(for: AppDataStore.self)
+        let zhURL = try XCTUnwrap(appBundle.url(forResource: "zh-Hans", withExtension: "lproj"))
+        let zh = try XCTUnwrap(Bundle(url: zhURL))
+        XCTAssertEqual(zh.localizedString(forKey: "mine.sync.waiting", value: nil, table: nil), "等待首次同步")
+        XCTAssertEqual(zh.localizedString(forKey: "mine.sync.pending", value: nil, table: nil), "待同步")
+
+        let date = Date()
+        let ready = Self.presentation(lastSuccess: date, pending: true)
+        XCTAssertFalse(ready.isToggleDisabled)
+        XCTAssertFalse(ready.showsPlusLink)
+        XCTAssertEqual(ready.syncNow, .ready)
+        XCTAssertEqual(ready.lastSuccess, .time(date))
+        XCTAssertEqual(ready.statusTitleKey, "mine.sync.status.ready")
+        XCTAssertEqual(Self.presentation().statusTitleKey, "mine.sync.status.available")
+        XCTAssertEqual(Self.presentation(status: .syncing).syncNow, .syncing)
+    }
+
+    private static func task(_ title: String) -> TaskItem {
+        TaskItem(id: UUID(), title: title, subtitle: "", symbol: "bell", isUrgent: false)
+    }
+
+    private static func presentation(
+        canUseSync: Bool = true, isEnabled: Bool = true, status: CloudSyncAvailability = .available,
+        lastSuccess: Date? = nil, pending: Bool = false
+    ) -> SyncSettingsPresentation {
+        SyncSettingsPresentation(canUseSync: canUseSync, isEnabled: isEnabled, status: status,
+                                 lastSuccessfulSyncAt: lastSuccess, hasPendingChanges: pending)
+    }
+}
+
+private struct LegacyCloudSyncFixture {
+    let updatedAt: Date
+    let services: CloudSyncServices
+    let tasks: CloudSyncTasks
+    let preferences: CloudSyncPreferences
+
+    static func sample() -> Self {
+        func task(_ title: String) -> TaskItem {
+            TaskItem(id: UUID(), title: title, subtitle: "", symbol: "bell", isUrgent: false,
+                     createdAt: Date(timeIntervalSince1970: 100))
+        }
+
+        let service = StoredManualLaunchpadService(
+            id: UUID(), name: "Legacy", endpointString: "https://legacy.example.test/media",
+            categoryRawValue: ServiceCategory.media.rawValue, iconText: "L", createdAt: Date(timeIntervalSince1970: 100)
+        )
+        var completed = task("History")
+        completed.completedAt = Date(timeIntervalSince1970: 200)
+        return LegacyCloudSyncFixture(
+            updatedAt: Date(timeIntervalSince1970: 1_000),
+            services: CloudSyncServices(manualServices: [service], serviceVisibilityOverrides: ["legacy": false]),
+            tasks: CloudSyncTasks(pendingTasks: [task("Pending")], completedTasks: [completed]),
+            preferences: CloudSyncPreferences(stringPreferences: [AppThemeMode.storageKey: AppThemeMode.dark.rawValue],
+                                              booleanPreferences: [AppearancePreferenceKeys.showCardSubtitle: true])
+        )
+    }
+}
+
+@MainActor
+private final class CloudSyncFixture {
+    let suiteName = "CloudSyncRecordSplitTests.\(UUID())"
+    let defaults: UserDefaults
+    let database: MockCloudSyncDatabase
+    let dataStore: AppDataStore
+    let appearanceStore: AppearanceStore
+    let store: CloudSyncStore
+
+    init(
+        database: MockCloudSyncDatabase? = nil, cancelReminder: @escaping @MainActor (TaskItem) -> Void = { _ in },
+        observesDataStoreChanges: Bool = false
+    ) {
+        self.database = database ?? MockCloudSyncDatabase()
+        defaults = UserDefaults(suiteName: suiteName)!
+        defaults.set(true, forKey: "sync.icloud.enabled.v1")
+        store = CloudSyncStore(defaults: defaults, database: self.database)
+        dataStore = AppDataStore.offlineFixture(defaults: defaults, cancelReminder: cancelReminder,
+                                              cloudSyncStore: observesDataStoreChanges ? store : nil)
+        appearanceStore = AppearanceStore(defaults: defaults, noteChange: {})
+    }
+
+    func cleanUp() { defaults.removePersistentDomain(forName: suiteName) }
+
+    func sync() async { await store.syncNow(dataStore: dataStore, appearanceStore: appearanceStore) }
+
+    func record(_ domain: CloudSyncDomain) throws -> CKRecord {
+        try XCTUnwrap(database.records[domain.recordID.recordName])
+    }
+
+    func payload<Payload: Decodable>(_ domain: CloudSyncDomain) throws -> Payload {
+        let data = try XCTUnwrap(try record(domain)["payload"] as? Data)
+        return try JSONDecoder().decode(Payload.self, from: data)
+    }
+
+    func install<Payload: Encodable>(_ payload: Payload, in domain: CloudSyncDomain, at date: Date) throws {
+        let record = CKRecord(recordType: domain.recordType, recordID: domain.recordID)
+        record["payload"] = try JSONEncoder().encode(payload) as CKRecordValue
+        record["schemaVersion"] = 2 as CKRecordValue
+        record["updatedAt"] = date as CKRecordValue
+        database.records[domain.recordID.recordName] = record
+    }
+
+    func installLegacy(_ legacy: LegacyCloudSyncFixture) throws {
+        let encoder = JSONEncoder()
+        var fields: [String: Any] = [
+            "schemaVersion": 1,
+            "updatedAt": legacy.updatedAt.timeIntervalSinceReferenceDate
+        ]
+        for payload in [try encoder.encode(legacy.services), try encoder.encode(legacy.tasks),
+                        try encoder.encode(legacy.preferences)] {
+            let group = try XCTUnwrap(try JSONSerialization.jsonObject(with: payload) as? [String: Any])
+            fields.merge(group) { _, value in value }
+        }
+        let record = CKRecord(recordType: "NastartSnapshot", recordID: CKRecord.ID(recordName: "primary-workspace"))
+        record["payload"] = try JSONSerialization.data(withJSONObject: fields) as CKRecordValue
+        record["updatedAt"] = legacy.updatedAt as CKRecordValue
+        database.records[record.recordID.recordName] = record
+    }
+}
+
+@MainActor
+private final class CloudSyncTwoDeviceHarness {
+    struct Contents: Equatable {
+        let services: Data
+        let tasks: Data
+        let preferences: Data
+    }
+
+    let database: MockCloudSyncDatabase
+    let a: CloudSyncFixture
+    let b: CloudSyncFixture
+
+    init(observesDataStoreChanges: Bool = true) {
+        let database = MockCloudSyncDatabase()
+        self.database = database
+        a = CloudSyncFixture(database: database, observesDataStoreChanges: observesDataStoreChanges)
+        b = CloudSyncFixture(database: database, observesDataStoreChanges: observesDataStoreChanges)
+    }
+
+    func cleanUp() {
+        a.cleanUp()
+        b.cleanUp()
+    }
+
+    func syncA() async { await a.sync() }
+    func syncB() async { await b.sync() }
+    func syncBoth() async {
+        await syncA()
+        await syncB()
+    }
+
+    func localContents(of device: CloudSyncFixture) throws -> Contents {
+        try Contents(
+            services: CloudSyncRecord.encode(device.dataStore.makeCloudSyncServices()),
+            tasks: CloudSyncRecord.encode(device.dataStore.makeCloudSyncTasks()),
+            preferences: CloudSyncRecord.encode(CloudSyncPreferences.read(from: device.defaults))
+        )
+    }
+
+    func cloudContents() throws -> Contents {
+        func payload(_ domain: CloudSyncDomain) throws -> Data {
+            try XCTUnwrap(a.record(domain)[CloudSyncRecord.payloadField] as? Data)
+        }
+        return try Contents(services: payload(.services), tasks: payload(.tasks), preferences: payload(.preferences))
+    }
+
+    func assertContents(of device: CloudSyncFixture, matches expected: Contents,
+                        file: StaticString = #filePath, line: UInt = #line) throws {
+        let actual = try localContents(of: device)
+        XCTAssertEqual(actual.services, expected.services, "Services", file: file, line: line)
+        XCTAssertEqual(actual.tasks, expected.tasks, "Tasks", file: file, line: line)
+        XCTAssertEqual(actual.preferences, expected.preferences, "Preferences", file: file, line: line)
+    }
+
+    func assertState(of device: CloudSyncFixture, status: CloudSyncAvailability = .available, pending: Bool = false,
+                     file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertEqual(device.store.status, status, file: file, line: line)
+        XCTAssertEqual(device.store.hasPendingChanges, pending, file: file, line: line)
+    }
+
+    func presentation(for device: CloudSyncFixture) -> SyncSettingsPresentation {
+        SyncSettingsPresentation(
+            canUseSync: true, isEnabled: device.store.isEnabled, status: device.store.status,
+            lastSuccessfulSyncAt: device.store.lastSuccessfulSyncAt, hasPendingChanges: device.store.hasPendingChanges
+        )
+    }
+}
+
+@MainActor
+private final class MockCloudSyncDatabase: CloudSyncDatabase {
+    var records: [String: CKRecord] = [:]
+    var reads: [String] = []
+    var writes: [String] = []
+    var failingWrites: Set<String> = []
+    var beforeStore: ((String) throws -> Void)?
+    var afterStore: ((String) -> Void)?
+
+    func fetch(_ id: CKRecord.ID) async throws -> CKRecord? {
+        reads.append(id.recordName)
+        return records[id.recordName]?.copy() as? CKRecord
+    }
+
+    func store(_ record: CKRecord) async throws {
+        let name = record.recordID.recordName
+        guard !failingWrites.contains(name) else { throw URLError(.notConnectedToInternet) }
+        try beforeStore?(name)
+        records[name] = record.copy() as? CKRecord
+        writes.append(name)
+        afterStore?(name)
     }
 }

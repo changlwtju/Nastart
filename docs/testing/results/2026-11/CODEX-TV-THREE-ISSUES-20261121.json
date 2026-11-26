@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-21",
+  "xcode": "27.2 (27B52)",
+  "compiledAppSources": 28,
+  "tvOSCompileAndLink": "passed; dependencies reused; not a signed package",
+  "uiTestSourceTypecheck": "passed",
+  "hostHTTPXCTest": {
+    "executed": 5,
+    "failures": 0
+  },
+  "physicalAcceptance": {
+    "jellyfin": "pending",
+    "dockerMenu": "pending",
+    "subpageWidthsAndThemes": "pending"
+  },
+  "terminalsUpdated": [],
+  "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-21-TV-THREE-ISSUES-FIX.md",
+  "standardBuildFollowup": {
+    "builtAt": "2026-11-21T16:56:00+08:00",
+    "app": "/Users/lagransun/Library/Developer/Xcode/DerivedData/NastartTV-hedldllpjgmcbmbdybhnuykyxxdb/Build/Products/Debug-appletvos/NastartTV.app",
+    "testDescriptor": "/Users/lagransun/Library/Developer/Xcode/DerivedData/NastartTV-hedldllpjgmcbmbdybhnuykyxxdb/Build/Products/NastartTV_appletvos27.2-arm64.xctestrun",
+    "mainSHA256": "6e6497831d7c063cf001ad34c04728e442e851e25bcbbc56762e98f0eb463d6e",
+    "dylibSHA256": "5919500c2a6b9318d1f6a47d32a2b65f936aea8706c9c3b972b927f0a69e57a7",
+    "currentDeviceInProfile": true,
+    "signatureVerification": "codesign --verify --deep --strict: CSSMERR_TP_NOT_TRUSTED in execution session",
+    "installed": false
+  },
+  "status": "16:56 Xcode 27.2 标准 App 构建及 Build for Testing 均已成功，产出 Apple TV 包和测试描述。当前命令会话签名信任校验失败，本批未安装，三项修后真机验收待续。"
+}

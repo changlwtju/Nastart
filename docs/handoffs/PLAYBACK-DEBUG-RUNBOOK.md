@@ -143,7 +143,9 @@ Mac 在维护唤醒期间仍可能再次进入 Maintenance Sleep，即使已有 
 
 ## WDA 真机安装、启动与验证固定链路
 
-WDA 不是普通 App：直接用 `devicectl device process launch` 启动 Runner 只能做诊断，不能替代 XCTest 建立 `testmanagerd` 会话；出现 `com.apple.testmanagerd ... No such process` 时，不要先改播放参数，也不要把它归因于媒体失败。正式链路固定为：
+**iPhone 13 / iOS 16.3.1 的现装兼容 Runner**：11-20 已在可交互审批的 Mac 会话通过 USB/usbmux、`tidevice xcuitest`、本地 iproxy 和 WDA 实际点击。先执行 `scripts/start_wda_iphone.sh --check-usb`，复用经验证的现装 Runner。若本地 usbmuxd 或回环访问返回 `EPERM`，先核执行会话权限。Xcode Devices 可识别和备份手机时，这两项权限仍可能受限。Xcode 原生测试是另一条启动路线。 [现装 Runner 成功记录](../archive/handoffs/2026-11/CODEX-2026-11-20-IPHONE13-WDA-RESTORED.md)
+
+WDA 通过 XCTest 建立 `testmanagerd` 会话。直接打开 Runner 只用于观察进程。需要通过 Xcode 准备或验证测试产物时，使用以下流程：
 
 1. 固定 WDA 工程、Xcode、Team、Bundle ID 和 DeviceSupport。当前可用历史 ID 是 `com.changliwen.nastart.WebDriverAgentRunner.xctrunner`（host）与 `com.changliwen.nastart.WebDriverAgentRunner`（test）；不得在 Runner、test bundle、`.xctestrun` 和 provisioning profile 之间混用 `WDARunner` 与 `WebDriverAgentRunner`。
 2. 优先运行标准工程命令，让 Xcode 完成构建、签名、安装、启动 XCTest：
@@ -152,7 +154,7 @@ WDA 不是普通 App：直接用 `devicectl device process launch` 启动 Runner
 4. XCTest 进程稳定运行后再启动前台 `iproxy`，语法固定为 `iproxy LOCAL_PORT:8100 -u UDID`；iPhone 使用本地 `8102`，iPad 使用本地 `8101`，不能用旧版 `iproxy 8100 8100 UDID` 语法，也不能两台设备共用本地端口。
 5. 只有 `curl -fsS http://127.0.0.1:$LOCAL_PORT/status` 返回 `ready: true`，并且 `productBundleIdentifier` 与当前包一致时，才开始建立 UI session 和真机播放采集。WDA `/status`、XCTest 日志、`iproxy` PID 和设备 UDID 必须写入当轮证据。
 
-故障分支固定如下：`testmanagerd` 错误先重跑标准 `xcodebuild test`；`Connection reset` 先检查 Runner 是否退出及 `iproxy` 端口映射；`destination unavailable` 检查 USB 配对、`xctrace list devices`、DeviceSupport 和 Xcode/CoreDevice 状态；只有签名校验失败、包缺失或 XCTest 明确报告安装/验证失败时才重新构建/安装 WDA。WDA 不按样本、按参数或按天重复安装。
+故障分支：`testmanagerd` 错误先核所在启动路线、连接阶段和设备端日志；`Connection reset` 先检查 Runner 是否退出及 `iproxy` 端口映射；`destination unavailable` 检查 USB 配对、`xctrace list devices`、DeviceSupport 和 Xcode/CoreDevice 状态。确认包缺失或包签名/安装确有问题时再准备新 WDA；执行会话无法验证签名信任链时先换可复核环境。
 
 本次恢复证据：iPad `REDACTED-DEVICE-02` 的 WDA `16.2.0` 返回 `ready: true`；S01 设备文件入口截图目录为 `/tmp/nastart-s01-wda-retry/`，t=0/3/10/30 均取得真实视频帧。iPhone `REDACTED-DEVICE-01` 已于 2026-08-15 用历史 Bundle ID + DVT 复原，`127.0.0.1:8102/status` 返回 WDA `16.1.5`、`ready: true`，并成功建立 session、读取启动台和“设备→文件”页面；这只证明工具链恢复，不替代 iPhone 播放回归。
 
@@ -331,17 +333,17 @@ iPhone iOS 16 的历史成功证据不是“直接启动 Runner App”，而是 
 - 持久化内容还包括 `.xctestrun`、provisioning profile、iOS 16.3 DDI 压缩包和安装 receipt
 - 本轮真实验证：`/status ready=true`、DS One session、`/source`、`/screenshot`；截图为 1170×2532 PNG，界面树长度约 3462 字节
 
-以后优先执行以下脚本，不按样本或按天重装 WDA：
+现装 Runner 有效时，先核实目标、回执、签名和独占资源。将 `WDA_APP`、`XCTESTRUN` 指向本次有效且匹配的私有产物，按以下顺序复用：
 
 ```sh
+scripts/start_wda_iphone.sh --check-usb
 scripts/prepare_wda_recovery.sh
-scripts/install_wda_iphone_once.sh
 scripts/start_wda_iphone.sh
 ```
 
 `install_wda_iphone_once.sh` 检测到设备中已有 `ProfileValidated=true` 时只做校验，不重新安装；`start_wda_iphone.sh` 使用 XCTest `tidevice xcuitest` 建立 testmanagerd 会话，再以 `iproxy 8102:8100` 暴露 WDA。只有 `ready=true` 后才开始 UI 自动化。设备必须处于解锁状态；解锁是使用 DVT/开发者服务的前置条件，不代表需要改动系统。
 
-本轮 WDA 运行时日志保存在上述目录的 `runtime/` 下；安装摘要在 `install-receipt.txt`。若 WDA 已在 8102 端口运行，启动脚本会直接复用，不会再次安装。
+历史 WDA 运行时日志在 `runtime/` 下，安装摘要在 `install-receipt.txt`。现行脚本每次创建独立日志目录。若本地端口已占用，先查 Runner、转发和会话归属，再决定复用已分配会话或另选空闲端口。
 
 ## DS One PiP 自动化进入与退出（2026-08-27，已在 S03 真机验证）
 

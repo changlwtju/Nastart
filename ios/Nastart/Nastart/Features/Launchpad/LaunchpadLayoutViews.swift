@@ -91,6 +91,100 @@ struct LaunchpadDataStatusBanner: View {
     }
 }
 
+struct LaunchpadAgentHealthText {
+    let titleKey: String
+    let detailKey: String?
+
+    init(state: AgentHealthState, failureReasonKey: String?) {
+        switch state {
+        case .connected:
+            titleKey = "agent.health.connected"
+            detailKey = nil
+        case .stale:
+            titleKey = "devices.agent.state.stale"
+            detailKey = "devices.agent.state.stale_detail"
+        case .failed:
+            titleKey = "devices.agent.state.failed"
+            switch failureReasonKey {
+            case "agent.health.identity_changed", "agent.health.auth_failed", "agent.health.unsupported",
+                 "agent.health.invalid_address", "agent.health.unreachable":
+                detailKey = failureReasonKey
+            default:
+                detailKey = "agent.health.unknown"
+            }
+        }
+    }
+}
+
+struct LaunchpadAgentHealthRow: View {
+    let health: AgentHealthSnapshot?
+    let repair: () -> Void
+    @State private var refreshedAtExpiry: Date?
+
+    var body: some View {
+        if let health {
+            let expiry = health.lastSeenAt?.addingTimeInterval(AgentHealthSnapshot.staleInterval)
+            statusContent(state: health.state, failureReasonKey: health.failureReasonKey)
+                .id(refreshedAtExpiry)
+                .task(id: expiry) {
+                    guard let expiry, expiry > Date() else { return }
+                    do {
+                        try await Task.sleep(for: .seconds(expiry.timeIntervalSinceNow))
+                        refreshedAtExpiry = expiry
+                    } catch {
+                        // The snapshot changed or the row left the screen.
+                    }
+                }
+        }
+    }
+
+    private func statusContent(state: AgentHealthState, failureReasonKey: String?) -> some View {
+        let text = LaunchpadAgentHealthText(state: state, failureReasonKey: failureReasonKey)
+        let symbol: String
+        let color: Color
+        switch state {
+        case .connected:
+            symbol = "checkmark.circle.fill"
+            color = .green
+        case .stale:
+            symbol = "clock"
+            color = .orange
+        case .failed:
+            symbol = "exclamationmark.circle.fill"
+            color = .red
+        }
+        return VStack(alignment: .leading, spacing: 8) {
+            Label {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(LocalizedStringKey(text.titleKey))
+                        .font(.subheadline.weight(.semibold))
+                    if let detailKey = text.detailKey {
+                        Text(LocalizedStringKey(detailKey))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            } icon: {
+                Image(systemName: symbol)
+                    .foregroundStyle(color)
+                    .accessibilityHidden(true)
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("launchpad.agent.health")
+
+            if state == .failed {
+                Button("agent.action.repair", action: repair)
+                    .buttonStyle(.bordered)
+                    .accessibilityIdentifier("launchpad.agent.repair")
+            }
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .nastartSurface()
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+}
+
 enum LaunchpadReminderPolicy {
     static let certificateWarningDays = 14
 }
@@ -919,37 +1013,73 @@ private struct NetworkLibraryPlayerPresentation: View {
     let close: () -> Void
     @State private var request: GreenfieldPlaybackLaunchRequest?
     @State private var didPresent = false
+    @State private var preparationFailed = false
     var body: some View {
         Color.black.ignoresSafeArea()
+            .overlay {
+                if !didPresent {
+                    VStack(spacing: 16) {
+                        if preparationFailed {
+                            Text("无法准备此文件，请检查连接或重新整理媒体库。")
+                                .multilineTextAlignment(.center)
+                        } else {
+                            ProgressView("正在准备播放")
+                        }
+                        Button(action: close) {
+                            Text(preparationFailed ? LocalizedStringKey("返回") : LocalizedStringKey("取消"))
+                        }
+                        .accessibilityIdentifier("network.player.close")
+                    }
+                    .padding().foregroundStyle(.white)
+                }
+            }
             .greenfieldPlaybackCover(item: $request)
             .task {
                 guard !didPresent else { return }
                 let requestedAt = Date()
                 let traceID = String(UUID().uuidString.prefix(8))
-                let lease: PlaybackProxyRouteLease?
+                let lease: PlaybackProxyRouteLease
+                let transport: String
                 do {
                     try Task.checkCancellation()
-                    let url = try await AuthenticatedMediaStreamProxy.shared.registerOriginalStream(
-                        upstreamURL: source.playbackURL, filename: source.playbackURL.lastPathComponent,
-                        allowsSelfSignedCertificates: false, playbackTraceID: traceID,
-                        upstreamIsNetworkLibraryBridge: true)
-                    lease = PlaybackProxyRouteLease(url: url)
+                    switch source.transport {
+                    case .reader(let reader):
+                        do {
+                            let url = try await AuthenticatedMediaStreamProxy.shared.registerNetworkReader(
+                                reader, originURL: source.originURL, playbackTraceID: traceID)
+                            lease = PlaybackProxyRouteLease(url: url)
+                            transport = "sharedReader"
+                        } catch {
+                            try Task.checkCancellation()
+                            if error is CancellationError || (error as? URLError)?.code == .cancelled { return }
+                            // Start the old local listener only if registration
+                            // failed, before any decoder read could have started.
+                            let bridge = WebDAVPlaybackSession(reader: reader)
+                            let url = try await bridge.start()
+                            lease = PlaybackProxyRouteLease(url: url) { bridge.stop() }
+                            transport = "bridgeFallback"
+                        }
+                    case .bridge(let url):
+                        lease = PlaybackProxyRouteLease(url: url) { }
+                        transport = "bridge"
+                    }
                 } catch {
                     guard !Task.isCancelled, !(error is CancellationError),
                           (error as? URLError)?.code != .cancelled else { return }
-                    lease = nil
+                    preparationFailed = true
+                    return
                 }
                 // A late registration is released here if the view was closed
                 // or another task already delivered the request.
                 guard !Task.isCancelled, !didPresent else { return }
                 didPresent = true
-                DiagnosticLogStore.shared.record(lease == nil ? .warning : .info,
+                DiagnosticLogStore.shared.record(transport == "bridgeFallback" ? .warning : .info,
                     categoryKey: "diagnostics.category.media", messageKey: "diagnostics.network_media.playback_proxy",
-                    details: ["playbackTraceID": traceID, "route": lease == nil ? "bridgeFallback" : "sharedProxy",
+                    details: ["playbackTraceID": traceID, "route": transport,
                               "sourceScheme": source.originURL.scheme ?? "unknown",
                               "pathExtension": source.fileExtension])
                 PlayerOrientationController.prepareForPresentation(.landscape)
-                request = MediaPlaybackRequest(requestedAt: requestedAt, url: lease?.url ?? source.playbackURL,
+                request = MediaPlaybackRequest(requestedAt: requestedAt, url: lease.url,
                     title: source.title, networkSource: source, contentKind: .video,
                     fileExtensionOverride: source.fileExtension,
                     initialPosition: source.startsFromBeginning ? 0 : nil,

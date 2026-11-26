@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 from collections import Counter
 from dataclasses import dataclass, field
@@ -43,6 +44,8 @@ class PlaybackTrace:
     engine_events: list[Event] = field(default_factory=list)
     ended: list[Event] = field(default_factory=list)
     failures: list[Event] = field(default_factory=list)
+    engine_start_positions: set[float] = field(default_factory=set)
+    incomplete_startups: list[Event] = field(default_factory=list)
 
     @property
     def trace_id(self) -> str:
@@ -112,6 +115,11 @@ def integer(value: str | None) -> int | None:
         return int(value)
     except ValueError:
         return None
+
+
+def nonnegative_measurement(value: str | None) -> float | None:
+    number = millis(value)
+    return number if number is not None and math.isfinite(number) and number >= 0 else None
 
 
 def bitrate_label(value: str | None) -> str:
@@ -246,6 +254,19 @@ def build_traces(events: list[Event], unassigned: list[dict[str, object]] | None
 
         if event.message == "diagnostics.playback.next.engine_ready":
             event_trace.engine_events.append(event)
+            continue
+
+        if event.message == "diagnostics.playback.next.engine_startup_timing":
+            position = nonnegative_measurement(event.details.get("initialPositionSeconds"))
+            if trace_id and plan_id and position is not None:
+                event_trace.engine_start_positions.add(position)
+            continue
+
+        if event.message == "diagnostics.playback.next.engine_startup_incomplete":
+            if trace_id and plan_id:
+                event_trace.incomplete_startups.append(event)
+            elif unassigned is not None:
+                unassigned.append({"line": event.line, "reason": "ambiguous_or_missing_identity"})
             continue
 
         if event.message == "diagnostics.playback.next.playback_ended":
@@ -489,6 +510,25 @@ def trace_record(trace: PlaybackTrace, index: int) -> dict[str, object]:
         # Older coordinator logs mislabeled media position (seconds) as
         # firstFrameMs. Never treat that field as renderer latency.
         "firstFramePositionSeconds": millis(first.get("firstFramePositionSeconds", first.get("firstFrameMs"))),
+        "engineStartPositionSeconds": (
+            next(iter(trace.engine_start_positions)) if len(trace.engine_start_positions) == 1 else None
+        ),
+        # A retired renderer can have sought or submitted a frame without
+        # advancing the clock. Neither observation is a successful startup.
+        "incompleteEngineStartups": [
+            {
+                "line": event.line,
+                "initialSeekResult": event.details.get("initialSeekResult"),
+                **{
+                    key: nonnegative_measurement(event.details.get(key))
+                    for key in (
+                        "initialPositionSeconds", "initialSeekMs", "firstVideoPacketMs",
+                        "acceptedVideoFrameMs", "outputSubmittedMs",
+                    )
+                },
+            }
+            for event in trace.incomplete_startups
+        ],
         "firstFrameSignal": first.get("firstFrameSignal", "playbackClock" if first else "-"),
         "rendererFirstFrameMs": millis(first.get("rendererFirstFrameMs")),
         "targetMs": millis(route.get("firstFrameTargetMs")),
@@ -642,6 +682,11 @@ def render_trace(trace: PlaybackTrace, index: int) -> list[str]:
             f"warnings={record['preFirstFrameWarnings']}"
         ),
     ]
+    for startup in record["incompleteEngineStartups"]:
+        lines.append(
+            "  engine_startup_incomplete: "
+            + " ".join(f"{key}={value if value is not None else '-'}" for key, value in startup.items())
+        )
     if isinstance(slow_transfer, dict):
         lines.append(
             "  slowest_request: "

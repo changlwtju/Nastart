@@ -23,6 +23,60 @@ public protocol NetworkMediaByteReader: Sendable {
     var byteCount: Int64 { get }
     var fileName: String { get }
     func stream(offset: Int64, count: Int64, deliver: (Data) async throws -> Void) async throws
+    /// As above. A reader that can tell its own queueing from its time on the
+    /// connection reports each read to `timing` before delivering that read's
+    /// bytes. The default reports nothing.
+    func stream(offset: Int64, count: Int64, timing: NetworkMediaReadTimingRecorder?,
+                deliver: (Data) async throws -> Void) async throws
+}
+
+public extension NetworkMediaByteReader {
+    func stream(offset: Int64, count: Int64, timing: NetworkMediaReadTimingRecorder?,
+                deliver: (Data) async throws -> Void) async throws {
+        try await stream(offset: offset, count: count, deliver: deliver)
+    }
+}
+
+/// Where a reader's own time went, read by read. The local playback bridge
+/// passes one per transfer and takes the totals as each chunk arrives, so a
+/// chunk carries the timing of the read that produced it. Seconds on a
+/// monotonic clock; nothing here names a server, path or account.
+public final class NetworkMediaReadTimingRecorder: @unchecked Sendable {
+    public struct Summary: Equatable, Sendable {
+        public var reads = 0
+        /// Waiting for the protocol's worker to be free: an earlier read of
+        /// this or another request still held its connection.
+        public var queueWait: TimeInterval = 0
+        /// On the connection: request sent to reply complete, including the
+        /// open or reconnect that a read had to do first.
+        public var readTime: TimeInterval = 0
+        public var maxQueueWait: TimeInterval = 0
+        public var maxReadTime: TimeInterval = 0
+        public init() {}
+    }
+
+    private let lock = NSLock()
+    private var summary = Summary()
+
+    public init() {}
+
+    public func record(queueWait: TimeInterval, readTime: TimeInterval) {
+        guard queueWait.isFinite, readTime.isFinite, queueWait >= 0, readTime >= 0 else { return }
+        lock.lock(); defer { lock.unlock() }
+        summary.reads += 1
+        summary.queueWait += queueWait
+        summary.readTime += readTime
+        summary.maxQueueWait = max(summary.maxQueueWait, queueWait)
+        summary.maxReadTime = max(summary.maxReadTime, readTime)
+    }
+
+    /// The reads recorded since the last call.
+    public func take() -> Summary {
+        lock.lock(); defer { lock.unlock() }
+        let taken = summary
+        summary = Summary()
+        return taken
+    }
 }
 
 /// WebDAV reads stay in bounded windows, each checked against the indexed version.

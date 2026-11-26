@@ -1,0 +1,123 @@
+{
+  "date": "2026-11-09",
+  "device": {"model": "iPad15,7", "system": "26.6", "controlTransport": "USB"},
+  "package": {
+    "sourceHead": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "sourceIncludesExistingLocalChanges": true,
+    "configuration": "Debug",
+    "dylibSHA256": "fe63a3119a8949f49357e41d453bd0f9ed82b9746dbc9dbe482245f0051e58f4",
+    "executableSHA256": "82ffa5d56cfed3fec1fe7a9d1767473bcb9485d5fc745afce4106722ebccf944",
+    "installedIdentityVerifiedAgainstRetainDataReceipt": true,
+    "testEnvironmentInjected": false
+  },
+  "sample": {"id": "S19", "bytes": 128795641934},
+  "network": "local Wi-Fi",
+  "deviceFiles": {
+    "route": "KSPlayer directPlay/localRangeProxy",
+    "actualVideoObserved": true,
+    "upstreamHTTPStatus": 206,
+    "initial": {"internalClockMs": 5647, "positionSeconds": 0.077, "outputSubmittedMsAfterIntent": 5349},
+    "seek": [
+      {"action": "slider", "targetSeconds": 298.252, "internalRecoveryMs": 4551},
+      {"action": "forward15", "targetSeconds": 319.162, "internalRecoveryMs": 2104},
+      {"action": "back15", "targetSeconds": 306.346, "internalRecoveryMs": null},
+      {"action": "sliderSameInput", "targetSeconds": 346.994}
+    ],
+    "resume": {
+      "persistedSeconds": 346.993,
+      "persistedAudioTrack": 2,
+      "persistedSubtitleTrack": 9,
+      "observationSecondsAfterActionApproximate": 16,
+      "internalFirstFrameObserved": false,
+      "videoFrameSubmissionObserved": false,
+      "screenshotBlackWithBuffering": true,
+      "tailRangeDeliveredBytes": 4823696,
+      "tailRangeCompletedMsAfterIntentApproximate": 7460,
+      "decoderSelectedMsAfterIntentApproximate": 9650,
+      "result": "no output within observed window"
+    },
+    "restart": {"internalClockMs": 4115, "positionSeconds": 0.077, "outputSubmittedMsAfterIntent": 3880, "selectedTracksRetained": true, "ordinaryExit": true},
+    "resumeRepeat": {
+      "nearbySeedSeekSeconds": 345.322,
+      "nearbySeedSeekRecoveryMs": 3044,
+      "bookmarkSnapshotSeconds": 349.485,
+      "requestedPositionSeconds": 353.666,
+      "selectedAudioTrack": 2,
+      "selectedSubtitleTrack": 9,
+      "tailRangeDeliveredBytes": 4823696,
+      "tailRangeCompletedMsAfterIntent": 1039,
+      "initialSeekMs": 720,
+      "initialSeekResult": 0,
+      "decodedFramesDiscardedBeforeAcceptingFirstVideoFrame": 10,
+      "outputSubmittedMsAfterIntent": 1820,
+      "firstSubmittedFramePTSSeconds": 353.645,
+      "internalClockMs": 2800,
+      "firstClockPositionSeconds": 353.762,
+      "videoAndSubtitlesObserved": true,
+      "ordinaryExit": true
+    },
+    "actualTrackChangeMeasured": false
+  },
+  "jellyfin": {
+    "route": "KSPlayer directPlay/localRangeProxy",
+    "existingSessionWorked": true,
+    "actualVideoObserved": true,
+    "upstreamHTTPStatus": 206,
+    "initial": {"internalClockMs": 5163, "positionSeconds": 0.055},
+    "actualTrackChangeMeasured": false,
+    "trackCommandDispatched": false,
+    "resumeAndRestartMeasured": false
+  },
+  "smb": {
+    "route": "KSPlayer directPlay/localRangeProxy/sharedReader",
+    "upstreamScheme": "smb",
+    "actualVideoObserved": true,
+    "sharedReaderRangeStatus": 206,
+    "initial": {"internalClockMs": 1600, "positionSeconds": 0.077},
+    "resume": {
+      "requestedPositionSeconds": 358.072,
+      "initialSeekMs": 1541,
+      "initialSeekResult": 0,
+      "decodedFramesDiscardedBeforeAcceptingFirstVideoFrame": 19,
+      "firstSubmittedFramePTSSeconds": 358.066,
+      "internalClockMs": 5824,
+      "positionSeconds": 358.168,
+      "actualVideoObserved": true,
+      "selectedTracksRetained": true
+    },
+    "restart": {"internalClockMs": 2223, "positionSeconds": 0.077, "actualVideoObserved": true, "selectedTracksRetained": true, "ordinaryExit": true},
+    "seek": [
+      {"action": "slider", "targetSeconds": 325.623, "internalRecoveryMs": 2067},
+      {"action": "forward15", "targetSeconds": 350.362, "internalRecoveryMs": 2919},
+      {"action": "back15", "targetSeconds": 339.893, "internalRecoveryMs": 2118}
+    ],
+    "audioTrackChanges": [
+      {"track": 3, "codec": "DTS", "selectionConfirmedInEngine": true, "internalSeekRecoveryMs": 2298},
+      {"track": 2, "codec": "AC3", "selectionConfirmedInEngine": true, "internalSeekRecoveryMs": 742}
+    ],
+    "subtitleTrackChanges": [
+      {"track": -1, "selectionConfirmedInEngine": true},
+      {"track": 9, "type": "PGS", "selectionConfirmedInEngine": true, "internalSeekRecoveryMs": 504}
+    ],
+    "audibleTrackSwitchLatencyMeasured": false,
+    "subtitleSwitchPresentationLatencyMeasured": false,
+    "temporaryClientIndexRemoved": true,
+    "existingClientIndexEqualAfterward": {"libraries": 3, "connections": 4},
+    "cleanupConfirmedAt": "2026-11-09T15:29:18.122701+08:00"
+  },
+  "comparison": {
+    "sameActualSeekPositionAndTrackSelectionControlled": false,
+    "rankedEntrances": false,
+    "displayFirstFrameLatencyMeasured": false,
+    "audioOutputMeasured": false,
+    "longPlaybackMeasured": false,
+    "fullMatrixPassesAdded": 0
+  },
+  "deviceWindows": {
+    "finalCleanupConfirmedAt": "2026-11-09T16:28:57.387304+08:00",
+    "ownedAppAndRunnerStopped": true,
+    "localForwardersClosed": true,
+    "finalClientIndexEqualToBaseline": true,
+    "onlyPreferenceChanges": ["diagnostics.entries.v1", "playback.localResume.v1"]
+  }
+}

@@ -114,11 +114,12 @@ scripts/tidevice_private.py -u "$DEVICE_UDID" ps --all --json > "$EVIDENCE/proce
 
 项目脚本：`scripts/prepare_wda_recovery.sh`、`scripts/start_wda_iphone.sh`、`scripts/install_wda_iphone_once.sh`。新增 `scripts/tidevice_private.py` 替代 `/tmp` 缓存 wrapper；不修改 HOME，私有缓存默认放 `~/Library/Application Support/Nastart/Tools/tidevice-cache`，需系统 Python 已有 tidevice。
 
-在独立终端前台保持下面启动进程：
+在已分配的 iPhone 13 窗口，先使用 `scripts/start_wda_iphone.sh --check-usb` 检查当前会话的 USB 服务访问、目标身份和回环端口。核验最新 App 安装后，在本机有开发服务访问权限的终端前台保持下面启动进程。变量使用本轮确认的签名 Runner、匹配的私有 XCTest 配置及私有证据路径。
 
 ```sh
 export TIDEVICE_BIN="$PWD/scripts/tidevice_private.py"
 export WDA_RUNTIME_DIR="$EVIDENCE/wda"
+export DEVICE_UDID LOCAL_PORT WDA_APP XCTESTRUN
 scripts/prepare_wda_recovery.sh
 scripts/start_wda_iphone.sh
 ```

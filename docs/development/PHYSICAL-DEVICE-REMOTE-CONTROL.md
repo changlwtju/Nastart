@@ -1,5 +1,7 @@
 # 真机安装、连接与远程调试手册
 
+2026-11-12 用户明确授权 Codex 在当前及后续 iPad Nastart 调试窗口用 WDA 打开已保存的 SMB 来源、选片和取证。按现场页面核对目标行和点击落点。A16 iPad 的来源行中心触摸和元素点击可能弹出上下文菜单，短触摸准确落在标题文字内已两次实际打开目标媒体库。若弹出上下文菜单则退出并核对页面。 [真机记录](../archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T3.md)
+
 2026-11-08 当前从[阶段总交接](../archive/handoffs/2026-11/2026-11-08-0130-CLAUDE-TRANSITION-TO-CODEX.md)及[Codex接收核对](../archive/handoffs/2026-11/CODEX-2026-11-08-TRANSITION-INTAKE.md)接续。NAS业务已恢复，13/Pad的Claude窗口已按其报告收尾，下一窗fresh核独占/源包/签名。用户实际Keychain密码/令牌及密码眼睛不读取/操作，iPad的network.library.source合成点击路线有长按菜单风险。18仅用户明确要求安装，启动/测试和TV运行按独立窗口边界。旧暂停/仅离线/过期前包与旧模型表为历史，当前以总交接和当轮记录为准。
 
 2026-11-04 有界授权与现状：[本批目录回归](../archive/handoffs/2026-11/CODEX-2026-11-04-FOLDER-PICKER-INTEGRATION.md)收到用户“允许更新两台测试Runner的签名并部署”，只为13/A16 Pad经原账号更新有效profile、复制原兼容夹具后独立重签/部署（原件未改），不是默认允许以后自动换账号/签名。两台已核XCTest/WDA ready与安全离线入口；Pad实际W3C输入通过，13子目录后超时、机制未证。所有窗口已结束、原偏好同；下方旧profile过期说明只属历史，不再当本批重签许可或有效签名的阻塞。
@@ -104,8 +106,8 @@ DVT能做进程/截图，不提供通用触屏输入。点击、滚动、输入�
 - 安装可用已验证的`ios-deploy --id <当前UDID> --bundle <已验签App>`，不得加卸载/清容器选项；最近实际使用USB限定`--no-wifi`与`--nostart`，避免安装时普通启动恢复NAS。该批另用USB `create_using_usbmux(..., connection_type='USB', autopair=False)`及安装代理查询已装bundle路径，不把查询服务写成实际安装工具。
 - 原生USB `DvtProvider`、`DeviceInfo.proclist`、`ProcessControl`与`Screenshot`可查进程、精确退出、启动安全离线场景和截图。11月2日这条路线没有新装WDA，不代表它已完成触摸/滚动验收。
 - 需要UI输入时，复用私有兼容夹具目录`~/Library/Application Support/Nastart/WDA/iPhone-16.3.1`及其实际有效Runner。历史已用WDA16.8.0、Xcode26.6兼容/DDI链与`tidevice xcuitest`；必须核当前实际版本/路径，不能照版本名自动重建。
-- [prepare_wda_recovery.sh](../../scripts/prepare_wda_recovery.sh)只核本机夹具/DDI/签名/profile及部分xctestrun信息，不连接或安装；它的通过不能替代设备fresh身份、profile覆盖及实际TestHostPath/TestBundlePath检查。旧xctestrun可能指向已过期的另一份Runner，文件名或目录存在都不足证明可用。
-- [start_wda_iphone.sh](../../scripts/start_wda_iphone.sh)会调用开发服务、启动iproxy和tidevice XCTest，属于设备操作。历史手机本地8102转设备8100；必须显式指定当前设备与独占端口，核进程所有者和转发映射。脚本默认UDID/路径及`/tmp`预检文件是历史单机约定，不适合直接并行多设备调用。
+- [prepare_wda_recovery.sh](../../scripts/prepare_wda_recovery.sh)检查本机夹具、DDI、签名、描述文件的设备与 bundle 覆盖，以及实际 TestHostPath/TestBundlePath。核对设备和安装回执仍是独立步骤。续签后用 `WDA_APP` 和 `XCTESTRUN` 指向同一份有效产物与测试配置。
+- [start_wda_iphone.sh](../../scripts/start_wda_iphone.sh)的 `--check-usb` 可先检查当前会话能否访问 usbmuxd、目标 USB 身份及回环端口，检查模式不会启动 XCTest。完整运行会调用开发服务、启动 iproxy 和 tidevice XCTest，并将日志写入 `WDA_RUNTIME_DIR` 下独立私有子目录。显式指定当前 `DEVICE_UDID` 与独占 `LOCAL_PORT`，确认已有 Runner、转发和端口的归属。Xcode 可见设备时，当前命令会话仍可能对 usbmuxd 返回权限错误。 [单机验证记录](../archive/handoffs/2026-11/CODEX-2026-11-20-IPHONE13-ONLY-DEBUG-CHAIN.md)
 - Runner要作为XCTest运行，不能只启动Runner App图标；ready也要和目标会话/实际画面核对。需要设备开启UI自动化等系统确认时，保存阻塞并交用户处理，不擅自更改系统设置。
 
 脚本自有PID清理与调用者清理边界都应记录；绝不能为了释放8102就kill所有iproxy/tidevice。详细兼容、观察与历史失败见[CLI真机观测](../testing/CLI-DEVICE-OBSERVATION.md)。

@@ -1,0 +1,238 @@
+{
+  "date": "2026-11-09",
+  "environment": "fresh A16 iPad simulator / iOS 27.0 / Debug / Mac loopback",
+  "sample": {
+    "format": "synthetic H.264 MP4",
+    "durationSeconds": 24,
+    "fileBytes": 23442110,
+    "sha256": "1bad7e49ab7ec61af043203a99efd3a34235de558c89bcfa1e6e5cd8988f17c3",
+    "initialSeconds": 14
+  },
+  "closeRequestedAfterMs": 3500,
+  "windows": {
+    "baseline-fresh": {
+      "fault": {
+        "latencyMs": 0,
+        "kbps": 0,
+        "rangeStarts": [
+          23437634,
+          8795705
+        ]
+      },
+      "fixtureTestCompleted": true,
+      "rendererStateSequence": [
+        "preparing",
+        "rendererAppeared",
+        "readyToPlay",
+        "buffering",
+        "bufferFinished"
+      ],
+      "internalClockAdvancedMsAfterMount": 775,
+      "engineEvent": "engine_startup_timing",
+      "initialSeekResult": "0",
+      "engineRelativeTiming": {
+        "openMs": 54.56620833138004,
+        "streamInfoMs": 15.5335833405843,
+        "readyMs": 19.193041662219912,
+        "initialSeekMs": 0.03662500239443034,
+        "firstVideoPacketMs": 94.96516665967647,
+        "acceptedVideoFrameMs": 250.2950000052806,
+        "outputSubmittedMs": 264.2219999979716
+      },
+      "ranges": [
+        {
+          "maxObservedBodyWindowBytes": null,
+          "startByte": 23437634,
+          "responseStatusAtProxy": 206,
+          "responseHeaderMsAfterRequest": 26,
+          "upstreamTaskEndMsAfterRequest": 28,
+          "clientEndMsAfterRequest": null,
+          "proxyReportedDeliveredBytes": 4476
+        },
+        {
+          "maxObservedBodyWindowBytes": null,
+          "startByte": 8795705,
+          "responseStatusAtProxy": 206,
+          "responseHeaderMsAfterRequest": 0,
+          "upstreamTaskEndMsAfterRequest": 32,
+          "clientEndMsAfterRequest": 2882,
+          "proxyReportedDeliveredBytes": 14646405
+        }
+      ]
+    },
+    "tail-headers": {
+      "fault": {
+        "latencyMs": 5500,
+        "kbps": 0,
+        "rangeStarts": [
+          23437634
+        ]
+      },
+      "fixtureTestCompleted": true,
+      "rendererStateSequence": [
+        "preparing",
+        "rendererAppeared"
+      ],
+      "internalClockAdvancedMsAfterMount": null,
+      "engineEvent": "engine_startup_incomplete",
+      "initialSeekResult": "notStarted",
+      "engineRelativeTiming": {
+        "openMs": null,
+        "streamInfoMs": null,
+        "readyMs": null,
+        "initialSeekMs": null,
+        "firstVideoPacketMs": null,
+        "acceptedVideoFrameMs": null,
+        "outputSubmittedMs": null
+      },
+      "ranges": [
+        {
+          "maxObservedBodyWindowBytes": null,
+          "startByte": 23437634,
+          "responseStatusAtProxy": null,
+          "responseHeaderMsAfterRequest": null,
+          "upstreamTaskEndMsAfterRequest": null,
+          "clientEndMsAfterRequest": 3343,
+          "proxyReportedDeliveredBytes": null
+        }
+      ]
+    },
+    "target-body": {
+      "fault": {
+        "latencyMs": 0,
+        "kbps": 64,
+        "rangeStarts": [
+          8795705
+        ]
+      },
+      "fixtureTestCompleted": true,
+      "rendererStateSequence": [
+        "preparing",
+        "rendererAppeared",
+        "readyToPlay",
+        "buffering"
+      ],
+      "internalClockAdvancedMsAfterMount": null,
+      "engineEvent": "engine_startup_incomplete",
+      "initialSeekResult": "0",
+      "engineRelativeTiming": {
+        "openMs": null,
+        "streamInfoMs": null,
+        "readyMs": null,
+        "initialSeekMs": 0.025124987587332726,
+        "firstVideoPacketMs": 64.9554999981774,
+        "acceptedVideoFrameMs": null,
+        "outputSubmittedMs": null
+      },
+      "ranges": [
+        {
+          "maxObservedBodyWindowBytes": null,
+          "startByte": 8795705,
+          "responseStatusAtProxy": 206,
+          "responseHeaderMsAfterRequest": 2,
+          "upstreamTaskEndMsAfterRequest": null,
+          "clientEndMsAfterRequest": 3268,
+          "proxyReportedDeliveredBytes": null
+        }
+      ]
+    },
+    "tail-recovers": {
+      "fault": {
+        "latencyMs": 640,
+        "kbps": 0,
+        "rangeStarts": [
+          23437634
+        ]
+      },
+      "fixtureTestCompleted": true,
+      "rendererStateSequence": [
+        "preparing",
+        "rendererAppeared",
+        "readyToPlay",
+        "buffering",
+        "bufferFinished"
+      ],
+      "internalClockAdvancedMsAfterMount": 1170,
+      "engineEvent": "engine_startup_timing",
+      "initialSeekResult": "0",
+      "engineRelativeTiming": {
+        "openMs": 692.8962916717865,
+        "streamInfoMs": 11.948416664381512,
+        "readyMs": 13.23245833918918,
+        "initialSeekMs": 0.027333342586643994,
+        "firstVideoPacketMs": 731.7392916738754,
+        "acceptedVideoFrameMs": 827.0385833311593,
+        "outputSubmittedMs": 832.1726249996573
+      },
+      "ranges": [
+        {
+          "maxObservedBodyWindowBytes": null,
+          "startByte": 23437634,
+          "responseStatusAtProxy": 206,
+          "responseHeaderMsAfterRequest": 640,
+          "upstreamTaskEndMsAfterRequest": 646,
+          "clientEndMsAfterRequest": null,
+          "proxyReportedDeliveredBytes": 4476
+        }
+      ]
+    },
+    "body-recovers": {
+      "fault": {
+        "latencyMs": 0,
+        "kbps": 10800,
+        "rangeStarts": [
+          8795705
+        ]
+      },
+      "fixtureTestCompleted": true,
+      "rendererStateSequence": [
+        "preparing",
+        "rendererAppeared",
+        "readyToPlay",
+        "buffering",
+        "bufferFinished"
+      ],
+      "internalClockAdvancedMsAfterMount": 1166,
+      "engineEvent": "engine_startup_timing",
+      "initialSeekResult": "0",
+      "engineRelativeTiming": {
+        "openMs": 36.92837500420865,
+        "streamInfoMs": 10.948458322673105,
+        "readyMs": 10.358375002397224,
+        "initialSeekMs": 0.018875012756325305,
+        "firstVideoPacketMs": 63.82041666074656,
+        "acceptedVideoFrameMs": 217.39104166044854,
+        "outputSubmittedMs": 263.2300833356567
+      },
+      "ranges": [
+        {
+          "maxObservedBodyWindowBytes": 2818048,
+          "startByte": 8795705,
+          "responseStatusAtProxy": 206,
+          "responseHeaderMsAfterRequest": 1,
+          "upstreamTaskEndMsAfterRequest": 3268,
+          "clientEndMsAfterRequest": 3223,
+          "proxyReportedDeliveredBytes": null
+        }
+      ]
+    }
+  },
+  "productionSpeedRankingEligible": false,
+  "realBlackWindowRootCauseVerified": false,
+  "fullMatrixPassesAdded": 0,
+  "source": {
+    "head": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "includesInheritedLocalChanges": true,
+    "matchingSignedDeviceSourceInputsAfterProbeRemoved": 498,
+    "simulatorDebugDylibSHA256": "ca073dde70c155fb2288330e1855b263c5786679ccafd3b605fdb3efa9f28cdf"
+  },
+  "cleanup": {
+    "endedAt": "2026-11-09T19:17:09.977543+08:00",
+    "simulatorDeleted": true,
+    "fixtureServiceStopped": true,
+    "temporaryTestSourceRestored": true,
+    "physicalDevicesOperated": false
+  },
+  "excludedSetupAttempt": "Build stopped on copied module cache absolute paths; no playback dispatched",
+  "playbackScriptTestsPassed": 146
+}

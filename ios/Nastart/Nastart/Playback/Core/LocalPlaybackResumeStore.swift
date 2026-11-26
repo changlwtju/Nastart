@@ -2,6 +2,57 @@ import Foundation
 import CryptoKit
 import Combine
 
+enum JellyfinResumePosition {
+    static func serverTicks(position: Int?, duration: Int?, playedFraction: Double?) -> Int? {
+        if let position { return max(0, min(position, duration.flatMap { $0 > 0 ? $0 : nil } ?? position)) }
+        guard let duration, duration > 0, let fraction = playedFraction, fraction.isFinite else { return nil }
+        let ticks = Double(duration) * min(1, max(0, fraction))
+        return ticks >= Double(duration) ? duration : Int(ticks.rounded(.down))
+    }
+
+    static func prefersLocal(updatedAt: Date, serverPlayedAt: Date?, serverHasPosition: Bool,
+                             serverMarkedPlayed: Bool) -> Bool {
+        if let serverPlayedAt { return updatedAt > serverPlayedAt }
+        return !serverHasPosition && !serverMarkedPlayed
+    }
+}
+
+struct JellyfinStallRecovery {
+    private var samplePosition: Double?
+    private var lastMovement: TimeInterval?
+    private var steadySince: TimeInterval?
+    private var nextAttemptAt: TimeInterval = 0
+    private var attempts = 0
+
+    mutating func shouldReconnect(now: TimeInterval, position: Double,
+                                  eligible: Bool, canReconnect: Bool) -> Bool {
+        guard eligible, now.isFinite, position.isFinite else {
+            samplePosition = nil
+            lastMovement = nil
+            steadySince = nil
+            return false
+        }
+        if let samplePosition, let lastMovement, abs(position - samplePosition) > 0.25 {
+            if position < samplePosition || now - lastMovement > 3 { steadySince = nil }
+            if steadySince == nil { steadySince = now }
+            if let steadySince, now - steadySince >= 30 { attempts = 0 }
+            self.samplePosition = position
+            self.lastMovement = now
+            return false
+        }
+        if lastMovement == nil {
+            samplePosition = position
+            lastMovement = now
+        }
+        guard canReconnect, attempts < 2, now >= nextAttemptAt,
+              let lastMovement, now - lastMovement >= 18 else { return false }
+        steadySince = nil
+        attempts += 1
+        nextAttemptAt = now + 24
+        return true
+    }
+}
+
 
 /// Only file identity hashes and playback preferences are persisted, never URLs
 /// carrying DSM sessions. Fixed revisions stay isolated; append-only recordings

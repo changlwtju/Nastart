@@ -1,0 +1,287 @@
+{
+  "date": "2026-11-08",
+  "sampleBytes": 128795641934,
+  "route": "Wi-Fi DSM File Station direct original via localRangeProxy",
+  "acceptedBuildDebugDylibSHA256": "3ac443127f9ece12fafbc91f2e81077be843f0ee959f501bac5be912ab4f680f",
+  "iphone13": {
+    "baseline": {
+      "target": 6881.974092163086,
+      "delta": 6877.080092163086,
+      "ordinaryExit": true,
+      "events": [
+        [
+          2.398,
+          "seek_engine_completed",
+          {}
+        ],
+        [
+          5.392,
+          "seek_capacity_sample",
+          {
+            "bufferTargetSeconds": "1.0",
+            "loadedSeconds": "1.000999972793103",
+            "phase": "playable"
+          }
+        ],
+        [
+          5.589,
+          "seek_recovered",
+          {
+            "seekRecoveryMs": "5606",
+            "currentSeconds": "6882.048"
+          }
+        ],
+        [
+          5.59,
+          "steady_state_buffer",
+          {
+            "seconds": "4.0"
+          }
+        ]
+      ],
+      "stallTransitions": [
+        [
+          0.392,
+          6881.974,
+          false,
+          "0",
+          "1.0"
+        ],
+        [
+          2.438,
+          6881.974,
+          true,
+          "1",
+          "1.0"
+        ],
+        [
+          5.597,
+          6882.048,
+          false,
+          "1",
+          "4.0"
+        ],
+        [
+          7.692,
+          6883.264,
+          true,
+          "2",
+          "4.0"
+        ],
+        [
+          17.292,
+          6884.181,
+          false,
+          "2",
+          "4.0"
+        ],
+        [
+          23.592,
+          6890.133,
+          true,
+          "3",
+          "4.0"
+        ],
+        [
+          29.796,
+          6890.539,
+          false,
+          "3",
+          "4.0"
+        ]
+      ],
+      "rebufferAfterFirstRecovery": true,
+      "firstSixSecondSustainedWindowStartsAtSeconds": 17.292,
+      "lastTick": [
+        30.896,
+        6891.626,
+        false,
+        "3",
+        "4.0"
+      ]
+    },
+    "candidate": {
+      "target": 6881.974092163086,
+      "delta": 6877.123092163087,
+      "ordinaryExit": true,
+      "events": [
+        [
+          0.0,
+          "seek_recovery_buffer",
+          {
+            "bufferTargetSeconds": "2.5"
+          }
+        ],
+        [
+          1.825,
+          "seek_engine_completed",
+          {}
+        ],
+        [
+          9.449,
+          "seek_capacity_sample",
+          {
+            "bufferTargetSeconds": "2.5",
+            "loadedSeconds": "2.5024999319827574",
+            "phase": "playable"
+          }
+        ],
+        [
+          9.702,
+          "seek_recovered",
+          {
+            "seekRecoveryMs": "9715",
+            "currentSeconds": "6882.112"
+          }
+        ],
+        [
+          9.702,
+          "steady_state_buffer",
+          {
+            "seconds": "4.0"
+          }
+        ]
+      ],
+      "stallTransitions": [
+        [
+          0.435,
+          6881.974,
+          false,
+          "0",
+          "2.5"
+        ],
+        [
+          2.609,
+          6881.974,
+          true,
+          "1",
+          "2.5"
+        ],
+        [
+          10.006,
+          6882.41,
+          false,
+          "1",
+          "4.0"
+        ],
+        [
+          14.114,
+          6885.739,
+          true,
+          "2",
+          "4.0"
+        ],
+        [
+          22.709,
+          6886.335,
+          false,
+          "2",
+          "4.0"
+        ],
+        [
+          29.205,
+          6892.672,
+          true,
+          "3",
+          "4.0"
+        ]
+      ],
+      "rebufferAfterFirstRecovery": true,
+      "firstSixSecondSustainedWindowStartsAtSeconds": 22.709,
+      "lastTick": [
+        30.205,
+        6892.672,
+        true,
+        "3",
+        "4.0"
+      ]
+    }
+  },
+  "ipad": {
+    "target": 7021.385055469513,
+    "delta": 7007.420055469513,
+    "ordinaryExit": true,
+    "events": [
+      [
+        1.022,
+        "seek_engine_completed",
+        {}
+      ],
+      [
+        2.457,
+        "seek_capacity_sample",
+        {
+          "bufferTargetSeconds": "1.0",
+          "loadedSeconds": "1.000999972793103",
+          "phase": "playable"
+        }
+      ],
+      [
+        2.718,
+        "seek_recovered",
+        {
+          "seekRecoveryMs": "2714",
+          "currentSeconds": "7021.505"
+        }
+      ],
+      [
+        2.718,
+        "steady_state_buffer",
+        {
+          "seconds": "4.0"
+        }
+      ]
+    ],
+    "stallTransitions": [
+      [
+        -0.093,
+        13.965,
+        false,
+        "0",
+        "4.0"
+      ],
+      [
+        2.018,
+        7021.385,
+        true,
+        "1",
+        "1.0"
+      ],
+      [
+        3.018,
+        7021.804,
+        false,
+        "1",
+        "4.0"
+      ]
+    ],
+    "rebufferAfterFirstRecovery": false,
+    "firstSixSecondSustainedWindowStartsAtSeconds": 3.018,
+    "lastTick": [
+      29.918,
+      7048.705,
+      false,
+      "1",
+      "4.0"
+    ]
+  },
+  "candidateAccepted": false,
+  "iphone13RollbackInstall": {
+    "installed": true,
+    "preferencesEqual": true,
+    "preferencesSaved": true,
+    "installDispatched": true,
+    "installedAt": "2026-11-08T23:14:51.657166+08:00",
+    "bundleVerified": true,
+    "ordinaryForegroundObserved": true
+  },
+  "iphone18Wireless": {
+    "model": "iPhone19,7",
+    "system": "27.0",
+    "freshWirelessIdentityVerified": true,
+    "sourcePackageDylibPrefix": "3ac44312",
+    "backupServiceDisconnected": true,
+    "installCommandSent": false,
+    "installComplete": false
+  }
+}

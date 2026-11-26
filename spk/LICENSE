@@ -1,0 +1,10 @@
+Nastart Agent — installation notice
+
+This package downloads the Nastart Agent container image from Docker Hub.
+It uses Synology Container Manager to start the Agent and its filtered
+Docker socket proxy through its Docker Project Worker. The Agent
+provides HTTPS on TCP port 8787. The Agent's private state is stored in
+DSM's persistent package data directory.
+
+This notice does not change the licensing terms for Nastart Agent,
+Synology Container Manager, or the downloaded image and its components.

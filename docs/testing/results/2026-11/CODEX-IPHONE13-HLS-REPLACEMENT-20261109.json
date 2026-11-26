@@ -1,0 +1,360 @@
+{
+  "device": "iPhone14,5 / iOS16.3.1 / USB",
+  "package": {
+    "mainSHA256": "64cf996e192fa3cfff2386c0369893f2bb45499dd8ba188956ca543a72af8f44",
+    "dylibSHA256": "542e9d2f8b419df3de7b6cdcefead301e473c8ff82c6553bdc117212ad2c8e0f",
+    "builtAt": "2026-11-09T07:29:40.140859+08:00",
+    "configuration": "signed normal Debug",
+    "sourceHEAD": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "profileExpires": "2026-11-15T00:30:17Z"
+  },
+  "sampleBytes": 128795641934,
+  "wifi": true,
+  "natural": {
+    "launchEnvironment": {},
+    "maxObservedMediaSeconds": 45.491,
+    "stallCount": 0,
+    "subtitleImageObserved": true,
+    "automaticHLSNotTriggered": true,
+    "ordinaryExit": true,
+    "sampleSizeConfirmed": true,
+    "events": [
+      {
+        "at": "2026-11-09T08:28:42.485342+08:00",
+        "event": "library_loaded",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:28:42.804096+08:00",
+        "event": "library_loaded",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:28:43.049193+08:00",
+        "event": "library_loaded",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:28:43.405651+08:00",
+        "event": "library_loaded",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:28:43.596344+08:00",
+        "event": "library_loaded",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:28:43.699307+08:00",
+        "event": "library_loaded",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:28:43.699586+08:00",
+        "event": "library_loaded",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:30:56.832123+08:00",
+        "event": "network_condition_changed",
+        "metrics": {
+          "networkClass": "wifi"
+        }
+      },
+      {
+        "at": "2026-11-09T08:30:56.832981+08:00",
+        "event": "intent_created",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:30:56.833786+08:00",
+        "event": "route_selected",
+        "metrics": {
+          "routeKind": "localRangeProxy"
+        }
+      },
+      {
+        "at": "2026-11-09T08:30:56.834877+08:00",
+        "event": "preload_cancelled",
+        "metrics": {
+          "preloadedBytes": "0",
+          "reason": "bytesNotMaterialized"
+        }
+      },
+      {
+        "at": "2026-11-09T08:30:57.273854+08:00",
+        "event": "subtitle_track_changed",
+        "metrics": {
+          "engine": "KSPlayer",
+          "requestedTrackID": "9",
+          "selectionDispatchMs": "0"
+        }
+      },
+      {
+        "at": "2026-11-09T08:30:57.274400+08:00",
+        "event": "audio_track_changed",
+        "metrics": {
+          "engine": "KSPlayer",
+          "engineTrackID": "1"
+        }
+      },
+      {
+        "at": "2026-11-09T08:30:57.632116+08:00",
+        "event": "first_frame",
+        "metrics": {
+          "firstFramePositionSeconds": "0.094",
+          "tapToFirstFrameMs": "915"
+        }
+      }
+    ]
+  },
+  "controlledHLS": {
+    "launchEnvironment": {
+      "NASTART_TEST_STARTUP_HLS_BPS": "12000000"
+    },
+    "audioAC3Selected": true,
+    "subtitlesOffSelected": true,
+    "nextLeadUsesPriorRendererDurationPlusMargin": true,
+    "ordinaryExit": true,
+    "sampleSizeConfirmed": true,
+    "events": [
+      {
+        "at": "2026-11-09T08:32:47.502646+08:00",
+        "event": "library_loaded",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:32:47.728141+08:00",
+        "event": "library_loaded",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:32:48.027454+08:00",
+        "event": "library_loaded",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:32:48.382626+08:00",
+        "event": "library_loaded",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:32:48.650331+08:00",
+        "event": "library_loaded",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:32:48.747788+08:00",
+        "event": "library_loaded",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:32:48.748063+08:00",
+        "event": "library_loaded",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:33:35.496317+08:00",
+        "event": "network_condition_changed",
+        "metrics": {
+          "networkClass": "wifi"
+        }
+      },
+      {
+        "at": "2026-11-09T08:33:35.497108+08:00",
+        "event": "intent_created",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:33:35.497862+08:00",
+        "event": "route_selected",
+        "metrics": {
+          "routeKind": "localHLS"
+        }
+      },
+      {
+        "at": "2026-11-09T08:33:41.715205+08:00",
+        "event": "first_frame",
+        "metrics": {
+          "firstFramePositionSeconds": "0.501",
+          "tapToFirstFrameMs": "6378"
+        }
+      },
+      {
+        "at": "2026-11-09T08:34:12.459207+08:00",
+        "event": "network_condition_changed",
+        "metrics": {
+          "networkClass": "wifi"
+        }
+      },
+      {
+        "at": "2026-11-09T08:34:12.478131+08:00",
+        "event": "intent_created",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:34:12.478563+08:00",
+        "event": "route_selected",
+        "metrics": {
+          "routeKind": "localHLS"
+        }
+      },
+      {
+        "at": "2026-11-09T08:34:12.521640+08:00",
+        "event": "replacement_warmup_started",
+        "metrics": {
+          "engine": "AVPlayer"
+        }
+      },
+      {
+        "at": "2026-11-09T08:34:13.167880+08:00",
+        "event": "replacement_candidate_manifest_prepared",
+        "metrics": {
+          "cachedVOD": "true",
+          "elapsedMs": "682",
+          "engine": "AVPlayer"
+        }
+      },
+      {
+        "at": "2026-11-09T08:34:18.835863+08:00",
+        "event": "replacement_candidate_decoded",
+        "metrics": {
+          "availableReserveSeconds": "51.958163992666655",
+          "elapsedMs": "6348",
+          "engine": "AVPlayer",
+          "liveSeconds": "37.625540353",
+          "manifestPrepareMs": "682",
+          "preparationLeadSeconds": "11.0",
+          "prepareMs": "6348",
+          "rendererPrepareMs": "5665"
+        }
+      },
+      {
+        "at": "2026-11-09T08:34:24.134975+08:00",
+        "event": "replacement_candidate_aligned",
+        "metrics": {
+          "availableReserveSeconds": "51.958163992666655",
+          "elapsedMs": "11599",
+          "engine": "AVPlayer",
+          "liveSeconds": "42.876646965",
+          "manifestPrepareMs": "682",
+          "preparationLeadSeconds": "11.0",
+          "rendererPrepareMs": "10916"
+        }
+      },
+      {
+        "at": "2026-11-09T08:34:24.135611+08:00",
+        "event": "replacement_warmup_completed",
+        "metrics": {
+          "engine": "AVPlayer"
+        }
+      },
+      {
+        "at": "2026-11-09T08:34:24.135877+08:00",
+        "event": "replacement_committed",
+        "metrics": {
+          "engine": "AVPlayer",
+          "seconds": "42.50109526"
+        }
+      },
+      {
+        "at": "2026-11-09T08:34:24.989747+08:00",
+        "event": "first_frame",
+        "metrics": {
+          "firstFramePositionSeconds": "43.501",
+          "tapToFirstFrameMs": "12585"
+        }
+      },
+      {
+        "at": "2026-11-09T08:35:04.715116+08:00",
+        "event": "network_condition_changed",
+        "metrics": {
+          "networkClass": "wifi"
+        }
+      },
+      {
+        "at": "2026-11-09T08:35:04.716113+08:00",
+        "event": "intent_created",
+        "metrics": {}
+      },
+      {
+        "at": "2026-11-09T08:35:04.717144+08:00",
+        "event": "route_selected",
+        "metrics": {
+          "routeKind": "localHLS"
+        }
+      },
+      {
+        "at": "2026-11-09T08:35:04.719250+08:00",
+        "event": "replacement_warmup_started",
+        "metrics": {
+          "engine": "AVPlayer"
+        }
+      },
+      {
+        "at": "2026-11-09T08:35:06.146372+08:00",
+        "event": "replacement_candidate_manifest_prepared",
+        "metrics": {
+          "cachedVOD": "true",
+          "elapsedMs": "1423",
+          "engine": "AVPlayer"
+        }
+      },
+      {
+        "at": "2026-11-09T08:35:12.077895+08:00",
+        "event": "replacement_candidate_decoded",
+        "metrics": {
+          "availableReserveSeconds": "7.290119473666664",
+          "elapsedMs": "7357",
+          "engine": "AVPlayer",
+          "liveSeconds": "90.610710431",
+          "manifestPrepareMs": "1423",
+          "preparationLeadSeconds": "5.815881749999244",
+          "prepareMs": "7357",
+          "rendererPrepareMs": "5933"
+        }
+      },
+      {
+        "at": "2026-11-09T08:35:12.558116+08:00",
+        "event": "replacement_candidate_aligned",
+        "metrics": {
+          "availableReserveSeconds": "7.290119473666664",
+          "elapsedMs": "7700",
+          "engine": "AVPlayer",
+          "liveSeconds": "90.986211296",
+          "manifestPrepareMs": "1423",
+          "preparationLeadSeconds": "5.815881749999244",
+          "rendererPrepareMs": "6276"
+        }
+      },
+      {
+        "at": "2026-11-09T08:35:12.558525+08:00",
+        "event": "replacement_warmup_completed",
+        "metrics": {
+          "engine": "AVPlayer"
+        }
+      },
+      {
+        "at": "2026-11-09T08:35:12.558710+08:00",
+        "event": "replacement_committed",
+        "metrics": {
+          "engine": "AVPlayer",
+          "seconds": "90.501104611"
+        }
+      },
+      {
+        "at": "2026-11-09T08:35:13.918405+08:00",
+        "event": "first_frame",
+        "metrics": {
+          "firstFramePositionSeconds": "91.000",
+          "tapToFirstFrameMs": "9202"
+        }
+      }
+    ]
+  },
+  "actualAudibleRecoveryMeasured": false,
+  "matchedPerformanceAB": false,
+  "serverStopAcknowledgmentAvailable": false,
+  "ownedClientCleanupVerified": true,
+  "appPreferenceChangedKeyCount": 2
+}

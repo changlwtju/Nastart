@@ -286,14 +286,21 @@ struct NastartSyncUnavailableNotice: View {
 }
 
 #if os(tvOS)
-/// Also used by the TV's real unavailable page; never creates a CloudKit store.
+/// Shared presentation for the TV settings page and its offline preview.
 struct NastartTVSyncOverview: View {
     let surface: AnyView
     @Environment(\.dynamicTypeSize) private var typeSize
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
-            NastartSyncUnavailableNotice(reason: .television).padding(30)
-                .background { surface }.clipShape(RoundedRectangle(cornerRadius: AppTheme.cardCornerRadius)).focusable()
+            VStack(alignment: .leading, spacing: 12) {
+                Label("服务显示同步", systemImage: "icloud").font(TVType.section)
+                Text("配置 iCloud 后可同步启动台的服务显示开关。电视的设置与事项保存在本机。")
+                    .font(TVType.body).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(30)
+            .background { surface }.clipShape(RoundedRectangle(cornerRadius: AppTheme.cardCornerRadius))
+            .accessibilityElement(children: .combine).accessibilityIdentifier("settings.sync.services").focusable()
             NastartSettingsText(key: "mine.sync.scope.title", fallback: "同步范围与本机数据")
                 .font(TVType.section).accessibilityAddTraits(.isHeader)
             if typeSize.isAccessibilitySize {

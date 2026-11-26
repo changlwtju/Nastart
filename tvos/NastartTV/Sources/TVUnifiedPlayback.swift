@@ -43,8 +43,9 @@ import CryptoKit
     static func network(_ source: NetworkMediaPlaybackSource) -> Self {
         let key = "network-file:" + source.stableID
         return Self(title: source.title, load: {
+            guard let url = source.playbackURL else { throw TVClientError.noPlayableSource }
             let saved = LocalPlaybackResumeStore.shared.entry(for: key)
-            return Resource(url: source.playbackURL, origin: source.originURL,
+            return Resource(url: url, origin: source.originURL,
                 kind: .webDAVFile, identity: source.stableID,
                 start: saved?.positionSeconds ?? 0, duration: saved?.durationSeconds,
                 bytes: source.byteCount, resumeKey: key)

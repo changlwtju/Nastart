@@ -1,0 +1,50 @@
+{
+  "dateLocal": "2026-11-20",
+  "duplicateJellyfinDeviceID": {
+    "iphone13And18Same": true,
+    "physicalUDIDsDiffer": true,
+    "ipadDifferent": true,
+    "iphone13FreshSnapshotMatches": true,
+    "iphone18Evidence": "Existing retained-install preference backup at 2026-11-20T00:21:14+08:00; no current device operation",
+    "causeOfInitialDuplication": "unknown",
+    "currentServerRevocationAttribution": "not yet verified"
+  },
+  "currentAuthentication": {
+    "normalColdLaunch": true,
+    "libraryStatus": 401,
+    "usingStoredSession": true,
+    "selectedStoredScope": "public HTTPS root",
+    "savedLANCandidatePresent": false,
+    "publicRecovery": "noMatchingReplacement",
+    "passwordSubmitted": false
+  },
+  "playback": {
+    "source": "DSM File Station S19 Wi-Fi",
+    "trace": "3F9EE268",
+    "route": "localRangeProxy / KSPlayer original",
+    "fileBytes": 128795641934,
+    "plannedStartSeconds": 67.092,
+    "engineFirstFrameMs": 6285,
+    "engineFirstFramePositionSeconds": 67.209,
+    "screenAt3Seconds": "black/loading",
+    "screenAt10Seconds": "movie image with buffering overlay",
+    "complete30SecondCapture": false,
+    "normalExitVerified": false,
+    "soundAndSubtitlesVerified": false,
+    "cellularTested": false
+  },
+  "cleanup": {
+    "appAndRunnerStopped": true,
+    "sortRestoredToOriginalModifiedDescending": true,
+    "allOtherCurrentPreferencesPreserved": true,
+    "nonDiagnosticChangesFromBaseline": [
+      "playback.localResume.v1"
+    ],
+    "localPortClosed": true,
+    "at": "2026-11-20T12:10:51.189957+08:00"
+  },
+  "productChanges": false,
+  "newFullMatrixPasses": 0,
+  "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-20-JELLYFIN-DUPLICATE-DEVICE-ID.md",
+  "privateEvidence": "/tmp/nastart-playback-20261120-wifi/"
+}

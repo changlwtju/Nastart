@@ -1,4 +1,4 @@
-"""Reject misleading cohorts before calculating two-entry clock summaries."""
+"""Reject misleading cohorts before calculating paired playback clocks."""
 import copy
 import json
 from pathlib import Path
@@ -31,6 +31,7 @@ class EntryComparisonTests(unittest.TestCase):
                 self.report["playbackTraces"].append({
                     "playbackTraceID": identity, "planID": identity, "association": "identified",
                     "failureStages": [], "tapToFirstFrameMs": elapsed,
+                    "engineStartPositionSeconds": 100,
                     "firstFrameSignal": "playbackClock", "decodeEngine": "ksPlayer",
                     "playMethod": "directPlay", "routeKind": "localRangeProxy"})
 
@@ -52,6 +53,51 @@ class EntryComparisonTests(unittest.TestCase):
         self.assertEqual(result["summary"]["jellyfin"]["maxMs"], 1600)
         self.assertEqual(result["summary"]["medianPairedJellyfinMinusDeviceMs"], 400)
         self.assertIn("not_screen", result["metric"])
+
+    def test_expected_bookmark_cannot_substitute_for_engine_start(self):
+        record = self.report["playbackTraces"][0]
+        record.pop("engineStartPositionSeconds")
+        record["firstFramePositionSeconds"] = 100
+        self.assertIn("verified engine start position required", self.evaluate()["issues"][0])
+        record["engineStartPositionSeconds"] = 104.18
+        result = self.evaluate()
+        self.assertFalse(result["eligible"])
+        self.assertEqual(result["attempts"], 6)
+        self.assertEqual(result["completePairs"], 2)
+        self.assertIn("engine start position differs from declared position", result["issues"][0])
+
+    def add_network_storage(self):
+        self.manifest["networkStorageProtocol"] = "smb"
+        for run, trace in zip(self.manifest["runs"][::2], self.report["playbackTraces"][::2]):
+            network = copy.deepcopy(run)
+            identity = f"{run['pairID']}-networkStorage"
+            network.update(entry="networkStorage", playbackTraceID=identity, planID=identity)
+            network["conditions"]["sourceProtocol"] = "smb"
+            self.manifest["runs"].append(network)
+            self.report["playbackTraces"].append(dict(trace, playbackTraceID=identity, planID=identity,
+                                                       tapToFirstFrameMs=trace["tapToFirstFrameMs"] + 150))
+
+    def test_three_entries_report_only_complete_cohorts(self):
+        self.add_network_storage()
+        result = self.evaluate()
+        self.assertTrue(result["eligible"])
+        self.assertEqual(result["attempts"], 9)
+        self.assertEqual(result["networkStorageProtocol"], "smb")
+        self.assertEqual(result["summary"]["medianPairedNetworkStorageMinusDeviceMs"], 150)
+        self.assertEqual(result["summary"]["medianPairedNetworkStorageMinusJellyfinMs"], -250)
+        self.manifest["runs"].pop()
+        result = self.evaluate()
+        self.assertFalse(result["eligible"])
+        self.assertEqual(result["completePairs"], 2)
+        self.assertIsNone(result["summary"])
+
+    def test_three_entries_reject_other_protocol_or_route(self):
+        self.add_network_storage()
+        self.manifest["runs"][-1]["conditions"]["sourceProtocol"] = "ftp"
+        self.assert_blocked()
+        self.manifest["runs"][-1]["conditions"]["sourceProtocol"] = "smb"
+        self.report["playbackTraces"][-1]["routeKind"] = "directURL"
+        self.assert_blocked()
 
     def test_each_condition_mismatch_blocks_pooling(self):
         original = copy.deepcopy(self.manifest)

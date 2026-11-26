@@ -1,5 +1,43 @@
 # 当前视频播放技术路线
 
+2026-11-21 tvOS `TVJellyfinClient.request` 在标准 MediaBrowser Authorization 中携带 token；首页三路 401 均可请求同账号有界续登，由 TVAppState 保存新会话并通过 session revision 重建页面。服务详情 Menu 交由 NavigationStack 原生回退；本批无播放器选路改动。编译链接/HTTP 夹具已过，完整签名包和电视实际呈现未验收。 [源码候选与验证边界](../archive/handoffs/2026-11/CODEX-2026-11-21-TV-THREE-ISSUES-FIX.md)
+
+2026-11-21 `GreenfieldVideoPlayerView` 对 Jellyfin 使用已确认播放时钟判断停滞，通过既有换源协调器和来源加载器从确认位置重新协商。`JellyfinStallRecovery` 限定超时、重试次数和冷却。`LocalPlaybackResumeStore` 保留 2 秒本地检查点，Jellyfin 跟踪器以 4 秒进度间隔及暂停、生命周期边界上报。`JellyfinLibraryStore` 用同一书签决策处理详情和起播，`PlaybackSeekBar` 在手势结束时提交一次跳转。iOS 与 tvOS App 已编译链接，呈现与持续供给归 Muse 真机验收。 [本批交接](../archive/handoffs/2026-11/CODEX-2026-11-21-JELLYFIN-PLAYBACK-AND-SESSION.md)
+
+2026-11-14 `JellyfinLibraryStore` 在恢复期的读库 401 后仍优先尝试已验证的内网会话。既有恢复未接手时，可用 `JellyfinSessionEndpointPolicy.crossEndpointSource` 为当前配置的公网 HTTPS 地址验证同账号及同服务器的内网会话。无重定向身份探测、来源与目标会话未被更换、网络与会话代次相同后才更新公网记录，认证和媒体路线决策仍各自执行。 [认证与恢复](../archive/handoffs/2026-11/CODEX-2026-11-14-JELLYFIN-PUBLIC-401-RECOVERY.md)
+
+2026-11-13 iOS `GreenfieldKSPlayerRenderer.prepareReplacement` 在启动候选解码前初始化同一 coordinator 的字幕模型 URL。候选接入 SwiftUI 时，`KSVideoPlayer.Coordinator.makeView` 沿用同 URL 的字幕模型，保留接入时应用的嵌入字幕选择。离线实际预热回归旧实现失败、修正后通过，真机状态见本批交接。 [W10 字幕修正](../archive/handoffs/2026-11/CODEX-2026-11-13-PLAYBACK-POLICY-T5-W10-SUBTITLE-FIX.md)
+
+2026-11-12 iOS Greenfield 的选轨、服务端跳转、换集和自动降档由 `PlaybackSourceChangeCoordinator` 串行协调。`GreenfieldVideoPlayerView` 按目标调用已有加载器，候选每次恢复执行及交接前检查有效性。先切轨再服务端跳转时，新轨道随跳转目标一起准备；先服务端跳转时，随后选轨等跳转完成。引擎跳转使对齐旧位置的切轨候选从新位置准备，画中画仍保护原渲染器。换集待处理或准备期间，`SharedBuiltInPlayerView` 拦住旧一集的本地跳转和选轨，返回仍走正常关闭流程。 [接线和真机回归](../archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T5.md)
+
+2026-11-10 Jellyfin `Users/Me` 端点身份探测使用 `Authorization: MediaBrowser`，由该端点自己的保存会话提供令牌。Debug 接管诊断单列阶段、原因、HTTP 状态。13 的旧头与标准头补测均记录 401，iPad 的正常原流和 SMB Reader 继续沿已验证路线。 [本轮边界](../archive/handoffs/2026-11/CODEX-2026-11-10-JELLYFIN-RECOVERY-HTTP-STATUS.md)
+
+2026-11-09 Jellyfin 资源库恢复与播放选路分开。恢复的会话遇到 401 时，`JellyfinSessionEndpointPolicy` 允许验证同账号的较早内网会话；`JellyfinLibraryStore` 仍要求同服务器、精确端点、该会话自己的 `Users/Me` 验证和同一网络/会话代次，才切换资源库会话。初次排序和共享播放代理不变。 [本轮边界](../archive/handoffs/2026-11/CODEX-2026-11-09-JELLYFIN-SAME-ACCOUNT-LAN-RECOVERY.md)
+
+2026-11-09 iPad 真机补证：S19 Jellyfin 原流可切到 AVPlayer HLS，显式探针仅对同一合格首段复用上游，探针交付绕过普通正文的 Debug 限速点。开启和关闭均完成切换，尚无等条件提速证据；默认与 Release 路线维持原行为。 [真机边界](../archive/handoffs/2026-11/CODEX-2026-11-09-S19-CANDIDATE-SEGMENT-DEVICE.md)
+
+2026-11-09 iOS `GreenfieldAVPlayerWarmup.prepare` 清单准备后可显式开启默认关闭的 Debug 首段重试探针；`PlaybackVODPlaylistCache` 提供实际媒体清单和地址，`AuthenticatedMediaStreamProxy` 只在同路由、同播放会话、同一合格完整 TS 请求间共享一次有界上游读取。拒绝 Range 和不合格响应，取消随候选和路由，完整交付后不保留缓存。仅合成固定时钟证实内部解码对齐，默认、Release、真实画面切换和持续供给仍按原路线。 [验证边界](../archive/handoffs/2026-11/CODEX-2026-11-09-S19-CANDIDATE-SEGMENT-RETRY.md)
+
+2026-11-09 播放规划的 `route_selected` 在启动时记录 `plannedStartSeconds`。iOS Debug 的定点复现要求启动环境同时指定秒数和匹配的媒体总字节数，且该次播放实际为普通私网 Wi-Fi、来自设备文件、Jellyfin 或网络存储。覆盖值进入同一个 `PlaybackIntent.preferredStartTime`，沿原入口和选路，不写入独立测试偏好。若 KSPlayer 渲染表面在播放时钟推进前退场，Debug 另记 `engine_startup_incomplete`，保留初始定位、首个视频包、接受帧和输出提交的已有证据。计划位置、内部时钟和实际画面分开验收。
+
+2026-11-09 iOS 网络存储由 `NetworkLibraryPlaybackView` 提供版本化 `NetworkMediaByteReader`，`NetworkLibraryPlayerPresentation` 注册到 `AuthenticatedMediaStreamProxy` 的 Reader 上游。App 的共享监听器负责本地 Range、HEAD、四路限制、背压及撤销，Reader 内部负责协议、认证和版本；一次客户端响应可经过多个 32 MiB Reader 窗。注册失败才启动旧桥接；tvOS 保持旧桥接。独立 `readerDelivery` 诊断排除出自适应源速，现有 HTTP 原流首段探针不用于 Reader。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-NETWORK-READER-PROXY.md)
+
+2026-11-09 `AuthenticatedMediaStreamProxy.prepareOriginalResponse` 支持将同一首个正式有限 Range 响应交给匹配的播放器 GET，避免为预读另发一个首段请求。`PlaybackSessionCoordinator` 共用选路后提供可选回调，`GreenfieldVideoPlayerModel` 仅在 iOS Debug 显式开启且实测普通内网 Wi-Fi、从头原流时使用。等待槽、缓冲和路由取消均有界；首窗不要求 ETag，连续窗验证总长和可用的强 ETag。默认不触发，通用 `ObservingPlaybackIOContext` 仍不物化字节；桥接和 Reader 路线未变。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-ORIGINAL-RESPONSE-HANDOFF.md)
+
+2026-11-09 iPad 的临时共享准备阶段并行首段试验未物化字节，正式首个 GET 仍从 0 读取。临时开关已撤回，默认仍只观察范围。后续验证首个正式 Range 响应复用，按同一响应边界区分准备、实际交付和版本校验。 [iPad 对照](../archive/handoffs/2026-11/CODEX-2026-11-09-IPAD-ASYNC-PREFIX-AB.md)
+
+2026-11-09 原流代理在首个通过校验的 GET 206 响应记录 ETag 形态、Last-Modified 是否存在、URL 是否变化与预读条件，不输出标识原值。13/Pad 的同片私网 HTTP 中 Jellyfin 未提供 ETag，设备文件有强标签，iPad 满足现有传输检查。默认播放尚未调用显式预读。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-ORIGINAL-VALIDATOR-AUDIT.md)
+
+2026-11-09 共享 HTTP 原流代理新增显式 `prepareOriginalStartupPrefix` 路径。单槽缓存最多 256 KiB、保留 2 秒，由同一路由的首个无条件开放 GET 消费，使用强 ETag 的 `If-Range` 并验证连续范围与总长度。发送前失败则回到原始读取，发送后遇到不同版本则终止响应。准备和实际交付分别记录 `originalPrefixPrepared`、`originalPrefixDelivered`。正常播放准备仍使用观察型 IO，未调用新路径；网络库桥接、HLS、自签证书和真机收益未纳入本批。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-ORIGINAL-PREFIX-PROOF.md)
+
+2026-11-09 首次 HLS 候选默认仍为 11 秒，后续候选继续用清单完成至首次解码的耗时估算。iPhone 13 的 6.5 秒临时进程参数已撤销，实验确认两组均提交，实际触发原因和目标码率不同。启动预读仍由默认 `ObservingPlaybackIOContext` 只记录范围，原流代理未向渲染器回送此处的预读数据。后续需在同一代理路由和内容版本上验证字节获取、实际交付及取消。 [真机对照与源码核对](../archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE13-HLS-COLD-LEAD-AB.md)
+
+2026-11-09 iPhone 13 最新正常包受控 HLS 真机窗口证实 `GreenfieldAVPlayerWarmup.prepare` 的分段计时已用于下一候选。第二次提前量 5.8159 秒来自第一次 post-manifest 解码耗时 5.6659 秒加 150 ms。默认原流窗未触发自然替换，用户体验收益仍需配对。[回归记录](../archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE13-HLS-REPLACEMENT-REGRESSION.md)
+
+2026-11-09 iOS `GreenfieldAVPlayerWarmup.prepare` 在 `prepareManifest` 完成后为渲染准备单独计时，用于估计下一候选起始位置。继续记录原有总耗时，额外区分 `manifestPrepareMs` 和 `rendererPrepareMs`，候选提交仍检查解码帧与时间对齐。Jellyfin 资源库恢复优先使用最近保存、地址作用域匹配的会话。旧会话 401 时，晚到 LAN 候选须以本地址会话验证同一服务和用户，并复核路径代次及会话所有权。6 项恢复定向和前一计时包 7 项相关定向通过，当前两机有限原流回归。13 正确账号仍 401，HLS 候选尚缺组合包运行证据。[源码与验收边界](../archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE13-JELLYFIN-RESUME.md)
+
+2026-11-09 iOS 三入口共同准备已接真实默认网络路径：`PlaybackNetworkObserver` 同步保存 NWPath 的类别、昂贵/受限标志和路径代次；`GreenfieldVideoPlayerModel.prepareSession` 在调用 `PlaybackSessionCoordinator.prepare` 前合并到 `PlaybackIntent.networkContext`，保留原始媒体连接的私网属性及原有 estimatedBitrate 输入。既有 `PlaybackKSOptionsPolicy` 的昂贵/受限网络选项同样读取该 Plan，上述标志不再恒为 false；本批实际验证为普通内网 Wi-Fi，蜂窝/低数据真实窗口仍待。Jellyfin、设备文件和网络存储使用同一观察器及规划器，协议仅负责字节获取；本地文件及合成 loopback 来源不覆盖。首个路径回调使用 150 ms 等待预算（调度延迟另计），取消向上传播，无快照则保留已有证据并记录 `pathUnavailable`。诊断 `devicePathSnapshot` 描述默认设备路径，不能单独证明某个媒体请求的接口。五种网络条件的三入口规划、续播/轨道保留、本地文件及过期 seek 回调共五项定向测试通过；正常签名 Debug 已构建，真机回归见[本批记录](../archive/handoffs/2026-11/CODEX-2026-11-09-SHARED-NETWORK-PLAYBACK.md)。播放中切网重规划、tvOS 路径适配、去桥接及可消费预读仍待，尚无本批蜂窝或外网性能结论。
+
 2026-11-08 iOS 网络媒体库已接入共享原流代理。`NetworkLibraryPlayerPresentation`注册本次桥接地址并保留原始网络来源、文件扩展名和同一个播放 trace。取消或迟到结果回收代理 lease，正常关闭由 UIKit 播放呈现释放，PiP 最小化时持有。注册失败时使用原桥接地址。`WebDAVPlaybackSession`统一允许4个活动客户端，满额返回空体503。外层代理固定在本次桥接能力，续窗继续使用现有32MiB范围契约，HEAD结束时不续窗。桥接交付诊断标为`bridgeDelivery`，从源端吞吐估计中排除。真实远端网络仍由来源上下文识别。去桥接与可消费启动预读尚待实施。见 [阶段记录](../archive/handoffs/2026-11/CODEX-2026-11-08-NETWORK-SOURCES-SHARED-PROXY-PHASE1.md)。
 
 2026-11-08 Codex接受共享代理Range前置修复（[当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-08-RANGE-PREREQUISITE-AND-DEVICE-BASELINE.md)）：`DevicesView.swift/MediaRangePolicy`严格解析单范围，非法/多范围及Int64溢出不再替换为文件头；有界端点运算避免溢出。后缀范围先发有限`bytes=0-0`，验证206及精确Content-Range后在响应头阶段取消，再按总长度读取正确尾部；强ETag或Last-Modified可用时带If-Range，后续总长度变化拒绝。尾部超过32MiB沿既有连续响应串行续窗，非法请求本地416且不读上游。原始流响应校验窗口末端/Content-Length/identity编码，续窗异常终止已有响应。新建空白模拟器8项定向、5项补充（继承夹具时长修正后）及1项12次异常交换通过；正常Debug最终bb4d已冻结并保留安装13/Pad，627c实际片头基线不当最终包播放验收，真机范围以当轮记录为准。网络媒体库注册共享代理、桥接四连接、去桥接及真实字节预读仍待接入，不把本前置当这些功能已交付。
@@ -316,6 +354,8 @@ NAS冷恢复由`DSMConnectionOperations.login`启用配置地址准备，`DSMCli
 原流交给解码器前需通过认证 Range 校验，排除登录页或 API 错误 JSON。本地优先分支中，同文件Jellyfin查询/验证与DSM LAN Range使用现有PlaybackOriginalRouteRace并行，取消败者后由外层再次核当前准备所有权；仅将获胜Jellyfin路线标记为Jellyfin原流，不由迟到查询覆盖。可用 Jellyfin 原流与 File Station 原流的竞争仅针对**同一个已验证文件**，不竞争启动多个转码器。蜂窝且已有合格公网 HTTPS 候选时，文件路线优先尝试公网，避免先耗在不可达私网；失败后仍有受控回退。
 
 设备文件在当前 Debug 路线可查找同 NAS 上的 Jellyfin 对应文件，核对路径/文件身份、大小等证据后，取得媒体信息及必要的兼容 HLS。不是按影片标题相似就替换文件。没有匹配、没有有效登录或轨道无法验证时，不能宣称已具备与 Jellyfin 相同的回退能力。Release 不继承该 Debug 能力结论。
+
+2026-11-20 源码核对：`JellyfinMatchedFileStream.resolve` 的 `mediaLookupFailed` 现在记录可识别的真实 HTTP 响应状态。一般传输错误仍记录错误域和代码。文件匹配、认证、原片保留及降档决策逻辑沿用既有路径，本次诊断更新尚未安装到测试设备。
 
 本地断点与音字幕偏好按 NAS、账号和文件版本隔离；“从头播放”覆盖本次起点，保留明确的字幕关闭选择。增长中的 TS 录制有独立身份及长度规则，不可套用普通静态电影完整长度校验。
 

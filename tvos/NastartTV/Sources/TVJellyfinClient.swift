@@ -1,4 +1,6 @@
 import Foundation
+import CryptoKit
+import OSLog
 
 /// Native tvOS API boundary. Range racing and iOS renderer code stay on mobile.
 struct TVJellyfinClient {
@@ -33,7 +35,13 @@ struct TVJellyfinClient {
         return parts.url!
     }
     var authorization: String {
-        "MediaBrowser Client=\"Nastart TV\", Device=\"Apple TV\", DeviceId=\"\(deviceID)\", Version=\"0.1.0\""
+        let identity = "MediaBrowser Client=\"Nastart TV\", Device=\"Apple TV\", DeviceId=\"\(deviceID)\", Version=\"0.1.0\""
+        return identity + (token.map { ", Token=\"\($0)\"" } ?? "")
+    }
+    static func trace(_ event: String, token: String? = nil) {
+        let fingerprint = token.map { SHA256.hash(data: Data($0.utf8)).prefix(6).map { String(format: "%02x", $0) }.joined() } ?? "none"
+        Logger(subsystem: "com.changliwen.nastart.tv", category: "JellyfinSession")
+            .notice("\(event, privacy: .public) tokenFingerprint=\(fingerprint, privacy: .public)")
     }
     func request(_ path: [String], method: String = "GET", query: [URLQueryItem] = [],
                  body: [String: Any]? = nil) throws -> URLRequest {
@@ -53,8 +61,29 @@ struct TVJellyfinClient {
         let (data, response) = try await session.data(for: request)
         try Task.checkCancellation()
         guard let response = response as? HTTPURLResponse else { throw TVClientError.invalidResponse }
+        // Route labels only: never log URLs, user IDs, query strings or response bodies.
+        let leaf = request.url?.lastPathComponent ?? ""
+        let route = ["UserViews", "Views", "Items", "Resume", "AuthenticateByName", "Me"].contains(leaf) ? leaf : "other"
+        Self.trace("http route=\(route) status=\(response.statusCode)", token: token)
         guard (200..<300).contains(response.statusCode) else { throw TVClientError.http(response.statusCode) }
         return data
+    }
+    /// Read only policy flags after catalog authorization fails. Never collect
+    /// account names, allowed folder/device IDs, or raw server responses.
+    func diagnoseLibraryAuthorization() async {
+        struct Policy: Decodable {
+            let IsDisabled: Bool?
+            let EnableAllDevices: Bool?
+            let EnableAllFolders: Bool?
+            let EnableMediaPlayback: Bool?
+        }
+        struct User: Decodable { let Policy: Policy? }
+        do {
+            let data = try await send(request(["Users", "Me"]))
+            let policy = try JSONDecoder().decode(User.self, from: data).Policy
+            func flag(_ value: Bool?) -> String { value.map(String.init) ?? "unknown" }
+            Self.trace("policy disabled=\(flag(policy?.IsDisabled)) allDevices=\(flag(policy?.EnableAllDevices)) allFolders=\(flag(policy?.EnableAllFolders)) playback=\(flag(policy?.EnableMediaPlayback))", token: token)
+        } catch { Self.trace("policy_unavailable_see_http_status", token: token) }
     }
     func login(user: String, password: String) async throws -> TVAccount {
         let data = try await send(request(["Users", "AuthenticateByName"], method: "POST",
@@ -65,7 +94,12 @@ struct TVJellyfinClient {
     }
     func libraries() async throws -> [TVMediaItem] {
         guard let userID else { throw TVClientError.invalidResponse }
-        let data = try await send(request(["Users", userID, "Views"]))
+        let data: Data
+        do {
+            data = try await send(request(["UserViews"], query: [.init(name: "UserId", value: userID)]))
+        } catch TVClientError.http(let status) where status == 404 || status == 405 {
+            data = try await send(request(["Users", userID, "Views"]))
+        }
         return try JSONDecoder().decode(TVItemPage.self, from: data).Items
     }
     /// Account-visible movies only; no item list or images are downloaded.

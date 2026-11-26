@@ -1,0 +1,16 @@
+{
+  "port-config": {
+    "protocol-file": "port_conf/nastart-agent.sc"
+  },
+  "docker-project": {
+    "projects": [
+      {
+        "name": "nastart-agent-spk",
+        "path": "project",
+        "build_params": {
+          "build": false
+        }
+      }
+    ]
+  }
+}

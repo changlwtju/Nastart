@@ -1,0 +1,678 @@
+{
+  "date": "2026-11-09",
+  "sourceHead": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+  "includesUncommittedSource": true,
+  "normalStartupExperimentEnabled": false,
+  "simulator": {
+    "xcode": "27.2 (27B52)",
+    "runtime": "iOS 27.0",
+    "deviceType": "iPhone Air",
+    "blankOwnedSimulatorDeleted": true,
+    "firstRun": {
+      "executed": 17,
+      "failed": 1,
+      "failure": "Assertion counted two later decoder reads together with the adopted initial response; decode and initial delivery succeeded."
+    },
+    "finalSameSource": {
+      "proxyAndDecoderExecuted": 17,
+      "sharedEntryExecuted": 3,
+      "failed": 0,
+      "firstGetBeforeInitialDelivery": 1,
+      "unvalidatedFirstResponseDecoded": true,
+      "pausedAtBodyBytes": 65536,
+      "pacedFixtureBodyBytes": 524288
+    }
+  },
+  "fullMatrixPassesAdded": 0,
+  "physicalDebugPackage": {
+    "mainSHA256": "3691c8fc13ff1013bdbddbf9a6c9f78f5c83b986cd8f9ed785d879cb0af818a4",
+    "dylibSHA256": "a444e8d9159d79d0070f8a688fa35be119ae9c8d703d8faa4fe4bb62e0e90ab9",
+    "builtAt": "2026-11-09T13:32:23.228856+08:00",
+    "configuration": "signed Debug with default-off iOS original-response probe",
+    "sourceManifestFiles": 498
+  },
+  "ipad": {
+    "model": "iPad15,7",
+    "os": "26.6",
+    "transport": "USB",
+    "freshIdentityCheckedBeforeEachWindow": true,
+    "installedAt": "2026-11-09T13:32:42.557056+08:00",
+    "preferencesEqualAfterInstall": true,
+    "entry": "dsmFileStation",
+    "sample": "S19",
+    "sourceBytes": 128795641934,
+    "A": {
+      "startAt": "2026-11-09T13:34:20.930818+08:00",
+      "route": [
+        {
+          "connectionAddressKind": "privateIP",
+          "connectionScheme": "http",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay",
+          "routeKind": "localRangeProxy"
+        }
+      ],
+      "network": [
+        {
+          "constrained": "false",
+          "evidence": "devicePathSnapshot",
+          "expensive": "false",
+          "networkClass": "wifi"
+        }
+      ],
+      "track": [
+        {
+          "event": "audio_session_ready",
+          "mediaSubtitleDisabled": "false",
+          "requestAudioID": "2",
+          "requestSubtitleID": "9"
+        },
+        {
+          "event": "subtitle_track_changed"
+        },
+        {
+          "event": "audio_track_changed",
+          "engineTrackID": "2"
+        }
+      ],
+      "timeline": [
+        {
+          "event": "intent_created",
+          "secondsAfterActionMarker": 1.551
+        },
+        {
+          "event": "route_selected",
+          "secondsAfterActionMarker": 1.551
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 1.601,
+          "proxyKind": "mediaRange",
+          "range": "bytes=0-33554431",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 1.699,
+          "proxyKind": "mediaRange",
+          "range": "bytes=128795625367-128829179798",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 1.772,
+          "proxyKind": "mediaRange",
+          "range": "bytes=14205-33568636",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "first_frame",
+          "secondsAfterActionMarker": 2.372,
+          "tapToFirstFrameMs": "906"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 4.951,
+          "proxyKind": "mediaRange",
+          "range": "bytes=33568637-67123068",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 8.513,
+          "proxyKind": "mediaRange",
+          "range": "bytes=67123069-100677500",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 10.727,
+          "proxyKind": "mediaRange",
+          "range": "bytes=100677501-134231932",
+          "transportScope": "systemShared"
+        }
+      ],
+      "responseAdoption": [],
+      "internalFirstFrame": [
+        {
+          "firstFramePositionSeconds": "0.120",
+          "tapToFirstFrameMs": "906"
+        }
+      ],
+      "ordinaryExit": true,
+      "responseHeaders": [
+        {
+          "clientResponse": "continuousRange",
+          "contentLength": "33554432",
+          "contentRange": "bytes 0-33554431/128795641934",
+          "originalETagKind": "strong",
+          "originalLastModifiedPresent": "true",
+          "originalPrefixCompatibleHeaders": "true",
+          "originalPrefixTransportSupported": "true",
+          "originalURLUnchanged": "true",
+          "range": "bytes=0-33554431",
+          "status": "206"
+        },
+        {
+          "clientResponse": "continuousRange",
+          "contentLength": "16567",
+          "contentRange": "bytes 128795625367-128795641933/128795641934",
+          "originalETagKind": "strong",
+          "originalLastModifiedPresent": "true",
+          "originalPrefixCompatibleHeaders": "true",
+          "originalPrefixTransportSupported": "true",
+          "originalURLUnchanged": "true",
+          "range": "bytes=128795625367-128829179798",
+          "status": "206"
+        },
+        {
+          "clientResponse": "continuousRange",
+          "contentLength": "33554432",
+          "contentRange": "bytes 14205-33568636/128795641934",
+          "originalETagKind": "strong",
+          "originalLastModifiedPresent": "true",
+          "originalPrefixCompatibleHeaders": "true",
+          "originalPrefixTransportSupported": "true",
+          "originalURLUnchanged": "true",
+          "range": "bytes=14205-33568636",
+          "status": "206"
+        }
+      ]
+    },
+    "B": {
+      "startAt": "2026-11-09T13:36:19.820353+08:00",
+      "route": [
+        {
+          "connectionAddressKind": "privateIP",
+          "connectionScheme": "http",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay",
+          "routeKind": "localRangeProxy"
+        }
+      ],
+      "network": [
+        {
+          "constrained": "false",
+          "evidence": "devicePathSnapshot",
+          "expensive": "false",
+          "networkClass": "wifi"
+        }
+      ],
+      "track": [
+        {
+          "event": "audio_session_ready",
+          "mediaSubtitleDisabled": "false",
+          "requestAudioID": "2",
+          "requestSubtitleID": "9"
+        },
+        {
+          "event": "subtitle_track_changed"
+        },
+        {
+          "event": "audio_track_changed",
+          "engineTrackID": "2"
+        }
+      ],
+      "timeline": [
+        {
+          "event": "intent_created",
+          "secondsAfterActionMarker": 1.459
+        },
+        {
+          "event": "route_selected",
+          "secondsAfterActionMarker": 1.46
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 1.461,
+          "proxyKind": "mediaRange",
+          "range": "bytes=0-33554431",
+          "transportScope": "preparedOriginal"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 1.515,
+          "proxyKind": "mediaRange",
+          "range": "bytes=128795625367-128829179798",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 1.553,
+          "proxyKind": "mediaRange",
+          "range": "bytes=14205-33568636",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "first_frame",
+          "secondsAfterActionMarker": 2.038,
+          "tapToFirstFrameMs": "649"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 5.461,
+          "proxyKind": "mediaRange",
+          "range": "bytes=33568637-67123068",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 8.6,
+          "proxyKind": "mediaRange",
+          "range": "bytes=67123069-100677500",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 11.214,
+          "proxyKind": "mediaRange",
+          "range": "bytes=100677501-134231932",
+          "transportScope": "systemShared"
+        }
+      ],
+      "responseAdoption": [
+        {
+          "headersReady": "true",
+          "preparedBytes": "14147",
+          "stage": "originalResponseAdopted",
+          "transportScope": "preparedOriginal",
+          "secondsAfterActionMarker": 1.514
+        },
+        {
+          "bytes": "14147",
+          "stage": "originalResponsePreparedBytesDelivered",
+          "transportScope": "preparedOriginal",
+          "secondsAfterActionMarker": 1.514
+        }
+      ],
+      "internalFirstFrame": [
+        {
+          "firstFramePositionSeconds": "0.056",
+          "tapToFirstFrameMs": "649"
+        }
+      ],
+      "ordinaryExit": true,
+      "responseHeaders": [
+        {
+          "clientResponse": "continuousRange",
+          "contentLength": "33554432",
+          "contentRange": "bytes 0-33554431/128795641934",
+          "originalETagKind": "strong",
+          "originalLastModifiedPresent": "true",
+          "originalPrefixCompatibleHeaders": "true",
+          "originalPrefixTransportSupported": "true",
+          "originalURLUnchanged": "true",
+          "range": "bytes=0-33554431",
+          "status": "206"
+        },
+        {
+          "clientResponse": "continuousRange",
+          "contentLength": "16567",
+          "contentRange": "bytes 128795625367-128795641933/128795641934",
+          "originalETagKind": "strong",
+          "originalLastModifiedPresent": "true",
+          "originalPrefixCompatibleHeaders": "true",
+          "originalPrefixTransportSupported": "true",
+          "originalURLUnchanged": "true",
+          "range": "bytes=128795625367-128829179798",
+          "status": "206"
+        },
+        {
+          "clientResponse": "continuousRange",
+          "contentLength": "33554432",
+          "contentRange": "bytes 14205-33568636/128795641934",
+          "originalETagKind": "strong",
+          "originalLastModifiedPresent": "true",
+          "originalPrefixCompatibleHeaders": "true",
+          "originalPrefixTransportSupported": "true",
+          "originalURLUnchanged": "true",
+          "range": "bytes=14205-33568636",
+          "status": "206"
+        }
+      ]
+    },
+    "defaultLaunchHomeVerifiedAfterProbe": true,
+    "cleanupVerified": true,
+    "bothWindowsPictureObserved": true,
+    "internalFirstFrameComparisonIsSinglePair": true
+  },
+  "iphone13": {
+    "model": "iPhone14,5",
+    "os": "16.3.1",
+    "transport": "USB",
+    "entry": "jellyfin",
+    "sample": "S19",
+    "sourceBytes": 128795641934,
+    "installedAt": "2026-11-09T13:37:30.086453+08:00",
+    "preferencesEqualAfterInstall": true,
+    "defaultHomeVerified": true,
+    "defaultLaunchHomeVerifiedAfterProbe": true,
+    "ownedProcessesStopped": true,
+    "remainingAppOrRunner": 0,
+    "A": {
+      "startAt": "2026-11-09T13:38:36.897525+08:00",
+      "route": [
+        {
+          "connectionAddressKind": "privateIP",
+          "connectionScheme": "http",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay",
+          "routeKind": "localRangeProxy"
+        }
+      ],
+      "network": [
+        {
+          "constrained": "false",
+          "evidence": "devicePathSnapshot",
+          "expensive": "false",
+          "networkClass": "wifi"
+        }
+      ],
+      "track": [
+        {
+          "event": "audio_session_ready",
+          "mediaSubtitleDisabled": "true",
+          "requestAudioID": "2",
+          "requestSubtitleID": "none"
+        },
+        {
+          "event": "audio_track_changed",
+          "engineTrackID": "2"
+        }
+      ],
+      "timeline": [
+        {
+          "event": "intent_created",
+          "secondsAfterActionMarker": 9.723
+        },
+        {
+          "event": "route_selected",
+          "secondsAfterActionMarker": 9.724
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 9.773,
+          "proxyKind": "mediaRange",
+          "range": "bytes=0-33554431",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 9.78,
+          "proxyKind": "mediaRange",
+          "range": "bytes=128795625367-128829179798",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 9.798,
+          "proxyKind": "mediaRange",
+          "range": "bytes=14205-33568636",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "first_frame",
+          "secondsAfterActionMarker": 10.542,
+          "tapToFirstFrameMs": "952"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 14.172,
+          "proxyKind": "mediaRange",
+          "range": "bytes=33568637-67123068",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 17.901,
+          "proxyKind": "mediaRange",
+          "range": "bytes=67123069-100677500",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 22.75,
+          "proxyKind": "mediaRange",
+          "range": "bytes=100677501-134231932",
+          "transportScope": "systemShared"
+        }
+      ],
+      "responseAdoption": [],
+      "internalFirstFrame": [
+        {
+          "firstFramePositionSeconds": "0.158",
+          "tapToFirstFrameMs": "952"
+        }
+      ],
+      "ordinaryExit": true,
+      "responseHeaders": [
+        {
+          "clientResponse": "continuousRange",
+          "contentLength": "33554432",
+          "contentRange": "bytes 0-33554431/128795641934",
+          "originalETagKind": "missing",
+          "originalLastModifiedPresent": "true",
+          "originalPrefixCompatibleHeaders": "true",
+          "originalPrefixTransportSupported": "true",
+          "originalURLUnchanged": "true",
+          "range": "bytes=0-33554431",
+          "status": "206"
+        },
+        {
+          "clientResponse": "continuousRange",
+          "contentLength": "16567",
+          "contentRange": "bytes 128795625367-128795641933/128795641934",
+          "originalETagKind": "missing",
+          "originalLastModifiedPresent": "true",
+          "originalPrefixCompatibleHeaders": "true",
+          "originalPrefixTransportSupported": "true",
+          "originalURLUnchanged": "true",
+          "range": "bytes=128795625367-128829179798",
+          "status": "206"
+        },
+        {
+          "clientResponse": "continuousRange",
+          "contentLength": "33554432",
+          "contentRange": "bytes 14205-33568636/128795641934",
+          "originalETagKind": "missing",
+          "originalLastModifiedPresent": "true",
+          "originalPrefixCompatibleHeaders": "true",
+          "originalPrefixTransportSupported": "true",
+          "originalURLUnchanged": "true",
+          "range": "bytes=14205-33568636",
+          "status": "206"
+        }
+      ]
+    },
+    "B": {
+      "startAt": "2026-11-09T13:40:35.933998+08:00",
+      "route": [
+        {
+          "connectionAddressKind": "privateIP",
+          "connectionScheme": "http",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay",
+          "routeKind": "localRangeProxy"
+        }
+      ],
+      "network": [
+        {
+          "constrained": "false",
+          "evidence": "devicePathSnapshot",
+          "expensive": "false",
+          "networkClass": "wifi"
+        }
+      ],
+      "track": [
+        {
+          "event": "audio_session_ready",
+          "mediaSubtitleDisabled": "true",
+          "requestAudioID": "2",
+          "requestSubtitleID": "none"
+        },
+        {
+          "event": "audio_track_changed",
+          "engineTrackID": "2"
+        }
+      ],
+      "timeline": [
+        {
+          "event": "intent_created",
+          "secondsAfterActionMarker": 9.666
+        },
+        {
+          "event": "route_selected",
+          "secondsAfterActionMarker": 9.667
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 9.667,
+          "proxyKind": "mediaRange",
+          "range": "bytes=0-33554431",
+          "transportScope": "preparedOriginal"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 9.712,
+          "proxyKind": "mediaRange",
+          "range": "bytes=128795625367-128829179798",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 9.72,
+          "proxyKind": "mediaRange",
+          "range": "bytes=14205-33568636",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "first_frame",
+          "secondsAfterActionMarker": 10.35,
+          "tapToFirstFrameMs": "785"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 13.502,
+          "proxyKind": "mediaRange",
+          "range": "bytes=33568637-67123068",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 17.431,
+          "proxyKind": "mediaRange",
+          "range": "bytes=67123069-100677500",
+          "transportScope": "systemShared"
+        },
+        {
+          "event": "upstreamRequestIssued",
+          "secondsAfterActionMarker": 20.677,
+          "proxyKind": "mediaRange",
+          "range": "bytes=100677501-134231932",
+          "transportScope": "systemShared"
+        }
+      ],
+      "responseAdoption": [
+        {
+          "headersReady": "true",
+          "preparedBytes": "34441",
+          "stage": "originalResponseAdopted",
+          "transportScope": "preparedOriginal",
+          "secondsAfterActionMarker": 9.71
+        },
+        {
+          "bytes": "11273",
+          "stage": "originalResponsePreparedBytesDelivered",
+          "transportScope": "preparedOriginal",
+          "secondsAfterActionMarker": 9.71
+        },
+        {
+          "bytes": "2896",
+          "stage": "originalResponsePreparedBytesDelivered",
+          "transportScope": "preparedOriginal",
+          "secondsAfterActionMarker": 9.711
+        },
+        {
+          "bytes": "8688",
+          "stage": "originalResponsePreparedBytesDelivered",
+          "transportScope": "preparedOriginal",
+          "secondsAfterActionMarker": 9.711
+        },
+        {
+          "bytes": "2896",
+          "stage": "originalResponsePreparedBytesDelivered",
+          "transportScope": "preparedOriginal",
+          "secondsAfterActionMarker": 9.711
+        },
+        {
+          "bytes": "2896",
+          "stage": "originalResponsePreparedBytesDelivered",
+          "transportScope": "preparedOriginal",
+          "secondsAfterActionMarker": 9.712
+        },
+        {
+          "bytes": "4344",
+          "stage": "originalResponsePreparedBytesDelivered",
+          "transportScope": "preparedOriginal",
+          "secondsAfterActionMarker": 9.712
+        },
+        {
+          "bytes": "1448",
+          "stage": "originalResponsePreparedBytesDelivered",
+          "transportScope": "preparedOriginal",
+          "secondsAfterActionMarker": 9.712
+        }
+      ],
+      "internalFirstFrame": [
+        {
+          "firstFramePositionSeconds": "0.094",
+          "tapToFirstFrameMs": "785"
+        }
+      ],
+      "ordinaryExit": true,
+      "responseHeaders": [
+        {
+          "clientResponse": "continuousRange",
+          "contentLength": "33554432",
+          "contentRange": "bytes 0-33554431/128795641934",
+          "originalETagKind": "missing",
+          "originalLastModifiedPresent": "true",
+          "originalPrefixCompatibleHeaders": "true",
+          "originalPrefixTransportSupported": "true",
+          "originalURLUnchanged": "true",
+          "range": "bytes=0-33554431",
+          "status": "206"
+        },
+        {
+          "clientResponse": "continuousRange",
+          "contentLength": "16567",
+          "contentRange": "bytes 128795625367-128795641933/128795641934",
+          "originalETagKind": "missing",
+          "originalLastModifiedPresent": "true",
+          "originalPrefixCompatibleHeaders": "true",
+          "originalPrefixTransportSupported": "true",
+          "originalURLUnchanged": "true",
+          "range": "bytes=128795625367-128829179798",
+          "status": "206"
+        },
+        {
+          "clientResponse": "continuousRange",
+          "contentLength": "33554432",
+          "contentRange": "bytes 14205-33568636/128795641934",
+          "originalETagKind": "missing",
+          "originalLastModifiedPresent": "true",
+          "originalPrefixCompatibleHeaders": "true",
+          "originalPrefixTransportSupported": "true",
+          "originalURLUnchanged": "true",
+          "range": "bytes=14205-33568636",
+          "status": "206"
+        }
+      ]
+    },
+    "qualification": "One sequential pair; real video snapshots verified, no display first-frame timing or actual audio acceptance."
+  },
+  "displayFirstFrameTimingMeasured": false,
+  "realAudioVerified": false,
+  "nasFileOrConfigurationChanged": false,
+  "iphone18OrAppleTVTouched": false
+}

@@ -533,6 +533,14 @@ struct PlaybackSeekCapacityObservation {
     private var samples = 0
     private var finished = false
 
+    // Explicit init: the private stored properties would otherwise make the
+    // synthesized memberwise init private, and the call site lives in another type.
+    init(generation: Int, started: TimeInterval, target: TimeInterval?) {
+        self.generation = generation
+        self.started = started
+        self.target = target
+    }
+
     mutating func sample(now: TimeInterval, isSeek: Bool, playable: Bool) -> String? {
         guard !finished, now.isFinite, started.isFinite, now >= started else { return nil }
         if now - started > 10 {
@@ -795,6 +803,23 @@ struct GreenfieldKSPlayerRenderer: View {
                 // has already connected. Only disconnect this surface's plan.
                 if !controls.isPictureInPictureActive,
                    controls.renderingPlanID == plan.id {
+#if DEBUG
+                    if !reportedStartupTiming, let options = coordinator.playerLayer?.options {
+                        let startup = options.videoStartupTiming.snapshot
+                        let seekResult = options.initialSeekResult.map(String.init)
+                            ?? (options.initialSeekStartTime > 0 ? "pending" : "notStarted")
+                        controls.event("engine_startup_incomplete", metrics: [
+                            "initialPositionSeconds": String(plan.timeline.startTime),
+                            "initialSeekMs": PlaybackStageTiming.milliseconds(start: options.initialSeekStartTime, end: options.initialSeekEndTime),
+                            "initialSeekResult": seekResult,
+                            "firstVideoPacketMs": PlaybackStageTiming.milliseconds(start: options.prepareTime, end: options.readVideoTime),
+                            "acceptedVideoFrameMs": PlaybackStageTiming.milliseconds(start: options.prepareTime, end: startup.samples[.acceptedFrame]?.time ?? 0),
+                            "outputSubmittedMs": PlaybackStageTiming.milliseconds(start: options.prepareTime, end: startup.samples[.outputSubmitted]?.time ?? 0),
+                            "discardedVideoFramesBeforeAccepted": String(startup.discardedBeforeFirstAccepted),
+                            "evidence": "rendererRetiredBeforeAdvancingClock"
+                        ].merging(startup.fields(prepare: options.prepareTime)) { _, new in new })
+                    }
+#endif
                     controls.disconnect()
                     didConnectControls = false
                 }
@@ -1207,6 +1232,8 @@ struct GreenfieldKSPlayerRenderer: View {
         let layer = KSPlayerLayer(url: plan.primaryRoute.url, isAutoPlay: false,
                                   options: options, delegate: coordinator)
         coordinator.playerLayer = layer
+        // Finish the subtitle model's deferred reset while the candidate warms up.
+        coordinator.subtitleModel.url = plan.primaryRoute.url
         coordinator.isMuted = true
         layer.prepareToPlay()
         let deadline = ProcessInfo.processInfo.systemUptime + 60

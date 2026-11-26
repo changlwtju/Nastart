@@ -257,6 +257,16 @@ enum JellyfinHTTPStatus {
     }
 }
 
+/// A 401 for a session the app already holds means the server no longer
+/// accepts its token (revoked, server data restored, password changed).
+/// Retrying cannot fix that, so the library returns to sign-in; every other
+/// failure is connectivity or server state and keeps the session.
+enum JellyfinSessionRejectionPolicy {
+    static func requiresSignIn(after error: Error) -> Bool {
+        JellyfinHTTPStatus.code(for: error) == 401
+    }
+}
+
 enum JellyfinLibraryError: Error {
     case missingSession
     case missingItem
@@ -441,6 +451,7 @@ struct PlaybackNetworkSnapshot: Sendable {
     // Local path observation identity, separate from the bitrate cache bucket.
     // Returning to Wi-Fi must not resurrect a verification from an old path.
     var pathGeneration: UInt64 = 0
+    var playbackContext: PlaybackNetworkContext? = nil
 }
 
 /// A saved token or public server-info response alone is not an authenticated
@@ -448,6 +459,15 @@ struct PlaybackNetworkSnapshot: Sendable {
 struct JellyfinAuthenticatedIdentity: Equatable, Sendable {
     let userID: String
     let serverID: String
+    /// The account name the server reports for this user, when the reply carries one.
+    /// No default here: a let with a default cannot be assigned again in init.
+    let name: String?
+
+    init(userID: String, serverID: String, name: String? = nil) {
+        self.userID = userID
+        self.serverID = serverID
+        self.name = name
+    }
 
     static func response(data: Data, status: Int) -> Self? {
         guard status == 200,
@@ -456,7 +476,7 @@ struct JellyfinAuthenticatedIdentity: Equatable, Sendable {
               let server = object["ServerId"] as? String,
               !user.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
               !server.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
-        return Self(userID: user, serverID: server)
+        return Self(userID: user, serverID: server, name: object["Name"] as? String)
     }
 
     static func matches(primary: Self?, candidate: Self?, expectedUserID: String) -> Bool {
@@ -852,6 +872,14 @@ final class PlaybackNetworkObserver: @unchecked Sendable {
                 )
             }
             guard let self else { return }
+            snapshot.playbackContext = PlaybackNetworkContext(
+                networkClass: path.status != .satisfied ? .offline
+                    : path.isConstrained ? .constrained
+                    : path.usesInterfaceType(.cellular) ? .cellular
+                    : (path.usesInterfaceType(.wifi) || path.usesInterfaceType(.wiredEthernet)) ? .wifi : .unknown,
+                isExpensive: path.isExpensive,
+                isConstrained: path.isConstrained
+            )
             self.lock.lock()
             self.currentConnectionKind = path.status != .satisfied ? .offline
                 : path.usesInterfaceType(.wifi) ? .wifi
@@ -885,6 +913,19 @@ final class PlaybackNetworkObserver: @unchecked Sendable {
         lock.lock()
         defer { lock.unlock() }
         return currentConnectionKind
+    }
+
+    func snapshotForPlayback() async throws -> PlaybackNetworkSnapshot {
+        // The monitor's first callback is asynchronous. Every entry shares
+        // the same bounded wait and retains unknown evidence on timeout.
+        let deadline = ProcessInfo.processInfo.systemUptime + 0.15
+        var value = snapshot()
+        while value.playbackContext == nil, ProcessInfo.processInfo.systemUptime < deadline {
+            try await Task.sleep(nanoseconds: 10_000_000)
+            value = snapshot()
+        }
+        try Task.checkCancellation()
+        return value
     }
 }
 
@@ -1538,6 +1579,7 @@ final class MediaPlaybackTracker {
     private let lock = NSLock()
     private let eventHandler: (MediaPlaybackTrackingEvent) -> Void
     private let releaseResources: () -> Void
+    private let progressIntervalSeconds: Double
     private var didReleaseResources = false
     private var didStart = false
     private var didStop = false
@@ -1547,7 +1589,9 @@ final class MediaPlaybackTracker {
     private var pendingEvents = MediaPlaybackEventBuffer()
     private var deliveringEvents = false
 
-    init(releaseResources: @escaping () -> Void = {}, eventHandler: @escaping (MediaPlaybackTrackingEvent) -> Void) {
+    init(progressIntervalSeconds: Double = 10, releaseResources: @escaping () -> Void = {},
+         eventHandler: @escaping (MediaPlaybackTrackingEvent) -> Void) {
+        self.progressIntervalSeconds = progressIntervalSeconds
         self.releaseResources = releaseResources
         self.eventHandler = eventHandler
     }
@@ -1592,7 +1636,7 @@ final class MediaPlaybackTracker {
         lastPositionSeconds = position
         let shouldReport = didStart && (
             force
-                || abs(position - lastReportedPositionSeconds) >= 10
+                || abs(position - lastReportedPositionSeconds) >= progressIntervalSeconds
                 || lastPausedState != isPaused
         )
         if shouldReport {

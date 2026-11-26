@@ -27,6 +27,9 @@ private struct TVWindowAppearance: UIViewRepresentable {
 final class TVAppState: ObservableObject {
     @Published var account: TVAccount?
     @Published var nasAccount: TVNASAccount?
+    @Published private(set) var jellyfinSessionRevision = UUID()
+    private var silentlyRenewedToken: String?
+    private var renewingJellyfin = false
     let deviceID: String
     init() {
         account = TVAccountVault.load()
@@ -41,13 +44,64 @@ final class TVAppState: ObservableObject {
     /// Offline UI only: no accounts, no Keychain read, no installation id written.
     init(offlineFixture: Void) { deviceID = "offline-ui-fixture" }
 #endif
-    func signIn(_ account: TVAccount) throws {
+    func signIn(_ account: TVAccount, password: String? = nil) throws {
         try TVAccountVault.save(account)
+        TVJellyfinClient.trace("session_saved", token: account.token)
+        if let password, !password.isEmpty {
+            do { try TVAccountVault.savePassword(password, for: account) }
+            catch { TVJellyfinClient.trace("password_save_failed") }
+        }
+        if let previous = self.account, previous.server != account.server || previous.userID != account.userID {
+            try? TVAccountVault.clearPassword(for: previous)
+        }
         self.account = account
+        silentlyRenewedToken = nil
+        jellyfinSessionRevision = UUID()
+    }
+    func renewJellyfinSession(rejected client: TVJellyfinClient) async -> Bool {
+        TVJellyfinClient.trace("renew_requested", token: client.token)
+        // A different homepage request may have already renewed this session.
+        if let held = account, held.server == client.server, held.userID == client.userID,
+           held.token != client.token { return true }
+        guard let held = account, held.server == client.server,
+              held.userID == client.userID, held.token == client.token else {
+            TVJellyfinClient.trace("renew_skipped_identity")
+            return false
+        }
+        guard !renewingJellyfin else { TVJellyfinClient.trace("renew_skipped_in_progress"); return false }
+        guard held.token != silentlyRenewedToken else {
+            TVJellyfinClient.trace("renewed_token_rejected_no_login_loop", token: held.token); return false
+        }
+        guard let password = TVAccountVault.password(for: held) else {
+            TVJellyfinClient.trace("renew_skipped_no_saved_password"); return false
+        }
+        renewingJellyfin = true
+        TVJellyfinClient.trace("renew_login_started", token: held.token)
+        defer { renewingJellyfin = false }
+        do {
+            let renewed = try await TVJellyfinClient(server: held.server, deviceID: deviceID)
+                .login(user: held.userName, password: password)
+            TVJellyfinClient.trace("renew_login_succeeded", token: renewed.token)
+            try Task.checkCancellation()
+            guard account == held, renewed.userID == held.userID else { return false }
+            try signIn(renewed)
+            silentlyRenewedToken = renewed.token
+            TVJellyfinClient.trace("renew_persisted_reload", token: renewed.token)
+            return true
+        } catch TVClientError.http(401) {
+            TVJellyfinClient.trace("renew_login_rejected_401")
+            return false
+        } catch {
+            TVJellyfinClient.trace("renew_failed_or_cancelled")
+            return false
+        }
     }
     func signOut() throws {
+        let previous = account
         try TVAccountVault.clear()
         account = nil
+        silentlyRenewedToken = nil
+        if let previous { try TVAccountVault.clearPassword(for: previous) }
     }
     func signInNAS(_ account: TVNASAccount) throws {
         try TVAccountVault.save(account, nas: true)
@@ -110,6 +164,8 @@ struct NastartTVApp: App {
 
 private struct NastartTVApplicationContent: View {
     @StateObject private var state = TVAppState()
+    @StateObject private var serviceSync = TVCloudSyncStore.forCurrentInstallation()
+    @Environment(\.scenePhase) private var scenePhase
     @AppStorage("appearance.themeMode") private var themeMode = "system"
     private var preferredScheme: ColorScheme? { themeMode == "light" ? .light : (themeMode == "dark" ? .dark : nil) }
     var body: some View {
@@ -126,6 +182,10 @@ private struct NastartTVApplicationContent: View {
                 #endif
             }
             .environmentObject(state)
+            .environmentObject(serviceSync)
+            .task(id: scenePhase) {
+                if scenePhase == .active { await serviceSync.applicationBecameActive() }
+            }
             .preferredColorScheme(preferredScheme)
             .background(TVWindowAppearance(mode: themeMode).frame(width: 0, height: 0))
             .tint(TVTheme.accent)

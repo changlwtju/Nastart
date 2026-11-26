@@ -1,0 +1,17 @@
+[Unit]
+Description=Nastart Agent Docker Compose stack
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+PartOf=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/opt/nastart-agent
+ExecStart=/usr/bin/docker compose -p nastart-agent-linux --env-file /opt/nastart-agent/.env up -d --no-build --pull never --wait --wait-timeout 60
+ExecStopPost=/usr/bin/docker compose -p nastart-agent-linux --env-file /opt/nastart-agent/.env down --remove-orphans
+TimeoutStartSec=90
+
+[Install]
+WantedBy=multi-user.target

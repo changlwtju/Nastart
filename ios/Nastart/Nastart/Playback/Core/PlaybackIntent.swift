@@ -136,6 +136,17 @@ struct PlaybackNetworkContext: Codable, Equatable, Sendable {
         self.isExpensive = isExpensive
         self.isConstrained = isConstrained
     }
+
+    func observing(_ path: PlaybackNetworkContext?) -> PlaybackNetworkContext {
+        guard let path else { return self }
+        return PlaybackNetworkContext(
+            networkClass: path.networkClass,
+            isPrivateRoute: isPrivateRoute,
+            estimatedBitrate: estimatedBitrate,
+            isExpensive: path.isExpensive,
+            isConstrained: path.isConstrained
+        )
+    }
 }
 
 struct PlaybackItemIdentity: Codable, Equatable, Hashable, Sendable {

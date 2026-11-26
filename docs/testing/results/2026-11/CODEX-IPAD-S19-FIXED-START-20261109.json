@@ -1,0 +1,105 @@
+{
+  "date": "2026-11-09",
+  "device": {"model": "iPad15,7", "system": "26.6", "controlTransport": "USB"},
+  "package": {
+    "sourceHead": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "sourceIncludesLocalChanges": true,
+    "configuration": "signed Debug",
+    "dylibSHA256": "807b3c7e2b2176aee1167d716ea06190b000d0642bcac44b998656b3e46da8b4",
+    "executableSHA256": "f55fd4f5f7eafc3678ad4fac5a04669f40065316db03411e6acc4d5c305aac80",
+    "builtAt": "2026-11-09T17:55:38.740887+08:00",
+    "installedAt": "2026-11-09T17:56:16.852403+08:00",
+    "allPreferencesEqualAfterRetainDataInstall": true,
+    "initialEmptyEnvironmentLaunchObserved": true
+  },
+  "probe": {
+    "sampleID": "S19",
+    "sampleBytes": 128795641934,
+    "fixedStartSeconds": 346.993,
+    "network": "private LAN Wi-Fi",
+    "testEnvironmentInjected": true,
+    "productionPerformanceComparisonEligible": false,
+    "cacheConditionsControlled": false,
+    "fullMatrixPassesAdded": 0
+  },
+  "deviceFiles": {
+    "engineStartSeconds": 346.993,
+    "audioTrack": 2,
+    "subtitleTrack": 9,
+    "internalFirstFrameMs": 2914,
+    "firstClockPositionSeconds": 347.117,
+    "firstFrameSubmissionMsAfterIntent": 1780,
+    "initialSeekMs": 513,
+    "initialSeekResult": 0,
+    "discardedVideoFramesBeforeAccepted": 18,
+    "actualVideoAndSubtitlesObserved": true,
+    "ordinaryExit": true,
+    "priorBlackScreenReproduced": false
+  },
+  "jellyfin": {
+    "engineStartSeconds": 346.993,
+    "audioTrack": 2,
+    "subtitleTrack": 9,
+    "internalFirstFrameMs": 3156,
+    "firstClockPositionSeconds": 347.074,
+    "initialSeekMs": 481,
+    "initialSeekResult": 0,
+    "discardedVideoFramesBeforeAccepted": 18,
+    "sameTailRangeCompletedMsAfterIntent": 828,
+    "actualVideoAndSubtitlesObserved": true,
+    "earlyBufferingOverlayObserved": true,
+    "ordinaryExit": true
+  },
+  "smb": {
+    "engineStartSeconds": 346.993,
+    "audioTrack": 1,
+    "subtitleTrack": 8,
+    "sameTrackSelectionAsHTTPEntrances": false,
+    "sampleBytesVerifiedInLocalIndex": 128795641934,
+    "proxyRoute": "sharedReader",
+    "httpStatus": 206,
+    "internalFirstFrameMs": 4103,
+    "firstClockPositionSeconds": 347.048,
+    "initialSeekMs": 799,
+    "initialSeekResult": 0,
+    "discardedVideoFramesBeforeAccepted": 18,
+    "sameTailRangeCompletedMsAfterIntent": 1058,
+    "actualVideoAndSubtitlesObserved": true,
+    "earlyBufferingOverlayObserved": true,
+    "ordinaryExit": true,
+    "firstDriverAttemptDispatchedPlayback": false
+  },
+  "cleanup": {
+    "endedAt": "2026-11-09T18:07:45.113852+08:00",
+    "normalRelaunchObserved": true,
+    "lastLaunchEnvironmentEmpty": true,
+    "ownedAppAndRunnerStopped": true,
+    "forwardersStopped": true,
+    "temporarySMBIndexRemoved": true,
+    "originalIndexEqual": {"libraries": 3, "connections": 4},
+    "onlyPreferenceChanges": ["diagnostics.entries.v1", "playback.localResume.v1"]
+  },
+  "verification": {
+    "signedDebugBuildPassed": true,
+    "offlinePlaybackScriptTestsPassed": 145,
+    "incompleteStartupDiagnosticTriggeredOnDevice": false
+  },
+  "deviceFilesTailRange": {
+    "deliveredBytes": 4823696,
+    "httpStatus": 206,
+    "priorBlackWindow": {
+      "upstreamIssueMsAfterIntent": 3341,
+      "completedMsAfterIntent": 7458,
+      "requestEndToFirstByteMs": 350,
+      "responseBodyMs": 3580,
+      "proxyBackpressureMs": 0
+    },
+    "fixedStartWindow": {
+      "upstreamIssueMsAfterIntent": 332,
+      "completedMsAfterIntent": 725,
+      "requestEndToFirstByteMs": 27,
+      "responseBodyMs": 367,
+      "proxyBackpressureMs": 0
+    }
+  }
+}

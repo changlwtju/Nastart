@@ -186,6 +186,51 @@ class PhaseReportTests(unittest.TestCase):
                          {"playlistChildID": "0.ts"})
         self.assertEqual(safe_fields({"playlistChildID": "https://private/?token=secret"}), {})
 
+    def test_first_observed_resume_segment_keeps_retries_and_late_terminals(self):
+        def row(time, transfer, ordinal, child, trace="AAAAAAAA", **details):
+            return {"actionSeconds": time, "event": "proxy_transfer_finished" if "finishSource" in details
+                    else "proxy_transfer_started", "fields": {"playbackTraceID": trace,
+                    "transferID": transfer, "playlistChildID": child, "hlsRole": "segment",
+                    "segmentOrdinal": ordinal, "upstreamTaskIndex": 1, **details}}
+
+        issued = {"stage": "upstreamRequestIssued"}
+        events = [row(1, "primer", 0, "0.ts", startupPrimer="true", **issued),
+                  row(2, "original", 166, "16.ts", **issued),
+                  row(2.1, "parallel", 166, "26.ts", **issued),
+                  row(2.2, "other", 0, "0.ts", "BBBBBBBB", **issued),
+                  row(5, "retry", 166, "16.ts", **issued),
+                  row(6, "retry", 166, "16.ts", status=200),
+                  {"actionSeconds": 7, "event": "first_frame", "fields": {"playbackTraceID": "AAAAAAAA"}},
+                  row(7.1, "original", 166, "16.ts", finishSource="clientBodySend"),
+                  row(8, "seek", 166, "16.ts", **issued),
+                  row(9, "seek", 166, "16.ts", status=200)]
+
+        report = analyze(list(reversed(events)))
+        by_trace = {r["traceID"]: r for r in report["firstObservedSegmentAttempts"]}
+        resume = by_trace["AAAAAAAA"]
+        self.assertEqual(resume["segmentOrdinal"], 166)
+        self.assertEqual(resume["firstIssueActionSeconds"], 2)
+        a, b = resume["requests"]
+        self.assertEqual(a["localChildGroup"], b["localChildGroup"])
+        self.assertEqual(a["terminalActionSeconds"], 7.1)
+        self.assertEqual(b["headersActionSeconds"], 6)
+        self.assertEqual(by_trace["BBBBBBBB"]["segmentOrdinal"], 0)
+        self.assertEqual(len(report["startupSegmentAttempts"]["requests"]), 2)
+        self.assertEqual(safe_fields("startupPrimer=true"), {"startupPrimer": "true"})
+
+    def test_first_observed_does_not_assume_retry_when_child_identity_is_missing(self):
+        def issue(time, transfer, **fields):
+            return {"actionSeconds": time, "event": "proxy_transfer_started",
+                    "fields": {"playbackTraceID": "AAAAAAAA", "transferID": transfer,
+                               "hlsRole": "segment", "stage": "upstreamRequestIssued", **fields}}
+
+        events = [issue(1, "original"), issue(2, "unknown-retry", segmentOrdinal=166)]
+        result, = analyze(events)["firstObservedSegmentAttempts"]
+        self.assertIsNone(result["segmentOrdinal"])
+        request, = result["requests"]
+        self.assertEqual(request["issuedActionSeconds"], 1)
+        self.assertEqual(request["retryIdentity"], "unknown")
+
     def test_library_auth_attempts_survive_private_snapshot_to_startup_timeline(self):
         with tempfile.TemporaryDirectory() as tmp:
             p = Path(tmp)

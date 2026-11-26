@@ -5,14 +5,14 @@ import SwiftUI
 /// ending playback. Release the source on explicit close or final owner loss,
 /// rather than on the covered view's transient onDisappear callback.
 @MainActor private final class NetworkPlaybackOwner: ObservableObject {
-    let preparation = PlaybackPreparationCoordinator<(source: NetworkMediaPlaybackSource, session: WebDAVPlaybackSession)>()
+    let preparation = PlaybackPreparationCoordinator<(source: NetworkMediaPlaybackSource, session: WebDAVPlaybackSession?)>()
     var session: WebDAVPlaybackSession?
     func stop() { preparation.close(); session?.stop(); session = nil }
     deinit { session?.stop() }
 }
 
-/// The module owns source credentials and revocation; hosts supply their usual
-/// player UI and receive only a temporary loopback URL, title and byte count.
+/// iOS hands the host a validated byte reader; the host owns decoder routing.
+/// Keep the package bridge for tvOS until that host has a shared reader proxy.
 @MainActor struct NetworkLibraryPlaybackView: View {
     let libraryID: UUID
     let expected: RemoteMediaEntry
@@ -22,7 +22,6 @@ import SwiftUI
     @StateObject private var owner = NetworkPlaybackOwner()
     @State private var source: NetworkMediaPlaybackSource?
     @State private var error: String?
-    @State private var title = ""
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
@@ -43,11 +42,15 @@ import SwiftUI
                         }
                         try checkCurrent()
                         let credential = try NetworkCredentialVault.load(library)
+                        let title = MediaCatalog.effectiveFile(expected, library: library).metadata?.title ?? expected.path.name
+                        #if os(iOS)
+                        return (try NetworkMediaPlaybackSource(library: library, file: expected,
+                            credential: credential, title: title), nil)
+                        #else
                         let bridge = WebDAVPlaybackSession(reader: try networkMediaReader(library: library, file: expected, credential: credential))
                         owner.session = bridge
                         do {
                             let address = try await bridge.start()
-                            let title = MediaCatalog.effectiveFile(expected, library: library).metadata?.title ?? expected.path.name
                             return (try NetworkMediaPlaybackSource(library: library, file: expected,
                                 playbackURL: address, title: title), bridge)
                         } catch {
@@ -55,11 +58,11 @@ import SwiftUI
                             if owner.session === bridge { owner.session = nil }
                             throw error
                         }
+                        #endif
                     }, discard: { [owner] prepared in
-                        prepared.session.stop()
+                        prepared.session?.stop()
                         if owner.session === prepared.session { owner.session = nil }
                     }) else { return }
-                    title = prepared.source.title
                     var ready = prepared.source
                     ready.startsFromBeginning = fromBeginning
                     source = ready

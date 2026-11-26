@@ -1,0 +1,404 @@
+{
+  "sample": {
+    "id": "S19",
+    "sizeBytes": 128795641934
+  },
+  "package": {
+    "mainSHA256": "b0e0bae4a286c692cc3e9882fd48aee559d6e03dda7c9f18532a906cefde21e5",
+    "dylibSHA256": "b9a6e09b8642d64fb11adff1fc7ef1b2041250810fb7c0fefb7fb96da2289710",
+    "builtAt": "2026-11-09T22:22:35.239585+08:00",
+    "configuration": "signed Debug with same-account Jellyfin LAN recovery and HLS experiment default off",
+    "sourceHEAD": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "profileExpires": "2026-11-15T00:30:17+00:00"
+  },
+  "sourceInputCount": 498,
+  "buildInputsUnchanged": true,
+  "privateEvidencePointer": "/tmp/nastart-jellyfin-same-account-lan-current",
+  "packagePathRelativeToPrivateEvidence": "product/Nastart.app",
+  "simulatorTests": {
+    "passed": 3,
+    "failed": 0,
+    "isolatedSimulatorRemoved": true
+  },
+  "installs": {
+    "iphone13": {
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "transport": "USB",
+      "freshIdentityVerified": true,
+      "installedAt": "2026-11-09T22:23:12.921918+08:00",
+      "retainedData": true,
+      "installedBundleVerified": true,
+      "preferencesEqualAcrossInstall": true,
+      "normalLaunchArgs": [],
+      "normalLaunchEnvironment": {},
+      "normalHomeAndWifiVerified": true,
+      "normalWindowCleanupAt": "2026-11-09T22:23:37.240555+08:00",
+      "runnerReinstalled": false,
+      "finalAllPreferencesEqual": false,
+      "onlyKnownPlaybackPreferencesDiffer": true,
+      "finalPreferenceChangeCount": 2
+    },
+    "ipad": {
+      "model": "iPad15,7",
+      "system": "26.6",
+      "transport": "USB",
+      "freshIdentityVerified": true,
+      "installedAt": "2026-11-09T22:23:22.562633+08:00",
+      "retainedData": true,
+      "installedBundleVerified": true,
+      "preferencesEqualAcrossInstall": true,
+      "normalLaunchArgs": [],
+      "normalLaunchEnvironment": {},
+      "normalHomeAndWifiVerified": true,
+      "normalWindowCleanupAt": "2026-11-09T22:23:49.209718+08:00",
+      "runnerReinstalled": false,
+      "finalAllPreferencesEqual": false,
+      "onlyKnownPlaybackPreferencesDiffer": true,
+      "finalPreferenceChangeCount": 2
+    }
+  },
+  "windows": {
+    "iphone13Jellyfin": {
+      "device": "phone",
+      "mode": "restore",
+      "normalLaunchEnvironment": {},
+      "catalogUIActuallyLoaded": false,
+      "playIssued": false,
+      "ordinaryExit": false,
+      "failure": null,
+      "cleanupAt": "2026-11-09T22:24:59.206172+08:00",
+      "cleanupVerified": true,
+      "events": [
+        {
+          "time": 12.701,
+          "event": "playback_route_state",
+          "candidateAddressKind": "privateIP",
+          "candidatePathKind": "root",
+          "candidateScheme": "http",
+          "hasStoredSession": "true",
+          "sameSelectedUser": "yes",
+          "selectedCandidate": "false",
+          "stage": "restoredCandidateScope"
+        },
+        {
+          "time": 12.701,
+          "event": "playback_route_state",
+          "candidateAddressKind": "privateIP",
+          "candidatePathKind": "jellyfin",
+          "candidateScheme": "http",
+          "hasStoredSession": "false",
+          "sameSelectedUser": "unknown",
+          "selectedCandidate": "false",
+          "stage": "restoredCandidateScope"
+        },
+        {
+          "time": 12.701,
+          "event": "playback_route_state",
+          "candidateAddressKind": "privateIP",
+          "candidatePathKind": "emby",
+          "candidateScheme": "http",
+          "hasStoredSession": "false",
+          "sameSelectedUser": "unknown",
+          "selectedCandidate": "false",
+          "stage": "restoredCandidateScope"
+        },
+        {
+          "time": 12.701,
+          "event": "playback_route_state",
+          "candidateAddressKind": "publicDomain",
+          "candidatePathKind": "root",
+          "candidateScheme": "https",
+          "hasStoredSession": "true",
+          "sameSelectedUser": "yes",
+          "selectedCandidate": "true",
+          "stage": "restoredCandidateScope"
+        },
+        {
+          "time": 12.702,
+          "event": "playback_route_state",
+          "candidateAddressKind": "publicDomain",
+          "candidatePathKind": "jellyfin",
+          "candidateScheme": "https",
+          "hasStoredSession": "false",
+          "sameSelectedUser": "unknown",
+          "selectedCandidate": "false",
+          "stage": "restoredCandidateScope"
+        },
+        {
+          "time": 12.702,
+          "event": "playback_route_state",
+          "candidateAddressKind": "publicDomain",
+          "candidatePathKind": "emby",
+          "candidateScheme": "https",
+          "hasStoredSession": "false",
+          "sameSelectedUser": "unknown",
+          "selectedCandidate": "false",
+          "stage": "restoredCandidateScope"
+        },
+        {
+          "time": 12.744,
+          "event": "playback_route_verified"
+        },
+        {
+          "time": 12.744,
+          "event": "playback_route_state",
+          "reason": "verifiedSameServerLAN",
+          "selectedAddressKind": "privateIP",
+          "selectedScheme": "http",
+          "stage": "probeFinished"
+        },
+        {
+          "time": 12.758,
+          "event": "library_failed",
+          "httpStatus": "401",
+          "transport": "https"
+        }
+      ],
+      "catalogHTTPStatus": 401,
+      "recoveryAdoptionRecorded": false,
+      "innerAuthenticationProbeOutcomeRecorded": false,
+      "logoutOrRelogin": false
+    },
+    "ipadJellyfin": {
+      "device": "pad",
+      "mode": "restore",
+      "normalLaunchEnvironment": {},
+      "catalogUIActuallyLoaded": true,
+      "playIssued": true,
+      "ordinaryExit": true,
+      "failure": null,
+      "cleanupAt": "2026-11-09T22:26:50.341385+08:00",
+      "cleanupVerified": true,
+      "events": [
+        {
+          "time": 11.798,
+          "event": "playback_route_state",
+          "candidateAddressKind": "publicDomain",
+          "candidatePathKind": "root",
+          "candidateScheme": "https",
+          "hasStoredSession": "true",
+          "sameSelectedUser": "yes",
+          "selectedCandidate": "true",
+          "stage": "restoredCandidateScope"
+        },
+        {
+          "time": 11.798,
+          "event": "playback_route_state",
+          "candidateAddressKind": "publicDomain",
+          "candidatePathKind": "jellyfin",
+          "candidateScheme": "https",
+          "hasStoredSession": "false",
+          "sameSelectedUser": "unknown",
+          "selectedCandidate": "false",
+          "stage": "restoredCandidateScope"
+        },
+        {
+          "time": 11.799,
+          "event": "playback_route_state",
+          "candidateAddressKind": "publicDomain",
+          "candidatePathKind": "emby",
+          "candidateScheme": "https",
+          "hasStoredSession": "false",
+          "sameSelectedUser": "unknown",
+          "selectedCandidate": "false",
+          "stage": "restoredCandidateScope"
+        },
+        {
+          "time": 11.831,
+          "event": "playback_route_verified"
+        },
+        {
+          "time": 11.831,
+          "event": "playback_route_state",
+          "reason": "verifiedSameServerLAN",
+          "selectedAddressKind": "privateIP",
+          "selectedScheme": "http",
+          "stage": "probeFinished"
+        },
+        {
+          "time": 11.892,
+          "event": "library_loaded",
+          "libraries": "3",
+          "stage": "views"
+        },
+        {
+          "time": 12.104,
+          "event": "library_loaded",
+          "stage": "resume"
+        },
+        {
+          "time": 12.351,
+          "event": "library_loaded",
+          "stage": "movies"
+        },
+        {
+          "time": 12.52,
+          "event": "library_loaded",
+          "stage": "series"
+        },
+        {
+          "time": 12.629,
+          "event": "library_loaded",
+          "stage": "recentlyAdded"
+        },
+        {
+          "time": 12.702,
+          "event": "library_loaded",
+          "stage": "favorites"
+        },
+        {
+          "time": 12.702,
+          "event": "library_loaded",
+          "libraries": "3",
+          "stage": "completed"
+        },
+        {
+          "time": 74.846,
+          "event": "route_selected",
+          "plannedStartSeconds": "0.0",
+          "routeKind": "localRangeProxy"
+        },
+        {
+          "time": 74.847,
+          "event": "preload_cancelled",
+          "preloadedBytes": "0",
+          "reason": "bytesNotMaterialized"
+        },
+        {
+          "time": 75.413,
+          "event": "first_frame",
+          "firstFramePositionSeconds": "0.077",
+          "tapToFirstFrameMs": "598"
+        }
+      ],
+      "physicalScreen": {
+        "openingPicture": true,
+        "visibleSubtitle": true,
+        "firstFrameLatencyMeasuredOnScreen": false
+      }
+    },
+    "iphone13DeviceFiles": {
+      "device": "phone",
+      "window": "original",
+      "entry": "deviceFiles",
+      "ordinaryExit": true,
+      "playIssued": true,
+      "failure": null,
+      "eventCounts": {
+        "network_condition_changed": 1,
+        "intent_created": 1,
+        "route_selected": 1,
+        "preload_cancelled": 1,
+        "audio_track_changed": 1,
+        "first_frame": 1,
+        "seek_started": 2,
+        "seek_recovered": 2
+      },
+      "events": [
+        {
+          "t": 1.591,
+          "event": "network_condition_changed",
+          "details": {
+            "networkClass": "wifi"
+          }
+        },
+        {
+          "t": 1.592,
+          "event": "intent_created",
+          "details": {}
+        },
+        {
+          "t": 1.593,
+          "event": "route_selected",
+          "details": {
+            "plannedStartSeconds": "0.0",
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "t": 1.594,
+          "event": "preload_cancelled",
+          "details": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "t": 2.055,
+          "event": "audio_track_changed",
+          "details": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "t": 2.365,
+          "event": "first_frame",
+          "details": {
+            "firstFramePositionSeconds": "0.051",
+            "tapToFirstFrameMs": "879"
+          }
+        },
+        {
+          "t": 24.008,
+          "event": "seek_started",
+          "details": {
+            "engine": "KSPlayer",
+            "seekTargetSeconds": "36.704"
+          }
+        },
+        {
+          "t": 25.593,
+          "event": "seek_recovered",
+          "details": {
+            "engine": "KSPlayer",
+            "seekRecoveryMs": "1602",
+            "seekTargetSeconds": "36.704"
+          }
+        },
+        {
+          "t": 31.492,
+          "event": "seek_started",
+          "details": {
+            "engine": "KSPlayer",
+            "seekTargetSeconds": "27.686"
+          }
+        },
+        {
+          "t": 31.93,
+          "event": "seek_recovered",
+          "details": {
+            "engine": "KSPlayer",
+            "seekRecoveryMs": "457",
+            "seekTargetSeconds": "27.686"
+          }
+        }
+      ],
+      "seekTouches": [
+        "forward",
+        "backward"
+      ],
+      "cleanup": {
+        "remainingAppOrRunner": 0,
+        "ownedLocalProcessesStopped": true,
+        "endedAt": "2026-11-09T22:28:23.408614+08:00"
+      },
+      "physicalScreen": {
+        "openingPicture": true,
+        "openingScreensShowProgress": true,
+        "clockAfterForwardSeconds": 40,
+        "bothPostSeekScreensDark": true,
+        "postSeekPresentationVerifiedByScreenshots": false
+      }
+    }
+  },
+  "firstHLSPhysicalBatch": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-S19-CANDIDATE-SEGMENT-DEVICE.md",
+  "HLSProbeDefaultOn": false,
+  "phone401Resolved": false,
+  "latestWindowsClosed": true,
+  "AppleTVPausedByUser": true,
+  "iPhone18Touched": false,
+  "NASConfigurationOrMediaChanged": false,
+  "credentialsChanged": false,
+  "acceptanceCellsChanged": 0
+}

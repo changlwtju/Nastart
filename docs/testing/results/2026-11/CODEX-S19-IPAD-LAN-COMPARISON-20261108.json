@@ -1,0 +1,169 @@
+{
+  "date": "2026-11-08",
+  "productSource": "d3dbc9c40e6bdd292bf9066ded4e9e0ee75974d7",
+  "sample": {
+    "reference": "S19",
+    "contentRangeTotalBytes": 128795641934,
+    "title": "The Fellowship of the Ring (2001)"
+  },
+  "device": {
+    "family": "iPad A16",
+    "model": "iPad15,7",
+    "system": "26.6",
+    "deviceControl": "USB",
+    "mediaNetwork": "Wi-Fi LAN"
+  },
+  "package": {
+    "configuration": "Signed Debug",
+    "builtAt": "2026-11-08T17:31:43+08:00",
+    "mainSHA256": "2f8e29cd25d5a8b59e99045c44b21079e796bed5d88cfb39214d9a7226c204a6",
+    "debugDylibSHA256": "3ac443127f9ece12fafbc91f2e81077be843f0ee959f501bac5be912ab4f680f",
+    "retainedInstallAt": "2026-11-08T19:02:04.251097+08:00",
+    "preferencesIdenticalImmediatelyAfterInstall": true,
+    "ordinaryLaunchObserved": true
+  },
+  "deviceFiles": {
+    "upstream": "DSM File Station",
+    "firstFrameInternalMs": 1017,
+    "mediaFrameObserved": true,
+    "defaultBilingualSubtitleObserved": true,
+    "sameMovieFromStartComparison": {
+      "sampleThroughSecondsAfterPlaybackIntent": 200,
+      "ipad": {
+        "tickCount": 189,
+        "lastSecondsAfterIntent": 199.78,
+        "lastMediaSeconds": 199.031,
+        "maxReportedStalls": 0,
+        "metrics206": 51,
+        "rateMBps": {
+          "count": 49,
+          "min": 1.27,
+          "median": 12.18,
+          "max": 15.25
+        }
+      },
+      "phone": {
+        "tickCount": 187,
+        "lastSecondsAfterIntent": 199.17,
+        "lastMediaSeconds": 193.78,
+        "maxReportedStalls": 1,
+        "metrics206": 46,
+        "rateMBps": {
+          "count": 44,
+          "min": 1.3,
+          "median": 9.03,
+          "max": 12.55
+        }
+      },
+      "windowsRunAtDifferentTimes": true
+    },
+    "seek": {
+      "actualRequestedPositionSeconds": 6481.324,
+      "internalRecoveryMs": 3052,
+      "laterMediaPositionSeconds": 6490.404,
+      "actualFrameAfterSeek": true,
+      "differentSeekPositionFromIPhone13": true
+    },
+    "ordinaryExit": true,
+    "observedContentLengths": [
+      128795641934
+    ],
+    "observerReplacedWhilePlaying": true,
+    "shortForwardButtonDispatched": false
+  },
+  "networkEntries": {
+    "smb": {
+      "protocol": "smb",
+      "bridgeConsumer": "sharedProxy",
+      "firstFrameInternalMs": "2033",
+      "routes": [
+        [
+          "directPlay",
+          "localRangeProxy"
+        ]
+      ],
+      "materializedPreloadBytes": [
+        "0"
+      ],
+      "sourceDolbyVisionProfiles": [
+        "7"
+      ],
+      "playbackTickCount": 46,
+      "lastTickWallSeconds": 51.86,
+      "lastMediaSeconds": "48.375",
+      "maxReportedStalls": 0,
+      "proxyStatusCounts": {
+        "206": 7
+      },
+      "proxyContentLengthObserved": [
+        128795641934
+      ],
+      "ordinaryExit": true,
+      "mediaFrameObserved": true,
+      "temporaryIndexSingleExactFile": true
+    },
+    "ftp": {
+      "protocol": "ftp",
+      "bridgeConsumer": "sharedProxy",
+      "firstFrameInternalMs": "1529",
+      "routes": [
+        [
+          "directPlay",
+          "localRangeProxy"
+        ]
+      ],
+      "materializedPreloadBytes": [
+        "0"
+      ],
+      "sourceDolbyVisionProfiles": [
+        "7"
+      ],
+      "playbackTickCount": 54,
+      "lastTickWallSeconds": 59.71,
+      "lastMediaSeconds": "50.915",
+      "maxReportedStalls": 1,
+      "proxyStatusCounts": {
+        "206": 8
+      },
+      "proxyContentLengthObserved": [
+        128795641934
+      ],
+      "ordinaryExit": true,
+      "mediaFrameObserved": true,
+      "temporaryIndexSingleExactFile": true,
+      "observedStall": {
+        "mediaPositionSeconds": 5.197,
+        "durationFromPlaybackTicksSecondsApprox": 6.27,
+        "recovered": true
+      }
+    }
+  },
+  "unverified": [
+    "Matched NAS CPU and Jellyfin/ffmpeg processes",
+    "Safari transcoding cause",
+    "HDR or Dolby Vision actual display",
+    "Audible TrueHD 7.1 and DTS switching",
+    "iPad 10-minute stability",
+    "full frame timing",
+    "WebDAV and Jellyfin same-file comparison"
+  ],
+  "resourceRelease": {
+    "runner": {
+      "ready": true,
+      "cleanupVerified": true,
+      "startedAt": "2026-11-08T19:20:05.087134+08:00",
+      "forwarderStopped": true,
+      "remaining": 0,
+      "endedAt": "2026-11-08T19:27:49.265040+08:00"
+    },
+    "originalLibraryAndConnectionsEqual": true,
+    "retainedLibraryCount": 3,
+    "retainedConnectionCount": 4,
+    "temporaryIndexes": 0,
+    "changedPreferenceKeys": [
+      "com.apple.UIKit.UITabSidebar",
+      "diagnostics.entries.v1",
+      "playback.localResume.v1"
+    ]
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "date": "2026-11-09",
+  "sample": {"id": "S19", "bytes": 128795641934},
+  "package": {
+    "sourceHead": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "sourceIncludesExistingLocalChanges": true,
+    "configuration": "signed Debug",
+    "dylibSHA256": "807b3c7e2b2176aee1167d716ea06190b000d0642bcac44b998656b3e46da8b4",
+    "executableSHA256": "f55fd4f5f7eafc3678ad4fac5a04669f40065316db03411e6acc4d5c305aac80",
+    "builtAt": "2026-11-09T17:55:38.740887+08:00"
+  },
+  "rangeLab": {
+    "transport": "Mac loopback",
+    "syntheticSparseData": true,
+    "smallTailDelay": {
+      "configuredDelayMs": 640,
+      "bytes": 16567,
+      "observedResponseHeadersMs": 651,
+      "otherLargeTailBodyMs": 3
+    },
+    "largeTailThrottle": {
+      "configuredDelayMs": 27,
+      "configuredKbps": 10800,
+      "bytes": 4823696,
+      "observedResponseHeadersMs": 37,
+      "observedBodyMs": 3554,
+      "otherSmallTailHeadersMs": 0
+    },
+    "validGetRangesStatus": 206,
+    "invalidRangeStatus": 416,
+    "headUnchanged": true,
+    "playerReproduction": false
+  },
+  "ipadSMB": {
+    "device": {"model": "iPad15,7", "system": "26.6", "controlTransport": "USB"},
+    "existingInstallIdentityVerified": true,
+    "testEnvironmentInjected": true,
+    "seedPersisted": {"positionSeconds": 362.786, "audioTrackID": 2, "subtitleTrackID": 9},
+    "sameTemporaryLibraryReopened": true,
+    "engineStartSeconds": 346.993,
+    "engineAudioTrack": 2,
+    "engineSubtitleTrack": 9,
+    "proxyRoute": "sharedReader",
+    "httpStatus": 206,
+    "initialSeekMs": 730,
+    "initialSeekResult": 0,
+    "discardedVideoFramesBeforeAccepted": 18,
+    "tailRangeCompletedMsAfterIntent": 1167,
+    "tailRangeBytes": 4823696,
+    "internalFirstFrameMs": 4628,
+    "firstClockPositionSeconds": 347.053,
+    "actualPictureAndChineseSubtitlesObserved": true,
+    "ordinaryExit": true,
+    "previousHTTPEntrancesSameStartAndTrack": true,
+    "cacheConditionsControlled": false,
+    "eligibleForProductionSpeedRanking": false,
+    "cleanup": {
+      "endedAt": "2026-11-09T18:16:35.452649+08:00",
+      "emptyEnvironmentRestored": true,
+      "ownedAppRunnerAndForwarderStopped": true,
+      "temporaryIndexRemoved": true,
+      "originalIndexEqual": {"libraries": 3, "connections": 4}
+    }
+  },
+  "iphone13": {
+    "device": {"model": "iPhone14,5", "system": "16.3.1", "controlTransport": "USB"},
+    "installedAt": "2026-11-09T18:17:42.941646+08:00",
+    "retainDataInstallVerified": true,
+    "allPreferencesEqualAfterInstall": true,
+    "testEnvironmentInjected": false,
+    "existingJellyfinSessionWorked": true,
+    "initial": {
+      "engineStartSeconds": 0,
+      "internalFirstFrameMs": 925,
+      "actualOpeningPictureObserved": true,
+      "upstreamHttpStatus": 206,
+      "sampleTotalVerified": true,
+      "ordinaryExit": true,
+      "acceptedStopPositionSeconds": 26.313,
+      "endedAt": "2026-11-09T18:19:43.879938+08:00"
+    },
+    "shortColdResume": {
+      "differentAppProcess": true,
+      "existingJellyfinSessionWorked": true,
+      "serverHadAcceptedStopSeconds": 26.313,
+      "continueButtonAvailable": false,
+      "playbackDispatched": false,
+      "endedAt": "2026-11-09T18:22:02.307007+08:00"
+    },
+    "deepResumeAbortedInput": {
+      "uniqueVisibleControlFound": false,
+      "endedAt": "2026-11-09T18:24:38.782697+08:00"
+    },
+    "deepColdResume": {
+      "differentAppProcess": true,
+      "continueButtonAvailable": true,
+      "serverAcceptedStopSeconds": 1709.641,
+      "plannedAndActualEngineStartSeconds": 1709.641,
+      "initialSeekMs": 881,
+      "initialSeekResult": 0,
+      "internalFirstFrameMs": 4288,
+      "firstClockPositionSeconds": 1709.769,
+      "actualPictureObserved": true,
+      "upstreamHttpStatus": 206,
+      "sampleTotalVerified": true,
+      "ordinaryExit": true,
+      "ownedAppRunnerAndForwarderStopped": true,
+      "endedAt": "2026-11-09T18:29:23.866890+08:00"
+    }
+  },
+  "fullMatrixPassesAdded": 0
+}

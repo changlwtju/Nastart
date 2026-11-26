@@ -1,0 +1,82 @@
+services:
+  agent:
+    image: "@AGENT_IMAGE@"
+    user: "${NASTART_SPK_UID}:${NASTART_SPK_GID}"
+    entrypoint: ["python3", "-c"]
+    command:
+      - |
+        import os
+        import secrets
+        import sys
+        import tempfile
+        from pathlib import Path
+
+        os.umask(0o077)
+        state = Path("/data/container-data")
+        if state.is_symlink():
+            raise ValueError("Agent data directory must not be a symbolic link")
+        state.mkdir(exist_ok=True)
+        state.chmod(0o700)
+        code = state / "spk-pairing-code"
+        if not code.exists():
+            with tempfile.NamedTemporaryFile(mode="w", dir=code.parent) as pending:
+                pending.write(f"{secrets.randbelow(1_000_000):06d}\n")
+                pending.flush()
+                try:
+                    os.link(pending.name, code)
+                except FileExistsError:
+                    pass
+        os.environ["NASTART_PAIRING_CODE"] = code.read_text().strip()
+        os.execv(sys.executable, [sys.executable, "/app/nastart_agent.py", "--data-dir", str(state)])
+    restart: unless-stopped
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    depends_on:
+      - proxy
+    environment:
+      NASTART_PROVIDER_HINT: synology
+      NASTART_DOCKER_SOCKET: /run/nastart-proxy/docker.sock
+    ports:
+      - "8787:8787"
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import ssl, urllib.request; urllib.request.urlopen('https://127.0.0.1:8787/healthz', context=ssl._create_unverified_context(), timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    volumes:
+      - type: bind
+        source: "${NASTART_SPK_DATA_DIR}"
+        target: /data
+        bind:
+          create_host_path: false
+      - proxy-sock:/run/nastart-proxy:ro
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+
+  proxy:
+    image: "@AGENT_IMAGE@"
+    entrypoint: ["python3", "/app/docker_socket_proxy.py"]
+    user: "${NASTART_SPK_UID}:${NASTART_SPK_GID}"
+    group_add:
+      - "${NASTART_SPK_DOCKER_GID}"
+    restart: unless-stopped
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - proxy-sock:/run/nastart-proxy
+
+volumes:
+  proxy-sock:
+    driver: local
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+      o: "size=1m,uid=${NASTART_SPK_UID},gid=${NASTART_SPK_GID},mode=0700"

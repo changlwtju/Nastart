@@ -1,0 +1,58 @@
+{
+  "date": "2026-11-09",
+  "device": {"model": "iPad15,7", "system": "26.6", "controlTransport": "USB"},
+  "package": {
+    "sourceHead": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "sourceIncludesExistingLocalChanges": true,
+    "configuration": "Debug",
+    "dylibSHA256": "fe63a3119a8949f49357e41d453bd0f9ed82b9746dbc9dbe482245f0051e58f4",
+    "executableSHA256": "82ffa5d56cfed3fec1fe7a9d1767473bcb9485d5fc745afce4106722ebccf944",
+    "installedIdentityVerifiedAgainstRetainDataReceipt": true,
+    "testEnvironmentInjected": false
+  },
+  "sample": {"id": "S19", "bytes": 128795641934},
+  "network": "local Wi-Fi",
+  "playback": {
+    "source": "jellyfin",
+    "existingSessionWorked": true,
+    "upstreamHTTPStatus": 206,
+    "route": "KSPlayer directPlay/localRangeProxy",
+    "initial": {"engineStartSeconds": 0, "internalFirstFrameMs": 639, "frameSubmissionMsAfterIntent": 389, "ordinaryExit": true},
+    "seek": {"actualRequestedSeconds": 337.758, "internalRecoveryMs": 958, "subsequentBufferingVisible": true},
+    "resume": {
+      "acceptedStopReportSeconds": 350.541,
+      "engineStartSeconds": 350.541,
+      "initialSeekMs": 532,
+      "initialSeekResult": 0,
+      "discardedVideoFramesBeforeAccepted": 19,
+      "frameSubmissionMsAfterIntent": 2016,
+      "internalFirstFrameMs": 3073,
+      "firstClockPositionSeconds": 350.669,
+      "pictureAndChineseSubtitlesObserved": true,
+      "selectedTracksRetained": [2, 9],
+      "ordinaryExit": true
+    },
+    "restart": {"engineStartSeconds": 0, "internalFirstFrameMs": 577, "frameSubmissionMsAfterIntent": 340, "openingPictureObserved": true, "ordinaryExit": true},
+    "trackActions": [
+      {"trackID": 3, "type": "DTS", "selectionChanged": true, "internalSeekRecoveryMs": 3748},
+      {"trackID": 2, "type": "AC3", "selectionChanged": true, "internalSeekRecoveryMs": 727},
+      {"trackID": -1, "type": "subtitlesOff", "selectionChanged": false, "alreadySelected": true},
+      {"trackID": 9, "type": "PGS", "selectionChanged": true, "internalSeekRecoveryMs": 1069}
+    ],
+    "audibleSwitchLatencyMeasured": false,
+    "subtitlePresentationSwitchLatencyMeasured": false
+  },
+  "comparison": {
+    "engineStartToleranceSeconds": 0.05,
+    "resumeStartsSeconds": {"jellyfin": 350.541, "deviceFiles": 353.666, "smb": 358.072},
+    "matchedCohorts": 0,
+    "offlineScriptTestsPassed": 145,
+    "fullMatrixPassesAdded": 0
+  },
+  "cleanup": {
+    "at": "2026-11-09T17:20:16.715331+08:00",
+    "ownedAppAndRunnerStopped": true,
+    "localForwarderClosed": true,
+    "onlyPreferenceChanges": ["diagnostics.entries.v1", "playback.localResume.v1"]
+  }
+}

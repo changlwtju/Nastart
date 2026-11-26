@@ -7,7 +7,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from playback_trace_report import Event, PlaybackTrace, trace_record, build_traces
+from playback_trace_report import Event, PlaybackTrace, trace_record, build_traces, render_trace
 
 
 class FirstFrameMetricsTests(unittest.TestCase):
@@ -45,6 +45,46 @@ class TraceAssociationTests(unittest.TestCase):
         if plan is not None:
             details["planID"] = plan
         return Event(line, None, "INFO", "media", "diagnostics.playback.next." + kind, details)
+
+    def test_engine_start_requires_its_own_full_identity_and_unambiguous_position(self):
+        events = [
+            self.event(1, "route_selected", "A", "A1"),
+            self.event(2, "route_selected", "B", "B1"),
+            self.event(3, "engine_startup_timing", "A", initialPositionSeconds="346.993"),
+            self.event(4, "engine_startup_timing", "B", "B1", initialPositionSeconds="353.666"),
+            self.event(5, "first_frame", "B", "B1", firstFramePositionSeconds="353.762"),
+        ]
+        a, b = build_traces(events)
+        self.assertIsNone(trace_record(a, 1)["engineStartPositionSeconds"])
+        self.assertEqual(trace_record(b, 2)["engineStartPositionSeconds"], 353.666)
+        events.append(self.event(6, "engine_startup_timing", "B", "B1", initialPositionSeconds="358.072"))
+        self.assertIsNone(trace_record(build_traces(events)[1], 2)["engineStartPositionSeconds"])
+
+    def test_retired_renderer_keeps_partial_stages_without_counting_as_first_frame(self):
+        events = [
+            self.event(1, "route_selected", "A", "old"),
+            self.event(2, "route_selected", "A", "new"),
+            self.event(3, "engine_startup_incomplete", "A", "old",
+                       initialPositionSeconds="14", initialSeekResult="0", initialSeekMs="3.5",
+                       firstVideoPacketMs="42", acceptedVideoFrameMs="unknown", outputSubmittedMs="nan"),
+            self.event(4, "engine_startup_timing", "A", "new", initialPositionSeconds="15"),
+            self.event(5, "first_frame", "A", "new", tapToFirstFrameMs="730"),
+            self.event(6, "engine_startup_incomplete", plan="new", initialSeekResult="pending"),
+        ]
+        unassigned = []
+        old, new = build_traces(events, unassigned)
+        failed = trace_record(old, 1)
+        self.assertEqual(failed["incompleteEngineStartups"], [{
+            "line": 3, "initialPositionSeconds": 14, "initialSeekResult": "0", "initialSeekMs": 3.5,
+            "firstVideoPacketMs": 42, "acceptedVideoFrameMs": None, "outputSubmittedMs": None,
+        }])
+        self.assertIsNone(failed["engineStartPositionSeconds"])
+        self.assertIsNone(failed["tapToFirstFrameMs"])
+        self.assertEqual(failed["bottleneck"], "missing_first_frame")
+        self.assertTrue(any("engine_startup_incomplete:" in line for line in render_trace(old, 1)))
+        self.assertEqual(trace_record(new, 2)["engineStartPositionSeconds"], 15)
+        self.assertFalse(trace_record(new, 2)["incompleteEngineStartups"])
+        self.assertEqual([event["line"] for event in unassigned], [6])
 
     def test_identified_route_never_borrows_another_traces_preparation(self):
         events = [self.event(1, "prepare", "A", mode="serverNegotiatedHLS"),

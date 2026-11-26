@@ -1,0 +1,14 @@
+#!/bin/sh
+package=${SYNOPKG_PKGNAME:-nastart-agent}
+data_dir=${SYNOPKG_PKGVAR:-/var/packages/$package/var}/container-data
+
+case "${1:-}" in
+    # Container Manager starts/stops the declared project around these hooks.
+    start|stop|prestart|prestop) exit 0 ;;
+    status)
+        [ -r "$data_dir/tls-cert.pem" ] || exit 3
+        response=$(curl -kfsS --connect-timeout 1 --max-time 2 https://127.0.0.1:8787/healthz 2>/dev/null) || exit 3
+        printf '%s\n' "$response" | grep -Eq '"ok":[[:space:]]*true' || exit 3
+        ;;
+    *) exit 4 ;;
+esac

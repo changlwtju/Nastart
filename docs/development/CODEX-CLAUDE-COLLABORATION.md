@@ -1,5 +1,61 @@
 # Codex 与 Claude Code 协作分工
 
+2026-11-21 每次从 Codex 转交 Muse 时，Codex 在回复中附上一段可直接复制的指令，由用户转发。指令写清工作区、源码或补丁、已有验证、Muse 要执行的更新与验收，以及失败时需要回传的证据。Muse 回传结果后，Codex 接续对应的代码修正。
+
+2026-11-21 用户明确分工：Codex 基于 Muse 的反馈做源码修正和优化，完成代码审查、编译与相关离线测试，必要时使用模拟器。用户通过 Muse 负责安装更新和真机调试验收。电视三项修正已交代码，Xcode 27.2 标准构建和测试目标构建通过，Mac HTTP 测试 5 项通过。电视效果待 Muse 实测。
+
+2026-11-21 用户最新分工为 Codex 主要负责代码实现、优化、审查及构建和相关回归，用户拟请 Muse 协助当前环境问题与真机验收。具体设备窗口仍按实际登记和现场授权，未向 Muse 自动发消息或认定其已接手。该分工优先于下方较早批次的默认设备职责。 [Muse 交接](../archive/handoffs/2026-11/CODEX-TO-MUSE-2026-11-21-DEVELOPMENT-AND-OPEN-ITEMS.md)
+
+2026-11-20 新查明 iPhone 13/18 既有备份保存相同 Jellyfin 设备 ID（物理 UDID 不同）；13 当前仍相同。Jellyfin 按账号＋设备 ID 重登撤销旧会话，存在互踢缺陷。今天 13 保存公网会话读库 401，未提交密码；具体撤销操作待服务端日志。S19 设备文件续播有画面但缓冲，采样不完整，窗口已收尾。 [诊断与接续](../archive/handoffs/2026-11/CODEX-2026-11-20-JELLYFIN-DUPLICATE-DEVICE-ID.md)
+
+2026-11-20 Codex 完成用户指定的 iPhone 13 WDA 恢复与实际输入验证。无产品源码或构建修改，Runner/8168 转发已收尾，设备窗口释放。 [恢复记录](../archive/handoffs/2026-11/CODEX-2026-11-20-IPHONE13-WDA-RESTORED.md)
+
+2026-11-20 Codex 完成 iOS 26.5 平台安装、iPhone 13 App/WDA 续签、USB 数据保留更新和启动验收，设备与构建资源已释放。 [安装记录](../archive/handoffs/2026-11/CODEX-2026-11-20-IPHONE13-USB-APP-WDA-INSTALL.md)
+
+2026-11-20 Codex 完成 NAS 只读校验与本地旧构建产物清理，候选队列已核完。清理未占用设备窗口。 [空间清理](../archive/handoffs/2026-11/CODEX-2026-11-20-NAS-DEBUG-ARCHIVE-LOCAL-CLEANUP.md)
+
+2026-11-20 Codex 完成 Xcode 26.6 并排安装与 iPhone 13 USB 识别。无设备写操作，构建与设备窗口空闲。 [工具安装](../archive/handoffs/2026-11/CODEX-2026-11-20-XCODE-26.6-INSTALL.md)
+
+2026-11-20 Codex 按用户指示转向 iPhone 13 App 更新，完成 USB 和签名只读预检，未占真机或构建资源。 [iPhone 13 接续](../archive/handoffs/2026-11/CODEX-2026-11-20-IPHONE13-APP-UPDATE-FOCUS.md)
+
+2026-11-20 Codex 完成 iPhone 18 Pro Max 新签名、无线覆盖安装及 WDA 启动复验，已释放设备、WDA 与构建窗口。iPhone 13 只复核 USB 和签名覆盖，iPad 用户使用中。 [安装记录](../archive/handoffs/2026-11/CODEX-2026-11-20-IPHONE18-WIRELESS-APP-WDA-INSTALL.md)
+
+2026-11-19 晚 Codex 复核 iPhone 13 USB 与 iPhone 18 Pro Max 无线预检，未发送安装；iPad 用户使用中。 [晚间接续](../archive/handoffs/2026-11/CODEX-2026-11-19-IPHONE13-IPHONE18-INSTALL-FOLLOWUP.md)
+
+2026-11-19 Codex 串行完成 iPad App 与 WDA 覆盖安装，后续待设备上确认信任。两部 iPhone 未发安装，构建与本批设备窗口已释放。 [安装记录](../archive/handoffs/2026-11/CODEX-2026-11-19-APP-WDA-SIGNING-AND-INSTALL.md)
+
+2026-11-14 Codex 完成同包 iPhone 13 公网保存会话的 4G 冷启动读库，原 Wi-Fi 与设备资源已收尾。 [公网冷启动](../archive/handoffs/2026-11/CODEX-2026-11-14-IPHONE13-JELLYFIN-PUBLIC-COLD-RESTORE.md)
+
+2026-11-14 Codex 完成新包 iPhone 13 的两次 4G 公网主入口认证。首窗失败，次窗恢复读库，原 Wi-Fi 与设备资源均已收尾。 [4G 公网复核](../archive/handoffs/2026-11/CODEX-2026-11-14-IPHONE13-JELLYFIN-PUBLIC-4G.md)
+
+2026-11-14 Codex 完成 iPhone 13 同一内网会话的覆盖安装前后对照，原 Wi-Fi 和真机窗口已释放。 [覆盖对照](../archive/handoffs/2026-11/CODEX-2026-11-14-IPHONE13-JELLYFIN-OVERLAY-VERIFIED.md)
+
+2026-11-14 Codex 已完成 iPhone 13 覆盖前读库基线与新签名包验证。旧包已经 401，先交回用户重登，构建与真机资源已释放。 [覆盖前基线](../archive/handoffs/2026-11/CODEX-2026-11-14-IPHONE13-JELLYFIN-OVERLAY-BASELINE.md)
+
+2026-11-14 Codex 完成 Jellyfin 公网会话恢复源码与定向模拟器验证，已释放独立模拟器和构建窗口，未占真机。 [认证与恢复](../archive/handoffs/2026-11/CODEX-2026-11-14-JELLYFIN-PUBLIC-401-RECOVERY.md)
+
+2026-11-14 Codex 通过已有 DSM 会话只读取证，关联 Jellyfin 401 与令牌撤销及签发时间线，并在本机夹具复现旧公网会话阻塞恢复。未占真机与构建窗口。 [服务端日志关联](../archive/handoffs/2026-11/CODEX-2026-11-14-JELLYFIN-SERVER-401.md)
+
+2026-11-14 Codex 完成 iPhone 13 Jellyfin 隔夜读库，设备、Runner 和采集已释放。未占新构建资源，旧 401 待服务端日志。 [隔夜读库](../archive/handoffs/2026-11/CODEX-2026-11-14-JELLYFIN-OVERNIGHT-SESSION.md)
+
+2026-11-13 Codex 完成《变形金刚》同份 ISO 双入口取证。Jellyfin 后续冷启动再次 401，设备和测试资源已释放。 [双入口对照](../archive/handoffs/2026-11/CODEX-2026-11-13-TRANSFORMERS-ISO-JELLYFIN-COMPARISON.md)
+
+2026-11-13 Codex 补完 MKV 冷续播及第二部 UDF ISO 出画。Jellyfin 401 后已释放设备，用户在 App 内重登后再开对照窗。 [补测记录](../archive/handoffs/2026-11/CODEX-2026-11-13-ISO-JELLYFIN-MKV-RESUME.md)
+
+2026-11-13 Codex 完成用户补样的 iPhone 13 内网设备文件首轮，ISO 主片与续播、MKV 原片出画与跳转已有证据，设备窗口已释放。 [新样本首轮](../archive/handoffs/2026-11/CODEX-2026-11-13-ISO-MISSION-IMPOSSIBLE-SAMPLES.md)
+
+2026-11-13 Codex 完成 W10 字幕接入顺序修正、定向模拟器验证及最新签名包。iPhone 18 仅安装，iPhone 13 实播保留手动候选未对齐的失败证据，设备与构建窗口均已释放。ISO 等待样本。 [W10 修正与复测](../archive/handoffs/2026-11/CODEX-2026-11-13-PLAYBACK-POLICY-T5-W10-SUBTITLE-FIX.md)
+
+2026-11-13 Codex 在同源独立副本复现 W10 预热层字幕清空，专用模拟器已释放。主工作区未开启产品修正批，真机窗口未占用。 [字幕隔离验证](../archive/handoffs/2026-11/CODEX-2026-11-13-PLAYBACK-POLICY-T5-W10-SUBTITLE-SIM.md)
+
+2026-11-13 Codex 完成两次 W10 有界复跑和旧证据复算，iPhone 13 窗口已释放。下一次取证范围是预热渲染器接入的字幕状态及切轨耗时，未开启新产品实施。 [W10 复核](../archive/handoffs/2026-11/CODEX-2026-11-13-PLAYBACK-POLICY-T5-W10-FOLLOWUP.md)
+
+2026-11-13 Codex 已汇总 T5 的 W1–W10 真机行为证据，iPhone 13 已在原 Wi-Fi 上复核正常续播并释放窗口。受控限速下的 W10 切轨耗时和后续独立降档丢字幕留作体验问题，未开启新的产品实施或设备窗口。 [T5 回归结论](../archive/handoffs/2026-11/CODEX-2026-11-13-PLAYBACK-POLICY-T5-READBACK.md)
+
+2026-11-12 用户将播放策略真机验证、调试和有界调参交给 Codex，按 [本轮总交接](../archive/handoffs/2026-11/2026-11-11-1950-CLAUDE-DESIGN-TO-DEVICE-DEBUG.md) 执行。T0 由 Codex 串行装包和核验，窗口均已释放。本批 Claude 设计交付为输入，双方额度未知。 [T0 记录](../archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T0.md)
+
+2026-11-10 用户安排下一阶段调试接续 Claude，入口为 [Codex → Claude 接续](../archive/handoffs/2026-11/2026-11-10-0645-CODEX-TRANSITION-TO-CLAUDE.md)。Codex 本轮占用已释放，仍由 Codex 单写共享摘要；Claude 的下一批优先 SMB Reader 与缓冲诊断，实际文件、构建与设备窗口依登记逐批分配。
+
 2026-11-08 [Range与两机基线](../archive/handoffs/2026-11/CODEX-2026-11-08-RANGE-PREREQUISITE-AND-DEVICE-BASELINE.md)由Codex单写完成。产品增量DevicesView/测试文件；第一/二代理及真实预读继续由Codex接续。两机先627c基线，最终bb4d再次保留安装；不把旧包播放当最终包验收。共享摘要仍仅Codex维护，没有新Claude文件/设备授权。
 
 2026-11-08 最新[阶段接续](../archive/handoffs/2026-11/2026-11-08-0130-CLAUDE-TRANSITION-TO-CODEX.md)和[Codex接收核对](../archive/handoffs/2026-11/CODEX-2026-11-08-TRANSITION-INTAKE.md)已生效。Claude本阶段结束，后续实现/审查/包与13-Pad验证由Codex单写接手，上一条“Claude第一步”分工为历史方案。Claude未授新实施/设备窗口；再次并行按含dirty同源目录及完整文件重分配。NAS业务恢复及18仅按用户要求安装的边界按总交接执行，凭据仅用户输入、禁止读取实际Keychain或点密码眼睛。

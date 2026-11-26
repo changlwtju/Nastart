@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Nastart App 与 Nastart Agent 的安装、配对和常见故障。">
+  <title>FAQ · Nastart</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="wordmark" href="./">Nastart</a>
+      <nav class="site-nav" aria-label="页面导航">
+        <a href="./#features">核心能力</a>
+        <a href="./#privacy">本地优先</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="container hero" aria-labelledby="faq-title">
+      <h1 id="faq-title">FAQ</h1>
+      <nav class="site-nav" aria-label="FAQ 分类">
+        <a href="#installation">安装</a>
+        <a href="#pairing">配对与连接</a>
+        <a href="#troubleshooting">常见故障</a>
+      </nav>
+    </section>
+
+    <section class="feature-section" id="installation" aria-labelledby="installation-title">
+      <div class="container section-layout">
+        <h2 id="installation-title">安装</h2>
+        <dl class="feature-list">
+          <div>
+            <dt>Nastart App 现在能下载吗？</dt>
+            <dd><p>目前为内部开发版（0.1.0），尚未上架 App Store。上架后，下载方式会在此页更新。</p></dd>
+          </div>
+          <div>
+            <dt>Nastart Agent 怎么装？</dt>
+            <dd><p>Nastart Agent 是运行在 NAS 或服务器上的增强服务。Docker 镜像为 <a href="https://hub.docker.com/r/changlwtju/nastart-agent"><u><code>changlwtju/nastart-agent</code></u></a>（Docker Hub）。可通过 Docker Compose、群晖 SPK 或通用 Linux systemd 安装，默认端口为 8787。</p></dd>
+          </div>
+          <div>
+            <dt>Agent 需要什么配置？</dt>
+            <dd><p>需要一台能运行 Docker 的 NAS 或 Linux 主机。Agent 默认使用自签证书提供 HTTPS，App 配对时需打开「跳过 SSL 验证」。</p></dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="container privacy section-layout" id="pairing" aria-labelledby="pairing-title">
+      <h2 id="pairing-title">配对与连接</h2>
+      <dl class="feature-list">
+        <div>
+          <dt>怎么把 App 和 Agent 配对？</dt>
+          <dd><p>在 App 中进入「设备 → 配置 Nastart Agent」，地址填写 <code>https://&lt;NAS 地址&gt;:8787</code>。从 Agent 容器日志中找到一次性配对码并填入，确认已打开「跳过 SSL 验证」，再点「重新配对」。</p></dd>
+        </div>
+        <div>
+          <dt>配对码在哪里找？</dt>
+          <dd><p>查看 Agent 容器日志，在最新的 <code>One-time pairing code:</code> 条目后读取配对码。每个码只能用一次。</p></dd>
+        </div>
+        <div>
+          <dt>配对码提示无效怎么办？</dt>
+          <dd><p>配对码用过即失效。重启 Agent 容器后，在日志中查看是否生成了新码。日志出现新码时，用该码重新配对。</p></dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="feature-section" id="troubleshooting" aria-labelledby="troubleshooting-title">
+      <div class="container section-layout">
+        <h2 id="troubleshooting-title">常见故障</h2>
+        <dl class="feature-list">
+          <div>
+            <dt>App 显示 Agent 未连接怎么办？</dt>
+            <dd><p>先确认 Agent 容器在运行，地址和端口填写正确，且手机与 NAS 在同一局域网内，或所用的外网端口转发已连通。如果更换或重装 Agent 后配对失效，请用新码重新配对。</p></dd>
+          </div>
+          <div>
+            <dt>遇到证书 / SSL 提示怎么处理？</dt>
+            <dd><p>Agent 默认使用自签证书。App 配对时打开「跳过 SSL 验证」，首次连接时 App 会记住该证书的指纹。</p></dd>
+          </div>
+          <div>
+            <dt>在外网怎么连 Agent？</dt>
+            <dd><p>可在路由器上将外部 TCP 8787 转发到 NAS 的 8787 端口，然后在 App 中填写 <code>https://&lt;域名&gt;:8787</code>。也可使用 Tailscale 等 VPN，让 Agent 端口保持在私有网络内。</p></dd>
+          </div>
+          <div>
+            <dt>换了 NAS 或重装 Agent 后要重新配对吗？</dt>
+            <dd><p>Agent 身份发生变化时需要重新配对。App 会提示「Agent 已更换或配对已失效，请重新配对」，此时用新配对码重新配对即可。</p></dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <aside class="container privacy" id="playback" aria-labelledby="playback-title">
+      <div class="section-layout privacy-panel">
+        <h2 id="playback-title">播放与媒体库</h2>
+        <p>参见首页的 <a href="./#features"><u>Jellyfin 媒体库与播放介绍</u></a>。</p>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span class="wordmark">Nastart</span>
+      <nav class="site-nav footer-nav" aria-label="页脚导航">
+        <a href="privacy.html">隐私政策</a>
+        <a href="support.html">支持</a>
+        <a href="faq.html">FAQ</a>
+        <a href="changelog.html">更新日志</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

@@ -590,8 +590,11 @@ struct StoredNASCredential: Codable {
 struct StoredJellyfinSession: Codable {
     let endpointString: String
     let userID: String
-    let username: String
+    var username: String
     let accessToken: String
+    /// Server identity returned by an authenticated `/Users/Me` on this
+    /// session's own endpoint. Older saved sessions lack it until backfilled.
+    var serverID: String? = nil
 }
 
 struct DSMDataSnapshot: AppDataProviding, Codable {
@@ -810,6 +813,7 @@ final class AppDataStore: ObservableObject {
     @Published private(set) var files: [FileItem]
     @Published private(set) var tasks: [TaskItem]
     @Published private(set) var completedTasks: [TaskItem]
+    private var deletedTasks: [DeletedTask]
     @Published private(set) var videoLibraryItems: [MediaItem]
     @Published private(set) var audioLibraryItems: [MediaItem]
     @Published private(set) var discoveredDevices: [DiscoveredNASDevice]
@@ -921,6 +925,8 @@ final class AppDataStore: ObservableObject {
     private let launchpadVisibilityStore: LaunchpadVisibilityStore
     private let launchpadOrderStore: LaunchpadOrderStore
     private let localTaskStore: LocalTaskStore
+    private let cloudSyncStore: CloudSyncStore?
+    private let cancelTaskReminder: @MainActor (TaskItem) -> Void
     /// DEBUG offline UI only: synthetic data and an ephemeral preference domain. Never
     /// touches the network, notifications, sync markers or the persisted NAS snapshot.
     private let isOfflineFixture: Bool
@@ -956,17 +962,29 @@ final class AppDataStore: ObservableObject {
     private static let foregroundRefreshCooldown: TimeInterval = 90
     private static let foregroundFreshnessInterval: TimeInterval = 5 * 60
 
+    @MainActor
     convenience init(provider: AppDataProviding? = nil) {
-        self.init(provider: provider, defaults: .standard, isOfflineFixture: false)
+        self.init(provider: provider, defaults: .standard, isOfflineFixture: false,
+                  cancelTaskReminder: ReminderNotificationScheduler.cancel, cloudSyncStore: .shared)
     }
 
     #if DEBUG
-    static func offlineFixture(defaults: UserDefaults) -> AppDataStore {
-        AppDataStore(provider: MockAppDataProvider(), defaults: defaults, isOfflineFixture: true)
+    @MainActor
+    static func offlineFixture(
+        defaults: UserDefaults,
+        cancelReminder: @escaping @MainActor (TaskItem) -> Void = { _ in },
+        cloudSyncStore: CloudSyncStore? = nil
+    ) -> AppDataStore {
+        AppDataStore(provider: MockAppDataProvider(), defaults: defaults, isOfflineFixture: true,
+                     cancelTaskReminder: cancelReminder, cloudSyncStore: cloudSyncStore)
     }
     #endif
 
-    private init(provider: AppDataProviding?, defaults: UserDefaults, isOfflineFixture: Bool) {
+    @MainActor
+    private init(
+        provider: AppDataProviding?, defaults: UserDefaults, isOfflineFixture: Bool,
+        cancelTaskReminder: @escaping @MainActor (TaskItem) -> Void, cloudSyncStore: CloudSyncStore?
+    ) {
         let taskStore = LocalTaskStore(defaults: defaults)
         let visibilityStore = LaunchpadVisibilityStore(defaults: defaults)
         let orderStore = LaunchpadOrderStore(defaults: defaults)
@@ -978,6 +996,8 @@ final class AppDataStore: ObservableObject {
             ?? DisconnectedAppDataProvider()
         self.provider = initialProvider
         self.isOfflineFixture = isOfflineFixture
+        self.cancelTaskReminder = cancelTaskReminder
+        self.cloudSyncStore = cloudSyncStore
         localTaskStore = taskStore
         launchpadVisibilityStore = visibilityStore
         launchpadOrderStore = orderStore
@@ -996,6 +1016,7 @@ final class AppDataStore: ObservableObject {
         files = initialProvider.files
         tasks = persistedTasks?.pending ?? initialProvider.tasks
         completedTasks = persistedTasks?.history ?? []
+        deletedTasks = persistedTasks?.deletedTasks ?? []
         videoLibraryItems = initialProvider.videoLibraryItems
         audioLibraryItems = initialProvider.audioLibraryItems
         discoveredDevices = initialProvider.discoveredDevices
@@ -1054,8 +1075,9 @@ final class AppDataStore: ObservableObject {
             : provider.containers
         files = provider.files
         if tasks.isEmpty, completedTasks.isEmpty, !provider.tasks.isEmpty {
-            tasks = provider.tasks
-            persistTasks()
+            let deletedIDs = Set(CloudSyncStore.retainedTaskDeletions(deletedTasks).map(\.id))
+            tasks = provider.tasks.filter { !deletedIDs.contains($0.id) }
+            if !tasks.isEmpty { persistTasks() }
         }
         videoLibraryItems = provider.videoLibraryItems
         audioLibraryItems = provider.audioLibraryItems
@@ -2148,7 +2170,6 @@ final class AppDataStore: ObservableObject {
         orderedKeys.move(fromOffsets: source, toOffset: destination)
         launchpadServiceOrder[category.rawValue] = orderedKeys
         launchpadOrderStore.save(launchpadServiceOrder)
-        noteLocalChange()
     }
 
     @MainActor
@@ -2159,7 +2180,7 @@ final class AppDataStore: ObservableObject {
             serviceVisibilityOverrides[service.launchpadVisibilityKey] = isVisible
         }
         launchpadVisibilityStore.save(serviceVisibilityOverrides)
-        noteLocalChange()
+        noteLocalChange(in: .services)
         lastRefreshSummaryKey = isVisible ? "launchpad.service.shown" : "launchpad.service.hidden"
     }
 
@@ -2167,7 +2188,7 @@ final class AppDataStore: ObservableObject {
     func resetLaunchpadServiceVisibility() {
         serviceVisibilityOverrides.removeAll()
         launchpadVisibilityStore.save(serviceVisibilityOverrides)
-        noteLocalChange()
+        noteLocalChange(in: .services)
         lastRefreshSummaryKey = "launchpad.services.reset_done"
     }
 
@@ -2193,7 +2214,7 @@ final class AppDataStore: ObservableObject {
             iconText: iconText
         )
         services.append(service)
-        noteLocalChange()
+        noteLocalChange(in: .services)
         lastRefreshSummaryKey = "manual.service.added"
     }
 
@@ -2201,7 +2222,7 @@ final class AppDataStore: ObservableObject {
     func deleteManualService(id: UUID) {
         manualServiceStore.delete(id: id)
         services.removeAll { $0.id == id && $0.source == .manual }
-        noteLocalChange()
+        noteLocalChange(in: .services)
         lastRefreshSummaryKey = "manual.service.deleted"
     }
 
@@ -2211,6 +2232,7 @@ final class AppDataStore: ObservableObject {
 
     @MainActor
     func addTask(_ task: TaskItem) {
+        guard !CloudSyncStore.retainedTaskDeletions(deletedTasks).contains(where: { $0.id == task.id }) else { return }
         tasks.insert(task, at: 0)
         persistTasks()
         scheduleReminder(task, requestsAuthorization: true)
@@ -2234,82 +2256,75 @@ final class AppDataStore: ObservableObject {
         cancelReminder(completedTask)
     }
 
+    @MainActor
+    func deleteTask(_ task: TaskItem) {
+        tasks.removeAll { $0.id == task.id }
+        completedTasks.removeAll { $0.id == task.id }
+        cancelReminder(task)
+        let now = Date()
+        deletedTasks = CloudSyncStore.retainedTaskDeletions(deletedTasks, now: now)
+        deletedTasks.append(DeletedTask(id: task.id, deletedAt: now))
+        persistTasks()
+    }
+
+    @MainActor
     private func scheduleReminder(_ task: TaskItem, requestsAuthorization: Bool) {
         guard !isOfflineFixture else { return }
         ReminderNotificationScheduler.schedule(task, requestsAuthorization: requestsAuthorization)
     }
 
+    @MainActor
     private func cancelReminder(_ task: TaskItem) {
-        guard !isOfflineFixture else { return }
-        ReminderNotificationScheduler.cancel(task)
+        cancelTaskReminder(task)
     }
 
-    private func noteLocalChange() {
-        guard !isOfflineFixture else { return }
-        CloudSyncStore.noteLocalChange()
+    @MainActor
+    private func noteLocalChange(in domain: CloudSyncDomain) {
+        cloudSyncStore?.observeDataStoreChange(in: domain)
     }
 
+    @MainActor
     private func persistTasks() {
-        localTaskStore.save(pending: tasks, history: completedTasks)
-        noteLocalChange()
+        deletedTasks = localTaskStore.save(
+            pending: tasks, history: completedTasks, deletedTasks: deletedTasks
+        ).deletedTasks
+        noteLocalChange(in: .tasks)
     }
 
     @MainActor
-    func makeCloudSyncSnapshot(updatedAt: Date) -> CloudSyncSnapshot {
-        let defaults = UserDefaults.standard
-        let taskState = LocalTaskStore.normalizedState(pending: tasks, history: completedTasks)
-        let stringKeys = [
-            LaunchpadTheme.storageKey,
-            AppLanguage.storageKey,
-            AppThemeMode.storageKey,
-            AppearancePreferenceKeys.groupOrder
-        ]
-        let booleanKeys = [
-            AppearancePreferenceKeys.compactMetrics,
-            AppearancePreferenceKeys.showServiceStatus,
-            AppearancePreferenceKeys.showCardSubtitle,
-            AppearancePreferenceKeys.groupFavoritesExpanded,
-            AppearancePreferenceKeys.groupMediaExpanded,
-            AppearancePreferenceKeys.groupDownloadsExpanded,
-            AppearancePreferenceKeys.groupNetworkExpanded,
-            AppearancePreferenceKeys.groupToolsExpanded
-        ]
-        return CloudSyncSnapshot(
-            updatedAt: updatedAt,
+    func makeCloudSyncServices() -> CloudSyncServices {
+        CloudSyncServices(
             manualServices: manualServiceStore.exportForSync(),
-            serviceVisibilityOverrides: serviceVisibilityOverrides,
-            pendingTasks: taskState.pending,
-            completedTasks: taskState.history,
-            stringPreferences: Dictionary(uniqueKeysWithValues: stringKeys.compactMap { key in
-                defaults.string(forKey: key).map { (key, $0) }
-            }),
-            booleanPreferences: Dictionary(uniqueKeysWithValues: booleanKeys.compactMap { key in
-                defaults.object(forKey: key).map { _ in (key, defaults.bool(forKey: key)) }
-            })
+            serviceVisibilityOverrides: serviceVisibilityOverrides
         )
     }
 
     @MainActor
-    func applyCloudSyncSnapshot(_ snapshot: CloudSyncSnapshot) {
-        guard !isOfflineFixture else { return }
-        snapshot.stringPreferences.forEach { UserDefaults.standard.set($0.value, forKey: $0.key) }
-        snapshot.booleanPreferences.forEach { UserDefaults.standard.set($0.value, forKey: $0.key) }
-        manualServiceStore.replaceFromSync(snapshot.manualServices)
-        serviceVisibilityOverrides = snapshot.serviceVisibilityOverrides
+    func makeCloudSyncTasks() -> CloudSyncTasks {
+        let state = LocalTaskStore.normalizedState(pending: tasks, history: completedTasks, deletedTasks: deletedTasks)
+        return CloudSyncTasks(pendingTasks: state.pending, completedTasks: state.history, deletedTasks: state.deletedTasks)
+    }
+
+    @MainActor
+    func applyCloudSyncServices(_ payload: CloudSyncServices) {
+        manualServiceStore.replaceFromSync(payload.manualServices)
+        serviceVisibilityOverrides = payload.serviceVisibilityOverrides
         launchpadVisibilityStore.save(serviceVisibilityOverrides)
-        let taskState = LocalTaskStore.normalizedState(
-            pending: snapshot.pendingTasks,
-            history: snapshot.completedTasks
-        )
-        tasks.forEach(cancelReminder)
-        tasks = taskState.pending
-        completedTasks = taskState.history
-        localTaskStore.save(pending: tasks, history: completedTasks)
-        tasks.forEach {
-            scheduleReminder($0, requestsAuthorization: false)
-        }
         let nonManualServices = services.filter { $0.source != .manual }
         services = nonManualServices + manualServiceStore.load()
+        lastRefreshSummaryKey = "mine.sync.applied"
+    }
+
+    @MainActor
+    func applyCloudSyncTasks(_ payload: CloudSyncTasks) {
+        let state = localTaskStore.save(
+            pending: payload.pendingTasks, history: payload.completedTasks, deletedTasks: payload.deletedTasks
+        )
+        tasks.forEach(cancelReminder)
+        tasks = state.pending
+        completedTasks = state.history
+        deletedTasks = state.deletedTasks
+        tasks.forEach { scheduleReminder($0, requestsAuthorization: false) }
         lastRefreshSummaryKey = "mine.sync.applied"
     }
 
@@ -2492,7 +2507,7 @@ final class AppearanceStore: ObservableObject {
     }
 
     init(defaults: UserDefaults = .standard,
-         noteChange: @escaping () -> Void = { CloudSyncStore.noteLocalChange() }) {
+         noteChange: @escaping () -> Void = { CloudSyncStore.noteLocalChange(in: .preferences) }) {
         self.defaults = defaults
         self.noteChange = noteChange
         let savedTheme = defaults.string(forKey: LaunchpadTheme.storageKey)

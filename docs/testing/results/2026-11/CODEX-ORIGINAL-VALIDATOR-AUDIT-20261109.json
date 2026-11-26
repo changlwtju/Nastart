@@ -1,0 +1,359 @@
+{
+  "date": "2026-11-09",
+  "source": {
+    "head": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "locallyModifiedSwiftInputs": {
+      "ios/Nastart/Nastart/Core/Stores/KeychainStore.swift": "93a2ebd76892a7b8187cef5a2bc2e4a59b445b1780bd9aec9f9d076fdb860c4d",
+      "ios/Nastart/Nastart/Features/Devices/DevicesView.swift": "70d8561ed9fe85d05b602d241c96f0a863f19fe53f173a4c80a4653776c2476f",
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadPlaybackCore.swift": "adf5c8c346fbe33ea24220cfd1592ce10f687483b9c8b76bd4ba2fee4b721dc8",
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadView.swift": "150c8944e82b1e30224ec38959b2210ee4cb529d3dbdbe4b4b1687a2221e6e41",
+      "ios/Nastart/Nastart/Playback/Core/PlaybackIntent.swift": "0f5c57caaec56b400c097ac1896a1095e8c3c3eb3ab814c824e8cfd232b9af97",
+      "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift": "ad47798cde51e3510f3777330da69bd4945c596f6085274cce8bdc485e318a16",
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift": "c5bcaad84e6c49f153321965417c636001191cb85036b5b0b3e387b4aa9b78f0"
+    }
+  },
+  "package": {
+    "mainSHA256": "02845e34fa233482315ff4a72e819165dd843cb51f31922b7eb07c86d1548711",
+    "dylibSHA256": "e6408d71a435cb84a561343c2ed0f53f53980923ee335df584062fe9fb8b6aaf",
+    "builtAt": "2026-11-09T09:42:15.362827+08:00",
+    "configuration": "signed normal Debug; validator shape diagnostics only",
+    "sourceHEAD": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "profileExpires": "2026-11-15T00:30:17+00:00"
+  },
+  "fixture": "S19",
+  "originalBytes": 128795641934,
+  "defaultPreloadEnabled": false,
+  "secondaryValidatorProbeRun": false,
+  "networkSettingsChanged": false,
+  "nasMediaOrConfigurationChanged": false,
+  "addedMatrixPasses": 0,
+  "devices": {
+    "iphone13": {
+      "model": "iPhone14,5",
+      "os": "16.3.1",
+      "transport": "USB",
+      "install": {
+        "installed": true,
+        "preferencesEqual": true,
+        "preferencesSaved": true,
+        "installDispatched": true,
+        "installedAt": "2026-11-09T09:43:42.186468+08:00",
+        "bundleVerified": true
+      },
+      "runs": {
+        "jellyfin": {
+          "ordinaryExit": true,
+          "network": [
+            {
+              "constrained": "false",
+              "evidence": "devicePathSnapshot",
+              "expensive": "false",
+              "networkClass": "wifi"
+            }
+          ],
+          "startAt": "2026-11-09T09:44:48.732745+08:00",
+          "route": [
+            {
+              "connectionAddressKind": "privateIP",
+              "connectionScheme": "http",
+              "decodeEngine": "ksPlayer",
+              "playMethod": "directPlay",
+              "routeKind": "localRangeProxy"
+            }
+          ],
+          "internalFirstFrame": [
+            {
+              "firstFramePositionSeconds": "0.052",
+              "tapToFirstFrameMs": "974"
+            }
+          ],
+          "responseHeaders": [
+            {
+              "clientResponse": "continuousRange",
+              "contentLength": "33554432",
+              "contentRange": "bytes 0-33554431/128795641934",
+              "originalETagKind": "missing",
+              "originalLastModifiedPresent": "true",
+              "originalPrefixCompatibleHeaders": "true",
+              "originalPrefixTransportSupported": "true",
+              "originalURLUnchanged": "true",
+              "range": "bytes=0-33554431",
+              "status": "206"
+            },
+            {
+              "clientResponse": "continuousRange",
+              "contentLength": "16567",
+              "contentRange": "bytes 128795625367-128795641933/128795641934",
+              "originalETagKind": "missing",
+              "originalLastModifiedPresent": "true",
+              "originalPrefixCompatibleHeaders": "true",
+              "originalPrefixTransportSupported": "true",
+              "originalURLUnchanged": "true",
+              "range": "bytes=128795625367-128829179798",
+              "status": "206"
+            },
+            {
+              "clientResponse": "continuousRange",
+              "contentLength": "33554432",
+              "contentRange": "bytes 14205-33568636/128795641934",
+              "originalETagKind": "missing",
+              "originalLastModifiedPresent": "true",
+              "originalPrefixCompatibleHeaders": "true",
+              "originalPrefixTransportSupported": "true",
+              "originalURLUnchanged": "true",
+              "range": "bytes=14205-33568636",
+              "status": "206"
+            }
+          ],
+          "windowClosedAt": "2026-11-09T09:45:38.702790+08:00",
+          "ownedWindowClosed": true,
+          "verifiedUpstream": {
+            "kind": "jellyfin",
+            "selection": "verifiedSameServerLAN"
+          }
+        },
+        "files": {
+          "ordinaryExit": true,
+          "network": [
+            {
+              "constrained": "false",
+              "evidence": "devicePathSnapshot",
+              "expensive": "false",
+              "networkClass": "wifi"
+            }
+          ],
+          "startAt": "2026-11-09T09:46:40.171371+08:00",
+          "route": [
+            {
+              "connectionAddressKind": "privateIP",
+              "connectionScheme": "http",
+              "decodeEngine": "ksPlayer",
+              "playMethod": "directPlay",
+              "routeKind": "localRangeProxy"
+            }
+          ],
+          "internalFirstFrame": [
+            {
+              "firstFramePositionSeconds": "0.051",
+              "tapToFirstFrameMs": "1060"
+            }
+          ],
+          "responseHeaders": [
+            {
+              "clientResponse": "continuousRange",
+              "contentLength": "33554432",
+              "contentRange": "bytes 0-33554431/128795641934",
+              "originalETagKind": "strong",
+              "originalLastModifiedPresent": "true",
+              "originalPrefixCompatibleHeaders": "true",
+              "originalPrefixTransportSupported": "false",
+              "originalURLUnchanged": "true",
+              "range": "bytes=0-33554431",
+              "status": "206"
+            },
+            {
+              "clientResponse": "continuousRange",
+              "contentLength": "16567",
+              "contentRange": "bytes 128795625367-128795641933/128795641934",
+              "originalETagKind": "strong",
+              "originalLastModifiedPresent": "true",
+              "originalPrefixCompatibleHeaders": "true",
+              "originalPrefixTransportSupported": "false",
+              "originalURLUnchanged": "true",
+              "range": "bytes=128795625367-128829179798",
+              "status": "206"
+            },
+            {
+              "clientResponse": "continuousRange",
+              "contentLength": "33554432",
+              "contentRange": "bytes 14205-33568636/128795641934",
+              "originalETagKind": "strong",
+              "originalLastModifiedPresent": "true",
+              "originalPrefixCompatibleHeaders": "true",
+              "originalPrefixTransportSupported": "false",
+              "originalURLUnchanged": "true",
+              "range": "bytes=14205-33568636",
+              "status": "206"
+            }
+          ],
+          "windowClosedAt": "2026-11-09T09:46:55.034464+08:00",
+          "ownedWindowClosed": true,
+          "verifiedUpstream": {
+            "kind": "dsmFileStation",
+            "allowsSelfSignedConfigured": true
+          }
+        }
+      },
+      "normalLaunchArguments": [],
+      "normalLaunchEnvironment": {},
+      "runnerReinstalled": false
+    },
+    "ipad": {
+      "model": "iPad15,7",
+      "os": "26.6",
+      "transport": "USB",
+      "install": {
+        "installed": true,
+        "normalLaunch": false,
+        "preferencesSaved": true,
+        "previousAppDiagnosticAgeSeconds": 5857,
+        "identifiedAppStopped": true,
+        "installDispatched": true,
+        "installedAt": "2026-11-09T09:47:20.363362+08:00",
+        "bundleVerified": true,
+        "preferencesEqual": true
+      },
+      "runs": {
+        "jellyfin": {
+          "ordinaryExit": true,
+          "network": [
+            {
+              "constrained": "false",
+              "evidence": "devicePathSnapshot",
+              "expensive": "false",
+              "networkClass": "wifi"
+            }
+          ],
+          "startAt": "2026-11-09T09:50:57.062542+08:00",
+          "route": [
+            {
+              "connectionAddressKind": "privateIP",
+              "connectionScheme": "http",
+              "decodeEngine": "ksPlayer",
+              "playMethod": "directPlay",
+              "routeKind": "localRangeProxy"
+            }
+          ],
+          "internalFirstFrame": [
+            {
+              "firstFramePositionSeconds": "0.055",
+              "tapToFirstFrameMs": "792"
+            }
+          ],
+          "responseHeaders": [
+            {
+              "clientResponse": "continuousRange",
+              "contentLength": "33554432",
+              "contentRange": "bytes 0-33554431/128795641934",
+              "originalETagKind": "missing",
+              "originalLastModifiedPresent": "true",
+              "originalPrefixCompatibleHeaders": "true",
+              "originalPrefixTransportSupported": "true",
+              "originalURLUnchanged": "true",
+              "range": "bytes=0-33554431",
+              "status": "206"
+            },
+            {
+              "clientResponse": "continuousRange",
+              "contentLength": "16567",
+              "contentRange": "bytes 128795625367-128795641933/128795641934",
+              "originalETagKind": "missing",
+              "originalLastModifiedPresent": "true",
+              "originalPrefixCompatibleHeaders": "true",
+              "originalPrefixTransportSupported": "true",
+              "originalURLUnchanged": "true",
+              "range": "bytes=128795625367-128829179798",
+              "status": "206"
+            },
+            {
+              "clientResponse": "continuousRange",
+              "contentLength": "33554432",
+              "contentRange": "bytes 14205-33568636/128795641934",
+              "originalETagKind": "missing",
+              "originalLastModifiedPresent": "true",
+              "originalPrefixCompatibleHeaders": "true",
+              "originalPrefixTransportSupported": "true",
+              "originalURLUnchanged": "true",
+              "range": "bytes=14205-33568636",
+              "status": "206"
+            }
+          ],
+          "windowClosedAt": "2026-11-09T09:51:30.617293+08:00",
+          "ownedWindowClosed": true,
+          "verifiedUpstream": {
+            "kind": "jellyfin",
+            "selection": "verifiedSameServerLAN"
+          }
+        },
+        "files": {
+          "ordinaryExit": true,
+          "network": [
+            {
+              "constrained": "false",
+              "evidence": "devicePathSnapshot",
+              "expensive": "false",
+              "networkClass": "wifi"
+            }
+          ],
+          "startAt": "2026-11-09T09:54:36.649129+08:00",
+          "route": [
+            {
+              "connectionAddressKind": "privateIP",
+              "connectionScheme": "http",
+              "decodeEngine": "ksPlayer",
+              "playMethod": "directPlay",
+              "routeKind": "localRangeProxy"
+            }
+          ],
+          "internalFirstFrame": [
+            {
+              "firstFramePositionSeconds": "0.056",
+              "tapToFirstFrameMs": "645"
+            }
+          ],
+          "responseHeaders": [
+            {
+              "clientResponse": "continuousRange",
+              "contentLength": "33554432",
+              "contentRange": "bytes 0-33554431/128795641934",
+              "originalETagKind": "strong",
+              "originalLastModifiedPresent": "true",
+              "originalPrefixCompatibleHeaders": "true",
+              "originalPrefixTransportSupported": "true",
+              "originalURLUnchanged": "true",
+              "range": "bytes=0-33554431",
+              "status": "206"
+            },
+            {
+              "clientResponse": "continuousRange",
+              "contentLength": "16567",
+              "contentRange": "bytes 128795625367-128795641933/128795641934",
+              "originalETagKind": "strong",
+              "originalLastModifiedPresent": "true",
+              "originalPrefixCompatibleHeaders": "true",
+              "originalPrefixTransportSupported": "true",
+              "originalURLUnchanged": "true",
+              "range": "bytes=128795625367-128829179798",
+              "status": "206"
+            },
+            {
+              "clientResponse": "continuousRange",
+              "contentLength": "33554432",
+              "contentRange": "bytes 14205-33568636/128795641934",
+              "originalETagKind": "strong",
+              "originalLastModifiedPresent": "true",
+              "originalPrefixCompatibleHeaders": "true",
+              "originalPrefixTransportSupported": "true",
+              "originalURLUnchanged": "true",
+              "range": "bytes=14205-33568636",
+              "status": "206"
+            }
+          ],
+          "windowClosedAt": "2026-11-09T09:54:53.068632+08:00",
+          "ownedWindowClosed": true,
+          "verifiedUpstream": {
+            "kind": "dsmFileStation",
+            "allowsSelfSignedConfigured": false
+          }
+        }
+      },
+      "normalLaunchArguments": [],
+      "normalLaunchEnvironment": {},
+      "runnerReinstalled": false
+    }
+  },
+  "preflightNotes": [
+    "iPhone 13 initial install refused while old App process remained; saved preferences and stopped exact idle process before install.",
+    "iPhone 13 route switch and iPad two Jellyfin navigation gates stopped before play; fresh launches succeeded."
+  ]
+}

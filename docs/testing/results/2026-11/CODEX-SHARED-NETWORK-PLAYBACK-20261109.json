@@ -1,0 +1,1526 @@
+{
+  "date": "2026-11-09",
+  "configuration": "signed normal Debug; no injected arguments or environment",
+  "sample": {
+    "id": "S19",
+    "byteLength": 128795641934,
+    "durationSeconds": 13698.4,
+    "format": "MKV HEVC Dolby Vision Profile7; selected initial TrueHD7.1/PGS; physical HDR/audio output unverified"
+  },
+  "network": {
+    "observedDefaultPath": "wifi",
+    "expensive": false,
+    "constrained": false,
+    "scope": "LAN Wi-Fi only; no cellular/WAN measurement; SMB/FTP LAN only"
+  },
+  "tests": {
+    "passed": 5,
+    "failed": 0,
+    "scope": "isolated fresh simulator app-hosted targeted tests"
+  },
+  "devices": {
+    "phone": {
+      "model": "iPhone14,5",
+      "os": "16.3.1",
+      "retainedInstallAndNormalRootVerified": true,
+      "allPreferencesEqualAcrossInstall": true,
+      "actualMovieImagesReviewed": true,
+      "ownedProcessesAndForwarderStopped": true,
+      "playbackWindows": 3,
+      "events": [
+        {
+          "at": "2026-11-09T04:27:46.081785+08:00",
+          "window": 1,
+          "event": "network_condition_changed",
+          "metrics": {
+            "constrained": "false",
+            "evidence": "devicePathSnapshot",
+            "expensive": "false",
+            "networkClass": "wifi",
+            "networkPathGeneration": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:27:46.083457+08:00",
+          "window": 1,
+          "event": "intent_created",
+          "metrics": {
+            "sourceKind": "dsmFile"
+          }
+        },
+        {
+          "at": "2026-11-09T04:27:46.084623+08:00",
+          "window": 1,
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "at": "2026-11-09T04:27:46.086340+08:00",
+          "window": 1,
+          "event": "preload_cancelled",
+          "metrics": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "at": "2026-11-09T04:27:46.677131+08:00",
+          "window": 1,
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "evidence": "selectionAndCueInventoryNotScreenPresentation",
+            "requestedTrackID": "8",
+            "selectionDispatchMs": "0",
+            "visibleParts": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:27:46.677931+08:00",
+          "window": 1,
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "1",
+            "evidence": "engineTrackInventory"
+          }
+        },
+        {
+          "at": "2026-11-09T04:27:46.776730+08:00",
+          "window": 1,
+          "event": "video_frame_submitted",
+          "metrics": {
+            "acceptedVideoFrameMs": "632.465000031516",
+            "acceptedVideoFramePTS": "0.0",
+            "demuxReadMaxWallMs": "38.070",
+            "demuxReadWallMs": "106.731",
+            "engine": "KSPlayer",
+            "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+            "outputSubmittedMs": "653.9486667024903",
+            "outputSubmittedPTS": "0.0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:27:46.998745+08:00",
+          "window": 1,
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "0.051",
+            "firstFrameSignal": "playbackClock",
+            "tapToFirstFrameMs": "1019"
+          }
+        },
+        {
+          "at": "2026-11-09T04:28:47.531849+08:00",
+          "window": 1,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "-14.979",
+            "seekTargetSeconds": "39.707"
+          }
+        },
+        {
+          "at": "2026-11-09T04:28:50.863476+08:00",
+          "window": 1,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "39.844",
+            "engine": "KSPlayer",
+            "evidence": "engineCompletionAndAdvancingClock",
+            "seekRecoveryMs": "3339",
+            "seekTargetSeconds": "39.707"
+          }
+        },
+        {
+          "at": "2026-11-09T04:29:02.931377+08:00",
+          "window": 1,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "0.04299999999999926",
+            "seekTargetSeconds": "51.876"
+          }
+        },
+        {
+          "at": "2026-11-09T04:29:02.932189+08:00",
+          "window": 1,
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "2",
+            "evidence": "engineTrackInventoryNotAudibleRecovery",
+            "requestedTrackID": "2",
+            "selectionDispatchMs": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:29:03.595490+08:00",
+          "window": 1,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "51.966",
+            "engine": "KSPlayer",
+            "evidence": "engineCompletionAndAdvancingClock",
+            "seekRecoveryMs": "686",
+            "seekTargetSeconds": "51.876"
+          }
+        },
+        {
+          "at": "2026-11-09T04:29:22.388317+08:00",
+          "window": 1,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "0.06399999999999295",
+            "seekTargetSeconds": "70.74"
+          }
+        },
+        {
+          "at": "2026-11-09T04:29:22.389004+08:00",
+          "window": 1,
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "evidence": "selectionAndCueInventoryNotScreenPresentation",
+            "requestedTrackID": "9",
+            "selectionDispatchMs": "1",
+            "visibleParts": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:29:23.218387+08:00",
+          "window": 1,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "15.0",
+            "seekTargetSeconds": "85.74"
+          }
+        },
+        {
+          "at": "2026-11-09T04:29:40.015652+08:00",
+          "window": 2,
+          "event": "network_condition_changed",
+          "metrics": {
+            "constrained": "false",
+            "evidence": "devicePathSnapshot",
+            "expensive": "false",
+            "networkClass": "wifi",
+            "networkPathGeneration": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:29:40.016364+08:00",
+          "window": 2,
+          "event": "intent_created",
+          "metrics": {
+            "sourceKind": "dsmFile"
+          }
+        },
+        {
+          "at": "2026-11-09T04:29:40.017982+08:00",
+          "window": 2,
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "at": "2026-11-09T04:29:40.019518+08:00",
+          "window": 2,
+          "event": "preload_cancelled",
+          "metrics": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "at": "2026-11-09T04:29:40.481373+08:00",
+          "window": 2,
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "evidence": "selectionAndCueInventoryNotScreenPresentation",
+            "requestedTrackID": "9",
+            "selectionDispatchMs": "0",
+            "visibleParts": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:29:40.481964+08:00",
+          "window": 2,
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "2",
+            "evidence": "engineTrackInventory"
+          }
+        },
+        {
+          "at": "2026-11-09T04:29:42.794735+08:00",
+          "window": 2,
+          "event": "video_frame_submitted",
+          "metrics": {
+            "acceptedVideoFrameMs": "2746.6654166928492",
+            "acceptedVideoFramePTS": "85.877",
+            "demuxReadMaxWallMs": "234.804",
+            "demuxReadWallMs": "1646.311",
+            "engine": "KSPlayer",
+            "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+            "outputSubmittedMs": "2754.670166701544",
+            "outputSubmittedPTS": "85.877"
+          }
+        },
+        {
+          "at": "2026-11-09T04:29:44.185097+08:00",
+          "window": 2,
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "85.950",
+            "firstFrameSignal": "playbackClock",
+            "tapToFirstFrameMs": "4241"
+          }
+        },
+        {
+          "at": "2026-11-09T04:30:01.264067+08:00",
+          "window": 2,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "0.08499999999999375",
+            "seekTargetSeconds": "91.006"
+          }
+        },
+        {
+          "at": "2026-11-09T04:30:01.264739+08:00",
+          "window": 2,
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "3",
+            "evidence": "engineTrackInventoryNotAudibleRecovery",
+            "requestedTrackID": "3",
+            "selectionDispatchMs": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:30:04.430437+08:00",
+          "window": 2,
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "evidence": "selectionAndCueInventoryNotScreenPresentation",
+            "requestedTrackID": "-1",
+            "selectionDispatchMs": "0",
+            "visibleParts": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:30:08.944810+08:00",
+          "window": 3,
+          "event": "network_condition_changed",
+          "metrics": {
+            "constrained": "false",
+            "evidence": "devicePathSnapshot",
+            "expensive": "false",
+            "networkClass": "wifi",
+            "networkPathGeneration": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:30:08.945791+08:00",
+          "window": 3,
+          "event": "intent_created",
+          "metrics": {
+            "sourceKind": "dsmFile"
+          }
+        },
+        {
+          "at": "2026-11-09T04:30:08.946877+08:00",
+          "window": 3,
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "at": "2026-11-09T04:30:08.947933+08:00",
+          "window": 3,
+          "event": "preload_cancelled",
+          "metrics": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "at": "2026-11-09T04:30:09.667547+08:00",
+          "window": 3,
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "3",
+            "evidence": "engineTrackInventory"
+          }
+        },
+        {
+          "at": "2026-11-09T04:30:09.757799+08:00",
+          "window": 3,
+          "event": "video_frame_submitted",
+          "metrics": {
+            "acceptedVideoFrameMs": "774.6160833630711",
+            "acceptedVideoFramePTS": "0.0",
+            "demuxReadMaxWallMs": "38.322",
+            "demuxReadWallMs": "74.129",
+            "engine": "KSPlayer",
+            "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+            "outputSubmittedMs": "793.2791250059381",
+            "outputSubmittedPTS": "0.0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:30:09.970434+08:00",
+          "window": 3,
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "0.114",
+            "firstFrameSignal": "playbackClock",
+            "tapToFirstFrameMs": "1091"
+          }
+        }
+      ],
+      "maximumInternalStallCountByWindow": {
+        "1": 3,
+        "2": 3,
+        "3": 1
+      },
+      "stallCountMeaning": "Includes startup and deliberate seek/track changes; not a spontaneous-stall or stable-playback rate"
+    },
+    "pad": {
+      "model": "iPad15,7",
+      "os": "26.6",
+      "retainedInstallAndNormalRootVerified": true,
+      "allPreferencesEqualAcrossInstall": true,
+      "actualMovieImagesReviewed": true,
+      "ownedProcessesAndForwarderStopped": true,
+      "playbackWindows": 8,
+      "events": [
+        {
+          "at": "2026-11-09T04:32:41.046283+08:00",
+          "window": 1,
+          "event": "network_condition_changed",
+          "metrics": {
+            "constrained": "false",
+            "evidence": "devicePathSnapshot",
+            "expensive": "false",
+            "networkClass": "wifi",
+            "networkPathGeneration": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:32:41.047224+08:00",
+          "window": 1,
+          "event": "intent_created",
+          "metrics": {
+            "sourceKind": "dsmFile"
+          }
+        },
+        {
+          "at": "2026-11-09T04:32:41.047676+08:00",
+          "window": 1,
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "at": "2026-11-09T04:32:41.048846+08:00",
+          "window": 1,
+          "event": "preload_cancelled",
+          "metrics": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "at": "2026-11-09T04:32:41.397904+08:00",
+          "window": 1,
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "evidence": "selectionAndCueInventoryNotScreenPresentation",
+            "requestedTrackID": "8",
+            "selectionDispatchMs": "0",
+            "visibleParts": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:32:41.398152+08:00",
+          "window": 1,
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "1",
+            "evidence": "engineTrackInventory"
+          }
+        },
+        {
+          "at": "2026-11-09T04:32:41.485253+08:00",
+          "window": 1,
+          "event": "video_frame_submitted",
+          "metrics": {
+            "acceptedVideoFrameMs": "370.7351665943861",
+            "acceptedVideoFramePTS": "0.0",
+            "demuxReadMaxWallMs": "12.461",
+            "demuxReadWallMs": "53.267",
+            "engine": "KSPlayer",
+            "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+            "outputSubmittedMs": "405.87008325383067",
+            "outputSubmittedPTS": "0.0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:32:41.704546+08:00",
+          "window": 1,
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "0.055",
+            "firstFrameSignal": "playbackClock",
+            "tapToFirstFrameMs": "742"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:00.493283+08:00",
+          "window": 1,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "15.105999999999995",
+            "seekTargetSeconds": "33.870999999999995"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:01.514179+08:00",
+          "window": 1,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "33.959",
+            "engine": "KSPlayer",
+            "evidence": "engineCompletionAndAdvancingClock",
+            "seekRecoveryMs": "1028",
+            "seekTargetSeconds": "33.870999999999995"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:03.196053+08:00",
+          "window": 1,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "-14.936999999999998",
+            "seekTargetSeconds": "20.622"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:03.620830+08:00",
+          "window": 1,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "20.763",
+            "engine": "KSPlayer",
+            "evidence": "engineCompletionAndAdvancingClock",
+            "seekRecoveryMs": "434",
+            "seekTargetSeconds": "20.622"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:04.881958+08:00",
+          "window": 1,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "0.04299999999999926",
+            "seekTargetSeconds": "22.0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:04.882300+08:00",
+          "window": 1,
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "2",
+            "evidence": "engineTrackInventoryNotAudibleRecovery",
+            "requestedTrackID": "2",
+            "selectionDispatchMs": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:05.566179+08:00",
+          "window": 1,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "22.061",
+            "engine": "KSPlayer",
+            "evidence": "engineCompletionAndAdvancingClock",
+            "seekRecoveryMs": "696",
+            "seekTargetSeconds": "22.0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:06.948404+08:00",
+          "window": 1,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "0.06400000000000006",
+            "seekTargetSeconds": "23.426"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:06.948843+08:00",
+          "window": 1,
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "evidence": "selectionAndCueInventoryNotScreenPresentation",
+            "requestedTrackID": "9",
+            "selectionDispatchMs": "1",
+            "visibleParts": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:08.194928+08:00",
+          "window": 1,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "23.565",
+            "engine": "KSPlayer",
+            "evidence": "engineCompletionAndAdvancingClock",
+            "seekRecoveryMs": "1258",
+            "seekTargetSeconds": "23.426"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:33.593537+08:00",
+          "window": 2,
+          "event": "network_condition_changed",
+          "metrics": {
+            "constrained": "false",
+            "evidence": "devicePathSnapshot",
+            "expensive": "false",
+            "networkClass": "wifi",
+            "networkPathGeneration": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:33.594400+08:00",
+          "window": 2,
+          "event": "intent_created",
+          "metrics": {
+            "sourceKind": "dsmFile"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:33.594811+08:00",
+          "window": 2,
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:33.595921+08:00",
+          "window": 2,
+          "event": "preload_cancelled",
+          "metrics": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:33.902908+08:00",
+          "window": 2,
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "evidence": "selectionAndCueInventoryNotScreenPresentation",
+            "requestedTrackID": "9",
+            "selectionDispatchMs": "0",
+            "visibleParts": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:33.903201+08:00",
+          "window": 2,
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "2",
+            "evidence": "engineTrackInventory"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:34.785019+08:00",
+          "window": 2,
+          "event": "video_frame_submitted",
+          "metrics": {
+            "acceptedVideoFrameMs": "1167.3896666616201",
+            "acceptedVideoFramePTS": "44.169",
+            "demuxReadMaxWallMs": "61.456",
+            "demuxReadWallMs": "238.023",
+            "engine": "KSPlayer",
+            "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+            "outputSubmittedMs": "1176.308374851942",
+            "outputSubmittedPTS": "44.169"
+          }
+        },
+        {
+          "at": "2026-11-09T04:33:35.108137+08:00",
+          "window": 2,
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "44.280",
+            "firstFrameSignal": "playbackClock",
+            "tapToFirstFrameMs": "1575"
+          }
+        },
+        {
+          "at": "2026-11-09T04:34:07.748289+08:00",
+          "window": 2,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "-40.96797558996081",
+            "seekTargetSeconds": "35.93002441003919"
+          }
+        },
+        {
+          "at": "2026-11-09T04:34:08.218610+08:00",
+          "window": 2,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "36.024",
+            "engine": "KSPlayer",
+            "evidence": "engineCompletionAndAdvancingClock",
+            "seekRecoveryMs": "472",
+            "seekTargetSeconds": "35.93002441003919"
+          }
+        },
+        {
+          "at": "2026-11-09T04:34:41.729672+08:00",
+          "window": 2,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "0.0",
+            "seekTargetSeconds": "69.517"
+          }
+        },
+        {
+          "at": "2026-11-09T04:34:44.520395+08:00",
+          "window": 2,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "69.624",
+            "engine": "KSPlayer",
+            "evidence": "engineCompletionAndAdvancingClock",
+            "seekRecoveryMs": "2797",
+            "seekTargetSeconds": "69.517"
+          }
+        },
+        {
+          "at": "2026-11-09T04:34:57.814105+08:00",
+          "window": 3,
+          "event": "network_condition_changed",
+          "metrics": {
+            "constrained": "false",
+            "evidence": "devicePathSnapshot",
+            "expensive": "false",
+            "networkClass": "wifi",
+            "networkPathGeneration": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:34:57.814999+08:00",
+          "window": 3,
+          "event": "intent_created",
+          "metrics": {
+            "sourceKind": "dsmFile"
+          }
+        },
+        {
+          "at": "2026-11-09T04:34:57.815421+08:00",
+          "window": 3,
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "at": "2026-11-09T04:34:57.816560+08:00",
+          "window": 3,
+          "event": "preload_cancelled",
+          "metrics": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "at": "2026-11-09T04:34:58.190432+08:00",
+          "window": 3,
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "evidence": "selectionAndCueInventoryNotScreenPresentation",
+            "requestedTrackID": "9",
+            "selectionDispatchMs": "0",
+            "visibleParts": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:34:58.190763+08:00",
+          "window": 3,
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "2",
+            "evidence": "engineTrackInventory"
+          }
+        },
+        {
+          "at": "2026-11-09T04:34:58.272998+08:00",
+          "window": 3,
+          "event": "video_frame_submitted",
+          "metrics": {
+            "acceptedVideoFrameMs": "403.7309584673494",
+            "acceptedVideoFramePTS": "0.0",
+            "demuxReadMaxWallMs": "26.867",
+            "demuxReadWallMs": "55.768",
+            "engine": "KSPlayer",
+            "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+            "outputSubmittedMs": "438.95108345896006",
+            "outputSubmittedPTS": "0.0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:34:58.495410+08:00",
+          "window": 3,
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "0.077",
+            "firstFrameSignal": "playbackClock",
+            "tapToFirstFrameMs": "731"
+          }
+        },
+        {
+          "at": "2026-11-09T04:37:59.563165+08:00",
+          "window": 4,
+          "event": "network_condition_changed",
+          "metrics": {
+            "constrained": "false",
+            "evidence": "devicePathSnapshot",
+            "expensive": "false",
+            "networkClass": "wifi",
+            "networkPathGeneration": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:37:59.564464+08:00",
+          "window": 4,
+          "event": "intent_created",
+          "metrics": {
+            "sourceKind": "webDAVFile"
+          }
+        },
+        {
+          "at": "2026-11-09T04:37:59.566364+08:00",
+          "window": 4,
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "at": "2026-11-09T04:37:59.567892+08:00",
+          "window": 4,
+          "event": "preload_cancelled",
+          "metrics": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "at": "2026-11-09T04:38:00.249267+08:00",
+          "window": 4,
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "evidence": "selectionAndCueInventoryNotScreenPresentation",
+            "requestedTrackID": "8",
+            "selectionDispatchMs": "0",
+            "visibleParts": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:38:00.249630+08:00",
+          "window": 4,
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "1",
+            "evidence": "engineTrackInventory"
+          }
+        },
+        {
+          "at": "2026-11-09T04:38:00.339960+08:00",
+          "window": 4,
+          "event": "video_frame_submitted",
+          "metrics": {
+            "acceptedVideoFrameMs": "692.9433334153146",
+            "acceptedVideoFramePTS": "0.0",
+            "demuxReadMaxWallMs": "46.284",
+            "demuxReadWallMs": "47.036",
+            "engine": "KSPlayer",
+            "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+            "outputSubmittedMs": "736.5605416707695",
+            "outputSubmittedPTS": "0.0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:38:00.590375+08:00",
+          "window": 4,
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "0.077",
+            "firstFrameSignal": "playbackClock",
+            "tapToFirstFrameMs": "1558"
+          }
+        },
+        {
+          "at": "2026-11-09T04:38:21.500281+08:00",
+          "window": 4,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "0.0",
+            "seekTargetSeconds": "20.984"
+          }
+        },
+        {
+          "at": "2026-11-09T04:38:22.873302+08:00",
+          "window": 4,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "21.061",
+            "engine": "KSPlayer",
+            "evidence": "engineCompletionAndAdvancingClock",
+            "seekRecoveryMs": "1383",
+            "seekTargetSeconds": "20.984"
+          }
+        },
+        {
+          "at": "2026-11-09T04:38:51.162469+08:00",
+          "window": 4,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "15.064",
+            "seekTargetSeconds": "64.328"
+          }
+        },
+        {
+          "at": "2026-11-09T04:38:52.941713+08:00",
+          "window": 4,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "64.447",
+            "engine": "KSPlayer",
+            "evidence": "engineCompletionAndAdvancingClock",
+            "seekRecoveryMs": "1787",
+            "seekTargetSeconds": "64.328"
+          }
+        },
+        {
+          "at": "2026-11-09T04:39:27.049616+08:00",
+          "window": 5,
+          "event": "network_condition_changed",
+          "metrics": {
+            "constrained": "false",
+            "evidence": "devicePathSnapshot",
+            "expensive": "false",
+            "networkClass": "wifi",
+            "networkPathGeneration": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:39:27.052594+08:00",
+          "window": 5,
+          "event": "intent_created",
+          "metrics": {
+            "sourceKind": "webDAVFile"
+          }
+        },
+        {
+          "at": "2026-11-09T04:39:27.053103+08:00",
+          "window": 5,
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "at": "2026-11-09T04:39:27.054769+08:00",
+          "window": 5,
+          "event": "preload_cancelled",
+          "metrics": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "at": "2026-11-09T04:39:28.200868+08:00",
+          "window": 5,
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "evidence": "selectionAndCueInventoryNotScreenPresentation",
+            "requestedTrackID": "8",
+            "selectionDispatchMs": "0",
+            "visibleParts": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:39:28.201153+08:00",
+          "window": 5,
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "1",
+            "evidence": "engineTrackInventory"
+          }
+        },
+        {
+          "at": "2026-11-09T04:39:31.112595+08:00",
+          "window": 5,
+          "event": "video_frame_submitted",
+          "metrics": {
+            "acceptedVideoFrameMs": "3984.407208394259",
+            "acceptedVideoFramePTS": "77.244",
+            "demuxReadMaxWallMs": "648.153",
+            "demuxReadWallMs": "1175.182",
+            "engine": "KSPlayer",
+            "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+            "outputSubmittedMs": "4032.76141686365",
+            "outputSubmittedPTS": "77.244"
+          }
+        },
+        {
+          "at": "2026-11-09T04:39:32.823459+08:00",
+          "window": 5,
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "77.389",
+            "firstFrameSignal": "playbackClock",
+            "tapToFirstFrameMs": "6302"
+          }
+        },
+        {
+          "at": "2026-11-09T04:39:34.461941+08:00",
+          "window": 5,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "0.06399999999999295",
+            "seekTargetSeconds": "79.053"
+          }
+        },
+        {
+          "at": "2026-11-09T04:39:34.462293+08:00",
+          "window": 5,
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "2",
+            "evidence": "engineTrackInventoryNotAudibleRecovery",
+            "requestedTrackID": "2",
+            "selectionDispatchMs": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:39:36.975733+08:00",
+          "window": 5,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "79.181",
+            "engine": "KSPlayer",
+            "evidence": "engineCompletionAndAdvancingClock",
+            "seekRecoveryMs": "2524",
+            "seekTargetSeconds": "79.053"
+          }
+        },
+        {
+          "at": "2026-11-09T04:39:56.444251+08:00",
+          "window": 5,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "0.042999999999992156",
+            "seekTargetSeconds": "91.448"
+          }
+        },
+        {
+          "at": "2026-11-09T04:39:56.444591+08:00",
+          "window": 5,
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "evidence": "selectionAndCueInventoryNotScreenPresentation",
+            "requestedTrackID": "9",
+            "selectionDispatchMs": "1",
+            "visibleParts": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:39:58.623008+08:00",
+          "window": 5,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "91.544",
+            "engine": "KSPlayer",
+            "evidence": "engineCompletionAndAdvancingClock",
+            "seekRecoveryMs": "2190",
+            "seekTargetSeconds": "91.448"
+          }
+        },
+        {
+          "at": "2026-11-09T04:44:03.252813+08:00",
+          "window": 6,
+          "event": "network_condition_changed",
+          "metrics": {
+            "constrained": "false",
+            "evidence": "devicePathSnapshot",
+            "expensive": "false",
+            "networkClass": "wifi",
+            "networkPathGeneration": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:44:03.253623+08:00",
+          "window": 6,
+          "event": "intent_created",
+          "metrics": {
+            "sourceKind": "jellyfin"
+          }
+        },
+        {
+          "at": "2026-11-09T04:44:03.255266+08:00",
+          "window": 6,
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "at": "2026-11-09T04:44:03.257608+08:00",
+          "window": 6,
+          "event": "preload_cancelled",
+          "metrics": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "at": "2026-11-09T04:44:04.346443+08:00",
+          "window": 6,
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "evidence": "selectionAndCueInventoryNotScreenPresentation",
+            "requestedTrackID": "8",
+            "selectionDispatchMs": "0",
+            "visibleParts": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:44:04.346689+08:00",
+          "window": 6,
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "1",
+            "evidence": "engineTrackInventory"
+          }
+        },
+        {
+          "at": "2026-11-09T04:44:04.436897+08:00",
+          "window": 6,
+          "event": "video_frame_submitted",
+          "metrics": {
+            "acceptedVideoFrameMs": "1113.4686251170933",
+            "acceptedVideoFramePTS": "0.0",
+            "demuxReadMaxWallMs": "14.386",
+            "demuxReadWallMs": "54.477",
+            "engine": "KSPlayer",
+            "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+            "outputSubmittedMs": "1147.9803749825805",
+            "outputSubmittedPTS": "0.0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:44:04.664437+08:00",
+          "window": 6,
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "0.077",
+            "firstFrameSignal": "playbackClock",
+            "tapToFirstFrameMs": "1447"
+          }
+        },
+        {
+          "at": "2026-11-09T04:44:36.669898+08:00",
+          "window": 6,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "15.021",
+            "seekTargetSeconds": "47.098"
+          }
+        },
+        {
+          "at": "2026-11-09T04:44:37.622102+08:00",
+          "window": 6,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "47.239",
+            "engine": "KSPlayer",
+            "evidence": "engineCompletionAndAdvancingClock",
+            "seekRecoveryMs": "960",
+            "seekTargetSeconds": "47.098"
+          }
+        },
+        {
+          "at": "2026-11-09T04:45:21.251144+08:00",
+          "window": 6,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "-14.978000000000009",
+            "seekTargetSeconds": "75.844"
+          }
+        },
+        {
+          "at": "2026-11-09T04:45:23.498601+08:00",
+          "window": 6,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "75.964",
+            "engine": "KSPlayer",
+            "evidence": "engineCompletionAndAdvancingClock",
+            "seekRecoveryMs": "2256",
+            "seekTargetSeconds": "75.844"
+          }
+        },
+        {
+          "at": "2026-11-09T04:45:35.472065+08:00",
+          "window": 6,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "0.06400000000000716",
+            "seekTargetSeconds": "87.932"
+          }
+        },
+        {
+          "at": "2026-11-09T04:45:35.472494+08:00",
+          "window": 6,
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "2",
+            "evidence": "engineTrackInventoryNotAudibleRecovery",
+            "requestedTrackID": "2",
+            "selectionDispatchMs": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:45:41.261799+08:00",
+          "window": 6,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "88.066",
+            "engine": "KSPlayer",
+            "evidence": "engineCompletionAndAdvancingClock",
+            "seekRecoveryMs": "5801",
+            "seekTargetSeconds": "87.932"
+          }
+        },
+        {
+          "at": "2026-11-09T04:45:49.869496+08:00",
+          "window": 6,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "0.08499999999999375",
+            "seekTargetSeconds": "96.642"
+          }
+        },
+        {
+          "at": "2026-11-09T04:45:49.869820+08:00",
+          "window": 6,
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "evidence": "selectionAndCueInventoryNotScreenPresentation",
+            "requestedTrackID": "9",
+            "selectionDispatchMs": "0",
+            "visibleParts": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:45:50.392492+08:00",
+          "window": 6,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "96.76",
+            "engine": "KSPlayer",
+            "evidence": "engineCompletionAndAdvancingClock",
+            "seekRecoveryMs": "535",
+            "seekTargetSeconds": "96.642"
+          }
+        },
+        {
+          "at": "2026-11-09T04:46:26.005686+08:00",
+          "window": 7,
+          "event": "network_condition_changed",
+          "metrics": {
+            "constrained": "false",
+            "evidence": "devicePathSnapshot",
+            "expensive": "false",
+            "networkClass": "wifi",
+            "networkPathGeneration": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:46:26.006188+08:00",
+          "window": 7,
+          "event": "intent_created",
+          "metrics": {
+            "sourceKind": "jellyfin"
+          }
+        },
+        {
+          "at": "2026-11-09T04:46:26.006676+08:00",
+          "window": 7,
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "at": "2026-11-09T04:46:26.007510+08:00",
+          "window": 7,
+          "event": "preload_cancelled",
+          "metrics": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "at": "2026-11-09T04:46:26.231059+08:00",
+          "window": 7,
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "evidence": "selectionAndCueInventoryNotScreenPresentation",
+            "requestedTrackID": "9",
+            "selectionDispatchMs": "0",
+            "visibleParts": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:46:26.231321+08:00",
+          "window": 7,
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "2",
+            "evidence": "engineTrackInventory"
+          }
+        },
+        {
+          "at": "2026-11-09T04:46:27.479828+08:00",
+          "window": 7,
+          "event": "video_frame_submitted",
+          "metrics": {
+            "acceptedVideoFrameMs": "1412.3622083570808",
+            "acceptedVideoFramePTS": "116.116",
+            "demuxReadMaxWallMs": "101.169",
+            "demuxReadWallMs": "654.356",
+            "engine": "KSPlayer",
+            "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+            "outputSubmittedMs": "1460.8606665860862",
+            "outputSubmittedPTS": "116.116"
+          }
+        },
+        {
+          "at": "2026-11-09T04:46:28.438455+08:00",
+          "window": 7,
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "116.248",
+            "firstFrameSignal": "playbackClock",
+            "tapToFirstFrameMs": "2453"
+          }
+        },
+        {
+          "at": "2026-11-09T04:47:30.149240+08:00",
+          "window": 8,
+          "event": "network_condition_changed",
+          "metrics": {
+            "constrained": "false",
+            "evidence": "devicePathSnapshot",
+            "expensive": "false",
+            "networkClass": "wifi",
+            "networkPathGeneration": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:47:30.149754+08:00",
+          "window": 8,
+          "event": "intent_created",
+          "metrics": {
+            "sourceKind": "jellyfin"
+          }
+        },
+        {
+          "at": "2026-11-09T04:47:30.150246+08:00",
+          "window": 8,
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "at": "2026-11-09T04:47:30.151093+08:00",
+          "window": 8,
+          "event": "preload_cancelled",
+          "metrics": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "at": "2026-11-09T04:47:30.396618+08:00",
+          "window": 8,
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "evidence": "selectionAndCueInventoryNotScreenPresentation",
+            "requestedTrackID": "9",
+            "selectionDispatchMs": "0",
+            "visibleParts": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T04:47:30.396884+08:00",
+          "window": 8,
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "2",
+            "evidence": "engineTrackInventory"
+          }
+        },
+        {
+          "at": "2026-11-09T04:47:30.486091+08:00",
+          "window": 8,
+          "event": "video_frame_submitted",
+          "metrics": {
+            "acceptedVideoFrameMs": "279.7051668167114",
+            "acceptedVideoFramePTS": "0.0",
+            "demuxReadMaxWallMs": "11.742",
+            "demuxReadWallMs": "53.739",
+            "engine": "KSPlayer",
+            "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+            "outputSubmittedMs": "319.67316661030054",
+            "outputSubmittedPTS": "0.0"
+          }
+        },
+        {
+          "at": "2026-11-09T04:47:30.709402+08:00",
+          "window": 8,
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "0.056",
+            "firstFrameSignal": "playbackClock",
+            "tapToFirstFrameMs": "573"
+          }
+        }
+      ],
+      "maximumInternalStallCountByWindow": {
+        "1": 1,
+        "2": 3,
+        "3": 0,
+        "4": 2,
+        "5": 4,
+        "6": 2,
+        "7": 1,
+        "8": 0
+      },
+      "stallCountMeaning": "Includes startup and deliberate seek/track changes; not a spontaneous-stall or stable-playback rate",
+      "jellyfinAuthenticatedCatalogLoaded": true,
+      "entryWindows": {
+        "deviceFile": [
+          1,
+          2,
+          3
+        ],
+        "networkSMB": [
+          4,
+          5
+        ],
+        "jellyfin": [
+          6,
+          7,
+          8
+        ]
+      }
+    }
+  },
+  "limitations": [
+    "normal Debug single windows, cache state and concurrent NAS load unknown",
+    "playback-clock first_frame and output submission are not actual screen presentation latency",
+    "audio dispatch/clock recovery are not audible recovery; subtitle selection/cue not complete switch latency",
+    "resume positions and track conditions differ; no source/device speed ranking",
+    "preload remains zero bytes; direct ByteReader route and runtime network replan still pending",
+    "13 Jellyfin catalog401, manual re-login requested once; no password read",
+    "no new Release, physical HDR, frame-time, long-duration or WAN/cellular acceptance"
+  ],
+  "source": {
+    "HEAD": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "uncommittedFiles": {
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadPlaybackCore.swift": "adf5c8c346fbe33ea24220cfd1592ce10f687483b9c8b76bd4ba2fee4b721dc8",
+      "ios/Nastart/Nastart/Playback/Core/PlaybackIntent.swift": "0f5c57caaec56b400c097ac1896a1095e8c3c3eb3ab814c824e8cfd232b9af97",
+      "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift": "bacc7997fbc1239a42e8c73893c8d1ede82a4ec3a7c5383ec13a1cee70952823",
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift": "9b9485d29428c3921846c8c19b12b49165f5c3da5d7109f64e6fdb2b5892b187"
+    }
+  },
+  "package": {
+    "mainSHA256": "540b18ae192bde74247a7d6d8f85022a265fc8f767e9a67bdede5dabe228036b",
+    "dylibSHA256": "892228fffe884f2ab268ce0dbdab688f1a70f7b5857588effee283ddf6e89581",
+    "configuration": "signed normal Debug",
+    "builtAt": "2026-11-09T04:24:13.067168+08:00",
+    "sourceHEAD": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "profileExpires": "2026-11-15T00:30:17Z"
+  },
+  "cleanup": {
+    "temporaryIndexRemoved": true,
+    "originalThreeLibrariesAndFourConnectionsEqual": true,
+    "simulatorDeleted": true,
+    "bothPortsClosed": true,
+    "networkSettingsChanged": false
+  }
+}

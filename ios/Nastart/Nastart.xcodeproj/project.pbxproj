@@ -14,6 +14,7 @@
 		010101010101010101010001 /* NastartApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020001 /* NastartApp.swift */; };
 		010101010101010101010002 /* AppTabRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020002 /* AppTabRootView.swift */; };
 		010101010101010101010003 /* NASModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020003 /* NASModels.swift */; };
+		B11222030000000000000001 /* LaunchpadServiceIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C11222030000000000000001 /* LaunchpadServiceIdentity.swift */; };
 		010101010101010101010004 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020004 /* SampleData.swift */; };
 		010101010101010101010005 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020005 /* AppTheme.swift */; };
 		010101010101010101010006 /* StatusDot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020006 /* StatusDot.swift */; };
@@ -39,6 +40,7 @@
 		010101010101010101010019 /* AudioPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020020 /* AudioPlayerView.swift */; };
 		010101010101010101010020 /* ISOPlaybackAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020021 /* ISOPlaybackAdapter.swift */; };
 		010101010101010101010021 /* CloudSyncStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020022 /* CloudSyncStore.swift */; };
+		B11222030000000000000002 /* CloudSyncRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C11222030000000000000002 /* CloudSyncRecord.swift */; };
 		010101010101010101010022 /* AgentClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020024 /* AgentClient.swift */; };
 		010101010101010101010023 /* SSHAgentInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020025 /* SSHAgentInstaller.swift */; };
 		010101010101010101010024 /* nastart_agent.py in Resources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020026 /* nastart_agent.py */; };
@@ -47,6 +49,7 @@
 		010101010101010101010027 /* NIOSSH in Frameworks */ = {isa = PBXBuildFile; productRef = 0B0B0B0B0B0B0B0B0B0B0004 /* NIOSSH */; };
 		010101010101010101010030 /* ServiceHealthProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020030 /* ServiceHealthProbe.swift */; };
 		010101010101010101010031 /* NonPlaybackPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020031 /* NonPlaybackPolicyTests.swift */; };
+		B11222030000000000000003 /* ServiceVisibilityIdentityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C11222030000000000000003 /* ServiceVisibilityIdentityTests.swift */; };
 		010101010101010101010032 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 020202020202020202020032 /* XCTest.framework */; };
 		010101010101010101010033 /* DSMClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020033 /* DSMClient.swift */; };
 		010101010101010101010034 /* LANDiscoveryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020034 /* LANDiscoveryService.swift */; };
@@ -98,6 +101,7 @@
 		020202020202020202020001 /* NastartApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NastartApp.swift; sourceTree = "<group>"; };
 		020202020202020202020002 /* AppTabRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabRootView.swift; sourceTree = "<group>"; };
 		020202020202020202020003 /* NASModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NASModels.swift; sourceTree = "<group>"; };
+		C11222030000000000000001 /* LaunchpadServiceIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchpadServiceIdentity.swift; sourceTree = "<group>"; };
 		020202020202020202020004 /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
 		020202020202020202020005 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		020202020202020202020006 /* StatusDot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusDot.swift; sourceTree = "<group>"; };
@@ -124,6 +128,7 @@
 		020202020202020202020020 /* AudioPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerView.swift; sourceTree = "<group>"; };
 		020202020202020202020021 /* ISOPlaybackAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISOPlaybackAdapter.swift; sourceTree = "<group>"; };
 		020202020202020202020022 /* CloudSyncStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncStore.swift; sourceTree = "<group>"; };
+		C11222030000000000000002 /* CloudSyncRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncRecord.swift; sourceTree = "<group>"; };
 		020202020202020202020023 /* Nastart.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Nastart.entitlements; sourceTree = "<group>"; };
 		020202020202020202020024 /* AgentClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentClient.swift; sourceTree = "<group>"; };
 		020202020202020202020025 /* SSHAgentInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHAgentInstaller.swift; sourceTree = "<group>"; };
@@ -133,6 +138,7 @@
 		020202020202020202020029 /* Nastart.Debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Nastart.Debug.entitlements; sourceTree = "<group>"; };
 		020202020202020202020030 /* ServiceHealthProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceHealthProbe.swift; sourceTree = "<group>"; };
 		020202020202020202020031 /* NonPlaybackPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonPlaybackPolicyTests.swift; sourceTree = "<group>"; };
+		C11222030000000000000003 /* ServiceVisibilityIdentityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceVisibilityIdentityTests.swift; sourceTree = "<group>"; };
 		020202020202020202020032 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
 		020202020202020202020033 /* DSMClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSMClient.swift; sourceTree = "<group>"; };
 		020202020202020202020034 /* LANDiscoveryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LANDiscoveryService.swift; sourceTree = "<group>"; };
@@ -288,6 +294,7 @@
 			isa = PBXGroup;
 			children = (
 				020202020202020202020003 /* NASModels.swift */,
+				C11222030000000000000001 /* LaunchpadServiceIdentity.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -355,6 +362,7 @@
 			children = (
 				020202020202020202020018 /* AppStateStores.swift */,
 				020202020202020202020022 /* CloudSyncStore.swift */,
+				C11222030000000000000002 /* CloudSyncRecord.swift */,
 				020202020202020202020024 /* AgentClient.swift */,
 				020202020202020202020025 /* SSHAgentInstaller.swift */,
 				020202020202020202020030 /* ServiceHealthProbe.swift */,
@@ -384,6 +392,7 @@
 			isa = PBXGroup;
 			children = (
 				020202020202020202020031 /* NonPlaybackPolicyTests.swift */,
+				C11222030000000000000003 /* ServiceVisibilityIdentityTests.swift */,
 				020202020202020202020052 /* PlaybackNextCoreTests.swift */,
 			);
 			path = NastartTests;
@@ -675,6 +684,7 @@
 				010101010101010101010001 /* NastartApp.swift in Sources */,
 				010101010101010101010002 /* AppTabRootView.swift in Sources */,
 				010101010101010101010003 /* NASModels.swift in Sources */,
+				B11222030000000000000001 /* LaunchpadServiceIdentity.swift in Sources */,
 				010101010101010101010004 /* SampleData.swift in Sources */,
 				010101010101010101010005 /* AppTheme.swift in Sources */,
 				010101010101010101010006 /* StatusDot.swift in Sources */,
@@ -697,6 +707,7 @@
 				010101010101010101010019 /* AudioPlayerView.swift in Sources */,
 				010101010101010101010020 /* ISOPlaybackAdapter.swift in Sources */,
 				010101010101010101010021 /* CloudSyncStore.swift in Sources */,
+				B11222030000000000000002 /* CloudSyncRecord.swift in Sources */,
 				010101010101010101010022 /* AgentClient.swift in Sources */,
 				010101010101010101010023 /* SSHAgentInstaller.swift in Sources */,
 				010101010101010101010030 /* ServiceHealthProbe.swift in Sources */,
@@ -736,6 +747,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				010101010101010101010031 /* NonPlaybackPolicyTests.swift in Sources */,
+				B11222030000000000000003 /* ServiceVisibilityIdentityTests.swift in Sources */,
 				010101010101010101010052 /* PlaybackNextCoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

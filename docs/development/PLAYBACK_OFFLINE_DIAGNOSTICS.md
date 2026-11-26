@@ -1,8 +1,20 @@
 # Playback Offline Diagnostics
 
+2026-11-20 `playback_phase_report.py` 增加 `firstObservedSegmentAttempts`，按 trace 记录观察窗内首次见到的播放器段请求及同一 child 的重试，覆盖从非零段开始的续播。显式预取和内部首帧之后的新请求排除，启动期已发请求的晚返回仍保留。保留原 0 号段字段 `startupSegmentAttempts`。窗口若在请求发出后才开始，最早可见请求只代表现有采样。 [离线回放验证](../archive/handoffs/2026-11/CODEX-2026-11-20-HLS-OBSERVED-SEGMENT-REPORT.md)
+
+2026-11-09 索引等待的阶段依容器与真实读序而变。合成 MP4 的尾部索引等待在初始定位前；合成 Matroska 的 Cues 等待发生在初始定位内。报告应同时核同 trace / plan 的退场和对应 transferID，而不是把 `pending` 直接归为播放器计算开销。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-S19-MATROSKA-CUES.md)
+
+2026-11-09 `playback_trace_report.py` 将同 trace / plan 的 `engine_startup_incomplete` 单列为 `incompleteEngineStartups`，输出定位结果、首包、首个接受帧和提交时刻。未知阶段输出空值。未推进退场不会填补成功起播落点、首帧或速度配对；缺任一身份的日志仍列为未归属。
+
+2026-11-09 受控 Range 夹具支持 `playback_lab.py --fault-range-start <字节偏移>`。选项把已有延迟、限速和断流限制到解析后从该偏移开始的有效 GET Range。HEAD、其他范围及 416 不注入。可分别模拟小尾段的响应等待和大尾段的正文慢读。合成空数据可验证 HTTP 供给条件，播放器复现须用可解码片源和独立窗口。
+
 2026-10-20 Debug lab：显式`NASTART_PLAYBACK_LAB_PROXY=1`将HLS URL交现有认证代理，另设`NASTART_PLAYBACK_LAB_PREWARM=1`才预热完整VOD文字，默认均关且不启用首片primer；失败/取消/播放器释放注销同route。`NASTART_PLAYBACK_LAB_POSITION`仍为0～1归一化位置。此注入不是普通入口/Release验收，结束恢复空环境，参见[六窗边界与限制](../archive/handoffs/2026-10/2026-10-20-PROXY-LAB-CONSUMER.md)。
 
 当前两入口对照：[配对校验、三组清单模板与比较工具](../archive/handoffs/2026-09/2026-09-14-NAS-PAIRED-COMPARISON.md)。使用 playback_compare_entries.py；历史 Auto/Force 工具不检查配对条件，不能代替此流程。
+
+2026-11-09 三入口对照：原清单仍可直接使用。要加网络存储，在顶层加 `networkStorageProtocol`（`smb`、`ftp` 或 `webdav`），每个 `pairID` 再加入 `entry: "networkStorage"` 的观测，在其 `conditions.sourceProtocol` 填已核实的实际协议。每批只用一种存储协议，SMB/FTP 只做内网。沿用同片版本、同轨道、同落点、同设备、同网络、同构建和缓存状态，另外要求三个入口记录相同的实际 `routeKind`。至少三组完整记录才汇总内部播放时钟；缺项、失败、重复和跨路线观测不会进入统计。屏幕首帧、续播画面、跳转恢复及音字幕实际输出仍须各自取证。
+
+2026-11-09 落点校验使用同一 trace 和 plan 的 `engine_startup_timing.initialPositionSeconds`。用新版 `playback_trace_report.py` 从原始导出重新生成报告，再运行配对工具。报告起点与清单 `startSeconds` 的误差须在 0.05 秒内，缺失或互相矛盾的起点保留为无效记录。书签快照、滑块比例、首个时钟位置仍可用于诊断，配对起点使用引擎记录。
 
 2026-09-14 报告工具更新：[trace/plan 严格归属与未归属事件清单](../archive/handoffs/2026-09/2026-09-14-NAS-TRACE-ASSOCIATION.md)。缺会话身份的测速不再借用，旧日志兼容模式单独标识；同条件性能比较仍需补齐样本/轨道/断点/网络/构建证据。
 

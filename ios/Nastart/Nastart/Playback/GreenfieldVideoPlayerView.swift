@@ -131,15 +131,13 @@ struct GreenfieldVideoPlayerView: View {
     #endif
     @State private var replacementRequest: GreenfieldPlaybackLaunchRequest?
     @State private var didInitializeSession = false
-    @State private var episodeNavigation: MediaPlaybackEpisodeNavigation?
-    @State private var changingSource = false
-    @State private var sourceChangeBlocksPlayback = false
+    @State private var episodeNavigation: (requestID: UUID, navigation: MediaPlaybackEpisodeNavigation)?
     @State private var sourceLoadTask: Task<Void, Never>?
-    @State private var pendingSourceChange: (() -> Void)?
-    @State private var sourceChangeRequests = PlaybackSourceChangeRequestTracker()
+    @State private var sourceChanges = PlaybackSourceChangeCoordinator()
+    @State private var sourceChangeOrientation: PlayerOrientationMode?
     @State private var predictiveCooldown = PlaybackPredictiveCooldownPolicy()
-    @State private var sourceChangeWasPlaying = false
     @State private var sourceChangeFailed = false
+    private var changingSource: Bool { sourceChanges.isChanging }
 #if DEBUG
     @State private var debugCandidateRequested = false
 #endif
@@ -170,10 +168,11 @@ struct GreenfieldVideoPlayerView: View {
                     compatibilityFailed: { _ in },
                     sourceTrackChange: sourceTrackCallback,
                     sourceTrackChangeInProgress: changingSource,
+                    acceptsTrackAndSeek: { !sourceChanges.isChangingItem },
                     serverSeek: serverSeekCallback,
                     qualityChange: nil,
-                    previousEpisode: episodeNavigation?.previous.map { loader in { replaceSource(preservePausedState: false, loader) } },
-                    nextEpisode: episodeNavigation?.next.map { loader in { replaceSource(preservePausedState: false, loader) } },
+                    previousEpisode: episodeAction(-1),
+                    nextEpisode: episodeAction(1),
                     downloadStatus: downloadStatus,
                     openExternal: { handoffRequest = uiRequest }) {
                 GreenfieldKSPlayerRenderer(
@@ -196,10 +195,11 @@ struct GreenfieldVideoPlayerView: View {
                     compatibilityFailed: { _ in },
                     sourceTrackChange: sourceTrackCallback,
                     sourceTrackChangeInProgress: changingSource,
+                    acceptsTrackAndSeek: { !sourceChanges.isChangingItem },
                     serverSeek: serverSeekCallback,
                     qualityChange: nil,
-                    previousEpisode: episodeNavigation?.previous.map { loader in { replaceSource(preservePausedState: false, loader) } },
-                    nextEpisode: episodeNavigation?.next.map { loader in { replaceSource(preservePausedState: false, loader) } },
+                    previousEpisode: episodeAction(-1),
+                    nextEpisode: episodeAction(1),
                     downloadStatus: downloadStatus,
                     openExternal: { handoffRequest = uiRequest }) {
                     GreenfieldAVPlayerSurface(player: model.player, controls: avControls)
@@ -231,7 +231,7 @@ struct GreenfieldVideoPlayerView: View {
                 .padding(22)
                 // The mounted renderer may still show its loading spinner underneath.
                 .background(.black, in: RoundedRectangle(cornerRadius: 12))
-            } else if (model.isPreparing || (changingSource && (sourceChangeBlocksPlayback || !controls.isPlaying)))
+            } else if (model.isPreparing || (changingSource && (sourceChanges.holdsPlayback || !controls.isPlaying)))
                         && !(model.renderingPlan != nil && controls.errorMessage == nil && controls.showsLoadingIndicator) {
                 // The mounted player already presents its buffering speed and
                 // spinner. Source preparation must not draw a second copy.
@@ -258,9 +258,9 @@ struct GreenfieldVideoPlayerView: View {
                 Button("验证候选") {
                     debugCandidateRequested = true
                     controls.event("debug_candidate_lab_requested")
-                    replaceSource(keepPlayingDuringPreparation: true, reportsFailure: false) {
+                    submitSourceChange(.automatic, automatic: AutomaticSourceChange(load: {
                         try? await PlaybackLabLaunchRequest.makeCandidateRequest(environment: ProcessInfo.processInfo.environment)
-                    }
+                    }))
                 }
                 .accessibilityIdentifier("playback.lab.prepareCandidate")
                 .buttonStyle(.borderedProminent)
@@ -303,15 +303,49 @@ struct GreenfieldVideoPlayerView: View {
             SharedPlaybackExternalPicker(request: request)
         }
         .task(id: uiRequest.id) {
+            let request = uiRequest
             episodeNavigation = nil
-            let navigation = await uiRequest.episodeNavigationLoader?()
-            guard !Task.isCancelled else { return }
-            episodeNavigation = navigation
+            let navigation = await request.episodeNavigationLoader?()
+            guard !Task.isCancelled, let navigation, request.id == uiRequest.id else { return }
+            episodeNavigation = (request.id, navigation)
         }
         .task(id: model.renderingPlan?.id) {
             await downloadStatus.follow(controls, request: uiRequest)
         }
         .onChange(of: controls.currentSeconds) { _ in saveLocalProgress() }
+        .onChange(of: controls.isPlaying) { playing in
+            if !playing, uiRequest.source == .jellyfin, !controls.wantsPlayback {
+                saveLocalProgress(force: true, boundary: .pause)
+            }
+        }
+        .task(id: request.id) {
+            var recovery = JellyfinStallRecovery()
+            while !Task.isCancelled {
+                do { try await Task.sleep(nanoseconds: 1_000_000_000) }
+                catch { return }
+                let currentRequest = uiRequest
+                let session = controls
+                let position = session.preciseCurrentSeconds
+                let eligible = currentRequest.source == .jellyfin && session.canPersistResumeProgress
+                    && session.wantsPlayback && model.errorMessage == nil
+                    && !session.isPictureInPictureActive && !session.isPictureInPictureStarting
+                    && (session.durationSeconds <= 0 || position < session.durationSeconds - 5)
+                guard recovery.shouldReconnect(now: ProcessInfo.processInfo.systemUptime, position: position,
+                        eligible: eligible, canReconnect: !changingSource && currentRequest.sourceTrackRequestLoader != nil),
+                      let reopen = currentRequest.sourceTrackRequestLoader else { continue }
+                let live = session.runtimeState(orientationMode: currentRequest.initialOrientationMode)
+                let state = live.atSourcePosition(position, duration: session.durationSeconds)
+                let audio = live.sourceAudioStreamIndex ?? currentRequest.selectedSourceAudioTrackID
+                let subtitle = live.subtitleSelectionKnown && live.subtitlesDisabled ? nil
+                    : live.sourceSubtitleStreamIndex ?? currentRequest.selectedSourceSubtitleTrackID
+                session.event("jellyfin_stall_reconnect_requested", metrics: ["currentSeconds": String(position)])
+                submitSourceChange(.automatic, automatic: AutomaticSourceChange(load: {
+                    let replacement = await reopen(audio, subtitle, state)
+                    if replacement == nil { session.event("jellyfin_stall_reconnect_unavailable") }
+                    return replacement
+                }))
+            }
+        }
         .task(id: activeRequest.id) {
             // This loader negotiates a lower bitrate. A device file's Range
             // proxy fallback is not a transcode and must never be used here.
@@ -453,7 +487,7 @@ struct GreenfieldVideoPlayerView: View {
                     "bufferedAheadSeconds": runtime["bufferedAheadSeconds"] ?? "unknown",
                     "bufferTargetSeconds": runtime["bufferTargetSeconds"] ?? "unknown"
                 ])
-                replaceSource(keepPlayingDuringPreparation: true, reportsFailure: false,
+                submitSourceChange(.automatic, automatic: AutomaticSourceChange(
                     staticPredictionBitrate: mayWithdrawPrediction ? sourceBitrate : nil,
                     onStaticPredictionRecovered: {
                         failedCandidateRetry.withdraw(ticket: retryTicket)
@@ -468,9 +502,7 @@ struct GreenfieldVideoPlayerView: View {
                                 "failedCandidateTraceID": candidate.playbackTraceID ?? "unknown"
                             ])
                         }
-                    }) {
-                    await attemptLoader(state)
-                }
+                    }, load: { await attemptLoader(state) }))
             }
         }
         .onChange(of: scenePhase) { phase in
@@ -557,15 +589,15 @@ struct GreenfieldVideoPlayerView: View {
         }
     }
     private enum ResumeSaveBoundary: String {
-        case close, viewDisappear, sceneInactive, sceneWillDeactivate, sceneDidEnterBackground, nativeCallback, pipWillStart
+        case close, pause, viewDisappear, sceneInactive, sceneWillDeactivate, sceneDidEnterBackground, nativeCallback, pipWillStart
     }
     private func saveLocalProgress(force: Bool = false, boundary: ResumeSaveBoundary? = nil) {
         // An abrupt process termination cannot run the pause/exit callbacks.
         // Keep periodic checkpoints close to playback without writing each tick.
+        if force { model.checkpointPlaybackProgress(controls: controls) }
         guard force || Date().timeIntervalSince(lastLocalProgressSave) >= 2,
               Self.persistLocalProgress(controls: controls, request: uiRequest, boundary: boundary) else { return }
         lastLocalProgressSave = Date()
-        if force { model.checkpointPlaybackProgress(controls: controls) }
     }
     @discardableResult
     private static func persistLocalProgress(controls: GreenfieldPlaybackControls, request: MediaPlaybackRequest,
@@ -602,10 +634,12 @@ struct GreenfieldVideoPlayerView: View {
         if let closePresentation { closePresentation() } else { dismiss() }
     }
     private var sourceTrackCallback: ((Int?, Int?, MediaPlaybackRuntimeState) -> Void)? {
-        guard let loader = uiRequest.sourceTrackRequestLoader else { return nil }
+        let request = uiRequest
+        guard request.sourceTrackRequestLoader != nil else { return nil }
         return { audio, subtitle, state in
-            let externalURL = uiRequest.sourceSubtitleTracks.first { $0.id == subtitle }?.externalURL
-            if usesKSPlayer, model.renderingPlan?.primaryRoute.playMethod == .directPlay,
+            guard request.id == uiRequest.id, !sourceChanges.isChangingItem else { return }
+            let externalURL = request.sourceSubtitleTracks.first { $0.id == subtitle }?.externalURL
+            if !changingSource, usesKSPlayer, model.renderingPlan?.primaryRoute.playMethod == .directPlay,
                audio == nil || controls.audioTracks.contains(where: { Int($0.id) == audio }),
                subtitle == nil || externalURL != nil || controls.subtitleTracks.contains(where: { Int($0.id) == subtitle }) {
                 if let audio, let track = controls.audioTracks.first(where: { Int($0.id) == audio }) {
@@ -614,79 +648,107 @@ struct GreenfieldVideoPlayerView: View {
                 controls.selectSourceSubtitle(subtitle.flatMap(Int32.init), externalURL: externalURL)
                 controls.sourceRuntimeStreamIndexes = (audio, subtitle)
                 controls.sourceRuntimeTracks = (
-                    uiRequest.sourceAudioTracks.firstIndex { $0.id == audio },
-                    uiRequest.sourceSubtitleTracks.firstIndex { $0.id == subtitle },
+                    request.sourceAudioTracks.firstIndex { $0.id == audio },
+                    request.sourceSubtitleTracks.firstIndex { $0.id == subtitle },
                     subtitle == nil
                 )
             } else {
-                // Server burn-in/audio changes can take several seconds. Keep
-                // the outgoing renderer until the muted candidate is aligned.
-                replaceSource(keepPlayingDuringPreparation: true,
-                    trackSelection: .init(audio: audio, subtitle: subtitle,
-                        seekGeneration: controls.seekGeneration,
-                        pictureInPictureGeneration: controls.pictureInPictureSessionGeneration)) {
-                    await loader(audio, subtitle, state)
-                }
+                submitSourceChange(.tracks(.init(audio: audio, subtitle: subtitle)), orientation: state.orientationMode)
             }
         }
     }
     private var serverSeekCallback: ((Double, MediaPlaybackRuntimeState) -> Void)? {
-        guard let loader = uiRequest.serverSeekRequestLoader else { return nil }
-        return { seconds, state in replaceSource { await loader(seconds, state) } }
+        let request = uiRequest
+        guard request.serverSeekRequestLoader != nil else { return nil }
+        return { seconds, state in
+            guard request.id == uiRequest.id, !sourceChanges.isChangingItem else { return }
+            submitSourceChange(.seek(seconds), orientation: state.orientationMode)
+        }
     }
-    // Manual quality changes are deferred until server preparation and handoff
-    // meet the playback acceptance criteria. Automatic route/fallback stays active.
-    // Keep qualityOptions, qualityRequestLoader and source replacement support:
-    // only the visible entry is hidden, for a future UI reintroduction.
-    private func replaceSource(preservePausedState: Bool = true, keepPlayingDuringPreparation: Bool = false,
-                               playbackWasPlaying: Bool? = nil, reportsFailure: Bool = true,
-                               staticPredictionBitrate: Int? = nil,
-                               onStaticPredictionRecovered: (() -> Void)? = nil,
-                               onCandidatePreparationFailed: ((MediaPlaybackRequest) -> Void)? = nil,
-                               trackSelection: PlaybackSourceChangeRequestTracker.Tracks? = nil,
-                               _ load: @escaping () async -> MediaPlaybackRequest?) {
-        guard sourceChangeRequests.accept(trackSelection) else {
-            controls.event("source_track_request_coalesced")
-            return
+
+    private func episodeLoader(_ direction: Int, for request: MediaPlaybackRequest) -> (() async -> MediaPlaybackRequest?)? {
+        guard let episodeNavigation, episodeNavigation.requestID == request.id else { return nil }
+        return direction < 0 ? episodeNavigation.navigation.previous : episodeNavigation.navigation.next
+    }
+
+    private func episodeAction(_ direction: Int) -> (() -> Void)? {
+        let request = uiRequest
+        guard episodeLoader(direction, for: request) != nil else { return nil }
+        return {
+            guard request.id == uiRequest.id else { return }
+            submitSourceChange(.item(direction))
         }
-        guard !changingSource else {
-            // Finish/clean up the current candidate, then apply the most recent
-            // user selection. Dropping this request leaves the menu ahead of the
-            // actual audio/subtitle stream after repeated taps.
-            let wasPlaying = sourceChangeWasPlaying
-            pendingSourceChange = {
-                replaceSource(preservePausedState: preservePausedState,
-                              keepPlayingDuringPreparation: keepPlayingDuringPreparation,
-                              playbackWasPlaying: wasPlaying, reportsFailure: reportsFailure,
-                              staticPredictionBitrate: staticPredictionBitrate,
-                              onStaticPredictionRecovered: onStaticPredictionRecovered,
-                              onCandidatePreparationFailed: onCandidatePreparationFailed,
-                              trackSelection: trackSelection, load)
-            }
-            return
+    }
+
+    private struct AutomaticSourceChange {
+        var staticPredictionBitrate: Int? = nil
+        var onStaticPredictionRecovered: (() -> Void)? = nil
+        var onCandidatePreparationFailed: ((MediaPlaybackRequest) -> Void)? = nil
+        let load: () async -> MediaPlaybackRequest?
+    }
+
+    private func sourceChangeLive(_ request: MediaPlaybackRequest, _ controls: GreenfieldPlaybackControls,
+                                  includeTracks: Bool = true)
+        -> PlaybackSourceChangeCoordinator.Live {
+        return .init(seekGeneration: controls.seekGeneration,
+            pictureInPictureGeneration: controls.pictureInPictureSessionGeneration,
+            pictureInPictureOwnsRenderer: controls.isPictureInPictureStarting || controls.isPictureInPictureActive,
+            wantsPlayback: controls.wantsPlayback,
+            tracks: includeTracks ? request.confirmedSourceChangeTracks(for:
+                controls.runtimeState(orientationMode: request.initialOrientationMode)) : nil)
+    }
+
+    private func submitSourceChange(_ change: PlaybackSourceChangeCoordinator.Change,
+                                    orientation: PlayerOrientationMode? = nil,
+                                    automatic: AutomaticSourceChange? = nil) {
+        switch sourceChanges.submit(change, live: sourceChangeLive(uiRequest, controls)) {
+        case .start(let attempt):
+            sourceChangeOrientation = orientation
+            prepareSourceChange(attempt, automatic: automatic)
+        case .replaces, .queued:
+            sourceChangeOrientation = orientation
+        case .coalesced:
+            if case .tracks = change { controls.event("source_track_request_coalesced") }
+        case .cancels, .ignored:
+            break
         }
-        changingSource = true
-        sourceChangeBlocksPlayback = !keepPlayingDuringPreparation
+    }
+
+    private func prepareSourceChange(_ attempt: PlaybackSourceChangeCoordinator.Attempt,
+                                     automatic: AutomaticSourceChange? = nil) {
+        let target = attempt.target
+        let keepPlayingDuringPreparation = !target.holdsPlayback
+        let staticPredictionBitrate = automatic?.staticPredictionBitrate
+        let outgoingRequest = uiRequest
+        let orientation = sourceChangeOrientation ?? outgoingRequest.initialOrientationMode
         let oldControls = controls
         let initialSeekGeneration = oldControls.seekGeneration
-        let initialPiPGeneration = oldControls.pictureInPictureSessionGeneration
-        let initialTracks = oldControls.runtimeState(orientationMode: uiRequest.initialOrientationMode)
+        let initialTracks = oldControls.runtimeState(orientationMode: orientation)
+        let loader: () async -> MediaPlaybackRequest?
+        if let item = target.item {
+            let loadEpisode = episodeLoader(item, for: outgoingRequest)
+            loader = { await loadEpisode?() }
+        } else if let tracks = target.tracks {
+            let state = target.seekSeconds.map { initialTracks.atSourcePosition($0, duration: oldControls.durationSeconds) }
+                ?? initialTracks
+            loader = { await outgoingRequest.sourceTrackRequestLoader?(tracks.audio, tracks.subtitle, state) }
+        } else if let seconds = target.seekSeconds {
+            let state = initialTracks.atSourcePosition(seconds, duration: oldControls.durationSeconds)
+            loader = { await outgoingRequest.serverSeekRequestLoader?(seconds, state) }
+        } else {
+            loader = { await automatic?.load() }
+        }
         var recovery = PlaybackPredictiveRecoveryPolicy(startedAt: ProcessInfo.processInfo.systemUptime)
         var recoveryReported = false
         var lastRecoveryProbeUptime: TimeInterval?
-        func automaticCandidateStillCurrent() -> Bool {
-            // A PiP start transfers the current renderer to the system. A
-            // prepared replacement must not retire that owner while its
-            // floating window remains alive, even if restore completes first.
-            guard pendingSourceChange == nil,
-                  oldControls.canReplacePlaybackSession(pictureInPictureGeneration: initialPiPGeneration,
-                    seekGeneration: keepPlayingDuringPreparation ? initialSeekGeneration : nil) else {
+        func candidateStillCurrent() -> Bool {
+            guard !Task.isCancelled,
+                  sourceChanges.mayCommit(attempt.id, live: sourceChangeLive(outgoingRequest, oldControls, includeTracks: false)) else {
                 return false
             }
-            guard !reportsFailure else { return true }
-            let latest = oldControls.runtimeState(orientationMode: uiRequest.initialOrientationMode)
-            guard oldControls.seekGeneration == initialSeekGeneration
-                && latest.audioTrackOrdinal == initialTracks.audioTrackOrdinal
+            guard target.isAutomatic else { return true }
+            let latest = oldControls.runtimeState(orientationMode: orientation)
+            guard latest.audioTrackOrdinal == initialTracks.audioTrackOrdinal
                 && latest.subtitleTrackOrdinal == initialTracks.subtitleTrackOrdinal
                 && latest.subtitlesDisabled == initialTracks.subtitlesDisabled
                 && latest.sourceAudioStreamIndex == initialTracks.sourceAudioStreamIndex
@@ -698,7 +760,7 @@ struct GreenfieldVideoPlayerView: View {
             if let lastRecoveryProbeUptime, now >= lastRecoveryProbeUptime,
                now - lastRecoveryProbeUptime < 0.75 { return true }
             lastRecoveryProbeUptime = now
-            let estimate = uiRequest.playbackTraceID.flatMap {
+            let estimate = outgoingRequest.playbackTraceID.flatMap {
                 PlaybackRecentThroughputStore.shared.estimateSample(traceID: $0, now: now)
             }
             let runtime = oldControls.readRuntimeTelemetry?() ?? [:]
@@ -716,7 +778,7 @@ struct GreenfieldVideoPlayerView: View {
                 evidenceUptime: estimate?.predictionEvidenceUptime)
             if recovered, !recoveryReported {
                 recoveryReported = true
-                onStaticPredictionRecovered?()
+                automatic?.onStaticPredictionRecovered?()
                 oldControls.event("automatic_downshift_recovered", metrics: [
                     "reason": "staticPredictionNoLongerSupported",
                     "sourceBitrate": String(staticPredictionBitrate),
@@ -726,51 +788,57 @@ struct GreenfieldVideoPlayerView: View {
             }
             return !recovered
         }
-        let wasPlaying = playbackWasPlaying ?? oldControls.wantsPlayback
-        sourceChangeWasPlaying = wasPlaying
-        let wasPaused = preservePausedState && !wasPlaying
-        if !keepPlayingDuringPreparation { oldControls.pauseForExternalHandoff() }
+        if target.holdsPlayback { oldControls.pauseForExternalHandoff() }
         sourceLoadTask = Task { @MainActor in
-            var committed = false
+            var outcome: PlaybackSourceChangeCoordinator.Outcome = .abandoned
             // Observe the original while the loader is awaited too, rather
             // than starting confirmation only after a slow candidate is ready.
             let recoveryMonitor: Task<Void, Never>? = staticPredictionBitrate == nil ? nil : Task { @MainActor in
                 while !Task.isCancelled {
-                    guard automaticCandidateStillCurrent() else { return }
+                    guard candidateStillCurrent() else { return }
                     do { try await Task.sleep(nanoseconds: 1_000_000_000) }
                     catch { return }
                 }
             }
             defer {
                 recoveryMonitor?.cancel()
-                changingSource = false
-                sourceChangeRequests.finish()
-                sourceChangeBlocksPlayback = false
-                if !committed && !reportsFailure && !Task.isCancelled {
+                sourceLoadTask = nil
+                if Task.isCancelled { outcome = .cancelled }
+                if outcome != .committed && outcome != .cancelled && target.isAutomatic {
                     oldControls.event("automatic_downshift_abandoned")
                 }
-                if !committed && wasPlaying && !keepPlayingDuringPreparation && !Task.isCancelled
-                    && !oldControls.wantsPlayback { oldControls.togglePlayback() }
-                let pending = pendingSourceChange
-                pendingSourceChange = nil
-                if !Task.isCancelled { pending?() }
+                let live = outcome == .committed
+                    ? sourceChangeLive(uiRequest, controls) : sourceChangeLive(outgoingRequest, oldControls)
+                let completion = sourceChanges.finish(attempt.id, outcome, live: live)
+                if completion.resumesOutgoing && !oldControls.wantsPlayback { oldControls.togglePlayback() }
+                if completion.reportsFailure { sourceChangeFailed = true }
+                if let next = completion.next {
+                    if next.target == target, let tracks = target.tracks,
+                       live.seekGeneration != initialSeekGeneration {
+                        oldControls.event("source_track_retry_after_seek", metrics: [
+                            "audio": tracks.audio.map(String.init) ?? "none",
+                            "subtitle": tracks.subtitle.map(String.init) ?? "none"
+                        ])
+                    }
+                    prepareSourceChange(next)
+                } else {
+                    sourceChangeOrientation = nil
+                }
             }
-            let loaded = await load()
-            guard var next = loaded else {
-                sourceChangeFailed = reportsFailure && !Task.isCancelled && automaticCandidateStillCurrent()
+            guard candidateStillCurrent() else { return }
+            guard var next = await loader() else {
+                if candidateStillCurrent() { outcome = .failed }
                 return
             }
             defer {
-                if !committed { next.playbackTracker?.releasePreparedResources() }
+                if outcome != .committed { next.playbackTracker?.releasePreparedResources() }
             }
-            guard !Task.isCancelled, pendingSourceChange == nil else { return }
-            guard automaticCandidateStillCurrent() else { return }
+            guard candidateStillCurrent() else { return }
             // Prepare the route before the final decoded alignment. There must
             // be no awaited session work after the held AV candidate returns.
-            let commitPaused = keepPlayingDuringPreparation ? !oldControls.wantsPlayback : wasPaused
             if keepPlayingDuringPreparation {
-                let liveState = oldControls.runtimeState(orientationMode: uiRequest.initialOrientationMode)
-                next = reportsFailure
+                let liveState = oldControls.runtimeState(orientationMode: orientation)
+                next = target.tracks != nil
                     ? next.applyingSourceTrackRuntimePreferences(liveState)
                     : next.applyingRuntimePreferences(liveState)
             }
@@ -778,11 +846,10 @@ struct GreenfieldVideoPlayerView: View {
             let preparedSession: GreenfieldVideoPlayerModel.PreparedSession
             do { preparedSession = try await GreenfieldVideoPlayerModel.prepareSession(launch) }
             catch {
-                sourceChangeFailed = reportsFailure && !Task.isCancelled && automaticCandidateStillCurrent()
+                if candidateStillCurrent() { outcome = .failed }
                 return
             }
-            guard !Task.isCancelled else { return }
-            guard pendingSourceChange == nil, automaticCandidateStillCurrent() else { return }
+            guard candidateStillCurrent() else { return }
             let preparedPlayer: AVPlayer?
             if next.fileExtensionHint == "m3u8" {
                 oldControls.event("replacement_warmup_started")
@@ -794,24 +861,23 @@ struct GreenfieldVideoPlayerView: View {
                     liveReserve: keepPlayingDuringPreparation ? {
                         oldControls.readRuntimeTelemetry?()["bufferedAheadSeconds"].flatMap(Double.init)
                     } : nil,
-                    candidateStillCurrent: automaticCandidateStillCurrent,
+                    candidateStillCurrent: candidateStillCurrent,
                     holdForCommit: keepPlayingDuringPreparation,
                     report: { stage, metrics in oldControls.event("replacement_" + stage, metrics: metrics) })
-                guard !Task.isCancelled else { return }
-                guard automaticCandidateStillCurrent() else {
+                guard candidateStillCurrent() else {
                     preparedPlayer?.pause()
                     preparedPlayer?.replaceCurrentItem(with: nil)
                     return
                 }
                 guard preparedPlayer != nil else {
-                    onCandidatePreparationFailed?(next)
-                    sourceChangeFailed = reportsFailure
+                    automatic?.onCandidatePreparationFailed?(next)
+                    outcome = .failed
                     return
                 }
                 oldControls.event("replacement_warmup_completed")
             } else { preparedPlayer = nil }
             defer {
-                if !committed {
+                if outcome != .committed {
                     preparedPlayer?.pause()
                     preparedPlayer?.replaceCurrentItem(with: nil)
                 }
@@ -825,23 +891,21 @@ struct GreenfieldVideoPlayerView: View {
                     liveClock: { keepPlayingDuringPreparation ? oldControls.preciseCurrentSeconds : preparedSession.result.plan.timeline.startTime },
                     isPlaying: { keepPlayingDuringPreparation && oldControls.isPlaying },
                     report: { stage, metrics in oldControls.event("replacement_" + stage, metrics: metrics) })
-                guard !Task.isCancelled else { nextKSCoordinator?.resetPlayer(); return }
-                guard automaticCandidateStillCurrent() else { nextKSCoordinator?.resetPlayer(); return }
+                guard candidateStillCurrent() else { nextKSCoordinator?.resetPlayer(); return }
                 guard nextKSCoordinator != nil else {
-                    onCandidatePreparationFailed?(next)
-                    sourceChangeFailed = reportsFailure
+                    automatic?.onCandidatePreparationFailed?(next)
+                    outcome = .failed
                     return
                 }
             }
 #endif
-            guard pendingSourceChange == nil,
-                  automaticCandidateStillCurrent() else {
+            guard candidateStillCurrent() else {
 #if canImport(KSPlayer)
                 nextKSCoordinator?.resetPlayer()
 #endif
                 return
             }
-            let finalPaused = keepPlayingDuringPreparation ? !oldControls.wantsPlayback : commitPaused
+            let finalPaused = attempt.startsPaused ?? !oldControls.wantsPlayback
             let candidateBufferAhead = preparedPlayer?.currentItem?.loadedTimeRanges
                 .map { $0.timeRangeValue.end.seconds - (preparedPlayer?.currentTime().seconds ?? 0) }
                 .filter { $0.isFinite && $0 > 0 }.max() ?? 0
@@ -858,8 +922,8 @@ struct GreenfieldVideoPlayerView: View {
                         "stage": "commitRevalidation", "candidateSeconds": String(candidateSeconds),
                         "liveSeconds": String(liveSeconds), "candidateBufferAheadSeconds": String(candidateBufferAhead)
                     ])
-                    sourceChangeFailed = reportsFailure
-                    onCandidatePreparationFailed?(next)
+                    automatic?.onCandidatePreparationFailed?(next)
+                    outcome = .failed
                     return
                 }
             }
@@ -882,12 +946,43 @@ struct GreenfieldVideoPlayerView: View {
             // Automatic replacements restart the sampling task above. Keep
             // their cooldown in this view; only a successful user source
             // change (including another episode) starts a new prediction budget.
-            if reportsFailure { predictiveCooldown.manualSourceCommitted() }
+            if !target.isAutomatic { predictiveCooldown.manualSourceCommitted() }
             model.start(launch, preparedPlayer: preparedPlayer, preparedSession: preparedSession)
-            committed = true
+            outcome = .committed
         }
     }
 
+}
+
+extension MediaPlaybackRuntimeState {
+    func atSourcePosition(_ seconds: Double, duration: Double) -> Self {
+        Self(normalizedPosition: duration.isFinite && duration > 0 ? min(max(seconds / duration, 0), 1) : nil,
+            positionSeconds: seconds, playbackRate: playbackRate,
+            audioTrackOrdinal: audioTrackOrdinal, subtitleTrackOrdinal: subtitleTrackOrdinal,
+            subtitlesDisabled: subtitlesDisabled, subtitleSelectionKnown: subtitleSelectionKnown,
+            orientationMode: orientationMode, sourceAudioStreamIndex: sourceAudioStreamIndex,
+            sourceSubtitleStreamIndex: sourceSubtitleStreamIndex, activeExternalSubtitleURL: activeExternalSubtitleURL)
+    }
+}
+
+extension MediaPlaybackRequest {
+    func confirmedSourceChangeTracks(for state: MediaPlaybackRuntimeState) -> PlaybackSourceChangeCoordinator.Tracks? {
+        guard state.subtitleSelectionKnown, let audio = state.sourceAudioStreamIndex,
+              sourceAudioTracks.filter({ $0.id == audio }).count == 1 else { return nil }
+        if let url = state.activeExternalSubtitleURL {
+            let matches = sourceSubtitleTracks.filter { $0.externalURL == url }
+            guard matches.count == 1 else { return nil }
+            return .init(audio: audio, subtitle: matches[0].id)
+        }
+        if state.subtitlesDisabled {
+            // A missing server subtitle index can still mean burn-in of the
+            // server's default. Only an explicit Off proves this selection.
+            return greenfieldSubtitlesDisabled ? .init(audio: audio, subtitle: nil) : nil
+        }
+        guard let subtitle = state.sourceSubtitleStreamIndex,
+              sourceSubtitleTracks.filter({ $0.id == subtitle }).count == 1 else { return nil }
+        return .init(audio: audio, subtitle: subtitle)
+    }
 }
 
 @MainActor
@@ -958,8 +1053,48 @@ final class GreenfieldVideoPlayerModel: ObservableObject {
         }
     }
 
-    static func prepareSession(_ request: GreenfieldPlaybackLaunchRequest) async throws -> PreparedSession {
+    static func prepareSession(
+        _ request: GreenfieldPlaybackLaunchRequest,
+        networkSnapshot: PlaybackNetworkSnapshot? = nil,
+        enableOriginalResponseProbe: Bool = false
+    ) async throws -> PreparedSession {
         let recorder = PlaybackDiagnosticsRecorder(playbackTraceID: request.playbackTraceID)
+        var intent = request.intent
+        #if DEBUG && os(iOS)
+        var observedNetwork: PlaybackNetworkContext?
+        #endif
+        if intent.directURL?.isFileURL != true, intent.connectionContext.addressKind != .loopback {
+            let snapshot: PlaybackNetworkSnapshot
+            if let networkSnapshot { snapshot = networkSnapshot }
+            else { snapshot = try await PlaybackNetworkObserver.shared.snapshotForPlayback() }
+            #if DEBUG && os(iOS)
+            observedNetwork = snapshot.playbackContext
+            #endif
+            intent.networkContext = intent.networkContext.observing(snapshot.playbackContext)
+            await recorder.record(.networkConditionChanged, metrics: [
+                "networkClass": intent.networkContext.networkClass.rawValue,
+                "expensive": String(intent.networkContext.isExpensive),
+                "constrained": String(intent.networkContext.isConstrained),
+                "networkPathGeneration": String(snapshot.pathGeneration),
+                "evidence": snapshot.playbackContext == nil ? "pathUnavailable" : "devicePathSnapshot"
+            ])
+        }
+        #if DEBUG && os(iOS)
+        // Keep the ordinary entry, resolver, route and tracks for a paired
+        // resume probe. Only a matching private-LAN file may use the override.
+        let environment = ProcessInfo.processInfo.environment
+        if let rawSeconds = environment["NASTART_DEBUG_FIXED_START_SECONDS"],
+           let seconds = Double(rawSeconds), seconds.isFinite, (0...86_400).contains(seconds),
+           let rawLength = environment["NASTART_DEBUG_FIXED_START_BYTES"],
+           let length = Int64(rawLength), length > 0, request.byteLength == length,
+           request.duration.map({ seconds < $0 }) ?? true,
+           intent.sourceKind == .dsmFile || intent.sourceKind == .jellyfin || intent.sourceKind == .webDAVFile,
+           intent.connectionContext.addressKind == .privateIP,
+           let observedNetwork, observedNetwork.networkClass == .wifi,
+           !observedNetwork.isExpensive, !observedNetwork.isConstrained {
+            intent.preferredStartTime = seconds
+        }
+        #endif
         let resolver = URLPlaybackSourceResolver(
             sourceKind: request.intent.sourceKind,
             originURL: request.mediaRequest?.networkSource?.originURL,
@@ -977,7 +1112,22 @@ final class GreenfieldVideoPlayerModel: ObservableObject {
             resolver: resolver,
             diagnostics: recorder
         )
-        let result = try await coordinator.prepare(request.intent)
+        let probe: (@Sendable (PlaybackPlan) -> Void)?
+        #if DEBUG && os(iOS)
+        if enableOriginalResponseProbe, let observedNetwork, observedNetwork.networkClass == .wifi,
+           !observedNetwork.isExpensive, !observedNetwork.isConstrained {
+            probe = { plan in
+                guard plan.intent.connectionContext.addressKind == .privateIP,
+                      plan.timeline.startTime == 0, plan.timeline.offset == 0,
+                      plan.primaryRoute.routeKind == .localRangeProxy,
+                      plan.primaryRoute.playMethod == .directPlay, plan.enginePolicy == .ksPlayer else { return }
+                _ = AuthenticatedMediaStreamProxy.shared.prepareOriginalResponse(plan.primaryRoute.url)
+            }
+        } else { probe = nil }
+        #else
+        probe = nil
+        #endif
+        let result = try await coordinator.prepare(intent, onPrimaryRouteSelected: probe)
         return PreparedSession(recorder: recorder, coordinator: coordinator, result: result)
     }
 
@@ -1023,7 +1173,12 @@ final class GreenfieldVideoPlayerModel: ObservableObject {
         playbackTask = Task { [weak self] in
             guard let self else { return }
             do {
-                let prepared = try await Self.prepareSession(request)
+                #if DEBUG && os(iOS)
+                let probeEnabled = ProcessInfo.processInfo.environment["NASTART_ORIGINAL_RESPONSE_PROBE"] == "1"
+                #else
+                let probeEnabled = false
+                #endif
+                let prepared = try await Self.prepareSession(request, enableOriginalResponseProbe: probeEnabled)
                 guard self.sessionLifetime.commit(prepared, for: ticket) else {
                     await self.sessionLifetime.discard(prepared)
                     return
@@ -2409,10 +2564,10 @@ private struct GreenfieldPlaybackPresenter: UIViewControllerRepresentable {
 
 @MainActor
 enum GreenfieldAVPlayerWarmup {
-    // Jellyfin's long VOD playlist plus first transcoded segment took about
-    // eleven seconds on a constrained cellular link. Start the muted HLS
-    // candidate ahead so its first decoded frame reaches the live playhead.
-    private static var networkPreparationSeconds = 11.0
+    // Retain the conservative cold estimate until a candidate has decoded.
+    // Subsequent estimates cover renderer startup after manifest preparation,
+    // which has already completed before the ahead target is chosen.
+    private static var rendererPreparationSeconds = 11.0
 
     /// A slow complete VOD manifest can outlive AV's initial resource wait.
     /// Reuse the route's complete-text cache before creating that consumer,
@@ -2478,11 +2633,20 @@ enum GreenfieldAVPlayerWarmup {
         }
         guard candidateStillCurrent(), !Task.isCancelled,
               ProcessInfo.processInfo.systemUptime < deadline else { return nil }
+#if DEBUG
+        let segmentRetryLease = ProcessInfo.processInfo.environment["NASTART_CANDIDATE_SEGMENT_RETRY_PROBE"] == "1"
+            ? AuthenticatedMediaStreamProxy.shared.beginCandidateSegmentRetry(request.url) : nil
+        defer {
+            if let segmentRetryLease { AuthenticatedMediaStreamProxy.shared.endCandidateSegmentRetry(segmentRetryLease) }
+        }
+#endif
+        let rendererPreparationStarted = ProcessInfo.processInfo.systemUptime
+        let manifestPreparationMilliseconds = Int((rendererPreparationStarted - started) * 1000)
         let initialSeconds = request.timelineOffsetSeconds > 0 ? request.timelineOffsetSeconds
             : (request.initialPosition ?? 0) * (request.totalDurationSeconds ?? 0)
         let availableReserve = liveReserve?()
         let preparationLead = PlaybackReplacementLeadPolicy.mediaSeconds(
-            expectedPreparation: request.url.isFileURL ? 0.1 : networkPreparationSeconds,
+            expectedPreparation: request.url.isFileURL ? 0.1 : rendererPreparationSeconds,
             rate: Double(request.initialPlaybackRate),
             isAdvancing: isAdvancing?() ?? isPlaying(), availableReserve: availableReserve)
         let target = min((liveClock?() ?? initialSeconds)
@@ -2536,6 +2700,8 @@ enum GreenfieldAVPlayerWarmup {
             let ranges = item.loadedTimeRanges.map { $0.timeRangeValue }
             var metrics: [String: String] = [
                 "elapsedMs": String(Int((now - started) * 1000)),
+                "manifestPrepareMs": String(manifestPreparationMilliseconds),
+                "rendererPrepareMs": String(Int((now - rendererPreparationStarted) * 1000)),
                 "deadlineRemainingMs": String(Int(max(deadline - now, 0) * 1000)),
                 "target": String(target),
                 "preparationLeadSeconds": String(preparationLead),
@@ -2649,7 +2815,9 @@ enum GreenfieldAVPlayerWarmup {
             reportFailure(["stage": "decodedFrame"]); return nil
         }
         if !request.url.isFileURL {
-            networkPreparationSeconds = min(max(ProcessInfo.processInfo.systemUptime - started + 0.15, 3), 15)
+            // Manifest latency is already paid before computing the target.
+            // Including it here would make the next candidate aim too far ahead.
+            rendererPreparationSeconds = min(max(ProcessInfo.processInfo.systemUptime - rendererPreparationStarted + 0.15, 3), 15)
         }
         candidate.cancelPendingPrerolls()
         report("candidate_decoded", warmupMetrics(["framePTS": String(firstFrame),

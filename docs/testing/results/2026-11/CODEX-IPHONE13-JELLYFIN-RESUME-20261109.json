@@ -1,0 +1,756 @@
+{
+  "device": {
+    "model": "iPhone14,5",
+    "os": "16.3.1",
+    "transport": "USB"
+  },
+  "baseline": {
+    "debugDylibPrefix": "892228ff",
+    "reusedRetainedInstallReceipt": true,
+    "catalogLoadedAfterUserReconnection": true,
+    "sampleBytes": 128795641934,
+    "defaultPath": "wifi",
+    "actualMovieAndSubtitleReviewed": true,
+    "ordinaryFirstExitVerified": true,
+    "lastExitImageUnavailableBeforeRunnerDeadline": true,
+    "clientCleanupVerified": true,
+    "events": [
+      {
+        "at": "2026-11-09T06:56:53.598003+08:00",
+        "event": "network_condition_changed",
+        "metrics": {
+          "evidence": "devicePathSnapshot",
+          "networkClass": "wifi"
+        }
+      },
+      {
+        "at": "2026-11-09T06:56:53.599122+08:00",
+        "event": "intent_created",
+        "metrics": {
+          "sourceKind": "jellyfin"
+        }
+      },
+      {
+        "at": "2026-11-09T06:56:53.599684+08:00",
+        "event": "route_selected",
+        "metrics": {
+          "routeKind": "localRangeProxy"
+        }
+      },
+      {
+        "at": "2026-11-09T06:56:53.601088+08:00",
+        "event": "preload_cancelled",
+        "metrics": {
+          "preloadedBytes": "0",
+          "reason": "bytesNotMaterialized"
+        }
+      },
+      {
+        "at": "2026-11-09T06:56:54.539254+08:00",
+        "event": "first_frame",
+        "metrics": {
+          "firstFramePositionSeconds": "0.051",
+          "tapToFirstFrameMs": "1073"
+        }
+      },
+      {
+        "at": "2026-11-09T06:56:58.734660+08:00",
+        "event": "automatic_prediction_decision",
+        "metrics": {
+          "bufferTargetSeconds": "4.0",
+          "bufferedAheadSeconds": "1.1028333015919536",
+          "deliveryCapacity": "49605545",
+          "engine": "KSPlayer",
+          "predictiveDeliveryCapacity": "49605545",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "41370729",
+          "sourceBitrate": "75218094"
+        }
+      },
+      {
+        "at": "2026-11-09T06:56:58.735102+08:00",
+        "event": "automatic_downshift_requested",
+        "metrics": {
+          "bufferTargetSeconds": "4.0",
+          "bufferedAheadSeconds": "1.1028333015919536",
+          "deliveryCapacity": "49605545",
+          "engine": "KSPlayer",
+          "reason": "deliveryBelowSourceBitrate",
+          "runtimeDemand": "41370729"
+        }
+      },
+      {
+        "at": "2026-11-09T06:56:59.294451+08:00",
+        "event": "network_condition_changed",
+        "metrics": {
+          "evidence": "devicePathSnapshot",
+          "networkClass": "wifi"
+        }
+      },
+      {
+        "at": "2026-11-09T06:56:59.295771+08:00",
+        "event": "intent_created",
+        "metrics": {
+          "sourceKind": "jellyfin"
+        }
+      },
+      {
+        "at": "2026-11-09T06:56:59.297140+08:00",
+        "event": "route_selected",
+        "metrics": {
+          "routeKind": "localHLS"
+        }
+      },
+      {
+        "at": "2026-11-09T06:57:10.104531+08:00",
+        "event": "replacement_candidate_manifest_prepared",
+        "metrics": {
+          "cachedVOD": "true",
+          "elapsedMs": "10790",
+          "engine": "KSPlayer"
+        }
+      },
+      {
+        "at": "2026-11-09T06:57:13.754880+08:00",
+        "event": "replacement_candidate_decoded",
+        "metrics": {
+          "elapsedMs": "14451",
+          "engine": "KSPlayer",
+          "prepareMs": "14451"
+        }
+      },
+      {
+        "at": "2026-11-09T06:57:19.363084+08:00",
+        "event": "replacement_candidate_aligned",
+        "metrics": {
+          "elapsedMs": "19955",
+          "engine": "KSPlayer",
+          "evidence": "decodedFrameAndClock"
+        }
+      },
+      {
+        "at": "2026-11-09T06:57:19.363824+08:00",
+        "event": "replacement_committed",
+        "metrics": {
+          "engine": "KSPlayer",
+          "seconds": "18.74"
+        }
+      },
+      {
+        "at": "2026-11-09T06:57:19.643751+08:00",
+        "event": "first_frame",
+        "metrics": {
+          "firstFramePositionSeconds": "19.000",
+          "tapToFirstFrameMs": "20351"
+        }
+      },
+      {
+        "at": "2026-11-09T06:57:31.783921+08:00",
+        "event": "seek_recovered",
+        "metrics": {
+          "engine": "AVPlayer",
+          "evidence": "engineCompletionAndAdvancingClock",
+          "seekRecoveryMs": "1013",
+          "seekTargetSeconds": "45.004344762"
+        }
+      },
+      {
+        "at": "2026-11-09T07:01:07.697084+08:00",
+        "event": "network_condition_changed",
+        "metrics": {
+          "evidence": "devicePathSnapshot",
+          "networkClass": "wifi"
+        }
+      },
+      {
+        "at": "2026-11-09T07:01:07.697475+08:00",
+        "event": "intent_created",
+        "metrics": {
+          "sourceKind": "jellyfin"
+        }
+      },
+      {
+        "at": "2026-11-09T07:01:07.698330+08:00",
+        "event": "route_selected",
+        "metrics": {
+          "routeKind": "localRangeProxy"
+        }
+      },
+      {
+        "at": "2026-11-09T07:01:07.699485+08:00",
+        "event": "preload_cancelled",
+        "metrics": {
+          "preloadedBytes": "0",
+          "reason": "bytesNotMaterialized"
+        }
+      },
+      {
+        "at": "2026-11-09T07:01:10.255565+08:00",
+        "event": "first_frame",
+        "metrics": {
+          "firstFramePositionSeconds": "108.116",
+          "tapToFirstFrameMs": "2669"
+        }
+      },
+      {
+        "at": "2026-11-09T07:01:25.435513+08:00",
+        "event": "automatic_prediction_decision",
+        "metrics": {
+          "bufferTargetSeconds": "4.0",
+          "bufferedAheadSeconds": "1.9182916133865007",
+          "deliveryCapacity": "45188845",
+          "engine": "KSPlayer",
+          "predictiveDeliveryCapacity": "45188845",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "72059721",
+          "sourceBitrate": "75218094"
+        }
+      },
+      {
+        "at": "2026-11-09T07:01:25.437061+08:00",
+        "event": "automatic_downshift_requested",
+        "metrics": {
+          "bufferTargetSeconds": "4.0",
+          "bufferedAheadSeconds": "1.9182916133865007",
+          "deliveryCapacity": "45188845",
+          "engine": "KSPlayer",
+          "reason": "deliveryBelowSourceBitrate",
+          "runtimeDemand": "72059721"
+        }
+      },
+      {
+        "at": "2026-11-09T07:01:27.407350+08:00",
+        "event": "network_condition_changed",
+        "metrics": {
+          "evidence": "devicePathSnapshot",
+          "networkClass": "wifi"
+        }
+      },
+      {
+        "at": "2026-11-09T07:01:27.408916+08:00",
+        "event": "intent_created",
+        "metrics": {
+          "sourceKind": "jellyfin"
+        }
+      },
+      {
+        "at": "2026-11-09T07:01:27.410767+08:00",
+        "event": "route_selected",
+        "metrics": {
+          "routeKind": "localHLS"
+        }
+      },
+      {
+        "at": "2026-11-09T07:01:40.511005+08:00",
+        "event": "replacement_candidate_manifest_prepared",
+        "metrics": {
+          "cachedVOD": "true",
+          "elapsedMs": "13082",
+          "engine": "KSPlayer"
+        }
+      },
+      {
+        "at": "2026-11-09T07:01:45.061193+08:00",
+        "event": "replacement_candidate_decoded",
+        "metrics": {
+          "elapsedMs": "17630",
+          "engine": "KSPlayer",
+          "prepareMs": "17630"
+        }
+      },
+      {
+        "at": "2026-11-09T07:01:49.786557+08:00",
+        "event": "replacement_candidate_aligned",
+        "metrics": {
+          "elapsedMs": "22301",
+          "engine": "KSPlayer",
+          "evidence": "decodedFrameAndClock"
+        }
+      },
+      {
+        "at": "2026-11-09T07:01:49.787220+08:00",
+        "event": "replacement_committed",
+        "metrics": {
+          "engine": "KSPlayer",
+          "seconds": "131.861"
+        }
+      },
+      {
+        "at": "2026-11-09T07:01:51.691401+08:00",
+        "event": "first_frame",
+        "metrics": {
+          "firstFramePositionSeconds": "132.000",
+          "tapToFirstFrameMs": "24284"
+        }
+      },
+      {
+        "at": "2026-11-09T07:02:32.005836+08:00",
+        "event": "network_condition_changed",
+        "metrics": {
+          "evidence": "devicePathSnapshot",
+          "networkClass": "wifi"
+        }
+      },
+      {
+        "at": "2026-11-09T07:02:32.007005+08:00",
+        "event": "intent_created",
+        "metrics": {
+          "sourceKind": "jellyfin"
+        }
+      },
+      {
+        "at": "2026-11-09T07:02:32.008231+08:00",
+        "event": "route_selected",
+        "metrics": {
+          "routeKind": "localHLS"
+        }
+      },
+      {
+        "at": "2026-11-09T07:02:32.649760+08:00",
+        "event": "replacement_candidate_manifest_prepared",
+        "metrics": {
+          "cachedVOD": "true",
+          "elapsedMs": "635",
+          "engine": "AVPlayer"
+        }
+      },
+      {
+        "at": "2026-11-09T07:02:39.247327+08:00",
+        "event": "replacement_candidate_decoded",
+        "metrics": {
+          "elapsedMs": "7230",
+          "engine": "AVPlayer",
+          "prepareMs": "7230"
+        }
+      },
+      {
+        "at": "2026-11-09T07:02:40.565269+08:00",
+        "event": "replacement_candidate_aligned",
+        "metrics": {
+          "elapsedMs": "8444",
+          "engine": "AVPlayer",
+          "evidence": "decodedFrameAndClock"
+        }
+      },
+      {
+        "at": "2026-11-09T07:02:40.565880+08:00",
+        "event": "replacement_committed",
+        "metrics": {
+          "engine": "AVPlayer",
+          "seconds": "180.500359339"
+        }
+      },
+      {
+        "at": "2026-11-09T07:02:42.337802+08:00",
+        "event": "first_frame",
+        "metrics": {
+          "firstFramePositionSeconds": "181.000",
+          "tapToFirstFrameMs": "10329"
+        }
+      },
+      {
+        "at": "2026-11-09T07:03:14.776895+08:00",
+        "event": "network_condition_changed",
+        "metrics": {
+          "evidence": "devicePathSnapshot",
+          "networkClass": "wifi"
+        }
+      },
+      {
+        "at": "2026-11-09T07:03:14.787182+08:00",
+        "event": "intent_created",
+        "metrics": {
+          "sourceKind": "jellyfin"
+        }
+      },
+      {
+        "at": "2026-11-09T07:03:14.787888+08:00",
+        "event": "route_selected",
+        "metrics": {
+          "routeKind": "localHLS"
+        }
+      },
+      {
+        "at": "2026-11-09T07:03:15.566060+08:00",
+        "event": "replacement_candidate_manifest_prepared",
+        "metrics": {
+          "cachedVOD": "true",
+          "elapsedMs": "763",
+          "engine": "AVPlayer"
+        }
+      },
+      {
+        "at": "2026-11-09T07:03:21.359986+08:00",
+        "event": "replacement_candidate_decoded",
+        "metrics": {
+          "elapsedMs": "6567",
+          "engine": "AVPlayer",
+          "prepareMs": "6567"
+        }
+      },
+      {
+        "at": "2026-11-09T07:03:23.259171+08:00",
+        "event": "replacement_candidate_aligned",
+        "metrics": {
+          "elapsedMs": "8290",
+          "engine": "AVPlayer",
+          "evidence": "decodedFrameAndClock"
+        }
+      },
+      {
+        "at": "2026-11-09T07:03:23.260115+08:00",
+        "event": "replacement_committed",
+        "metrics": {
+          "engine": "AVPlayer",
+          "seconds": "221.500212579"
+        }
+      },
+      {
+        "at": "2026-11-09T07:03:25.035612+08:00",
+        "event": "first_frame",
+        "metrics": {
+          "firstFramePositionSeconds": "222.001",
+          "tapToFirstFrameMs": "10239"
+        }
+      }
+    ]
+  },
+  "timingCandidate": {
+    "debugDylibPrefix": "cef05828",
+    "testsPassed": 7,
+    "installedWithEqualPreferences": true,
+    "catalog401BeforePlayback": true,
+    "runtimeWarmupNotYetVerified": true
+  },
+  "restoreDiagnosis": {
+    "workingInitialCandidateCount": 6,
+    "workingSelection": "privateIP",
+    "rejectedInitialCandidateCount": 3,
+    "rejectedSelection": "publicDomain",
+    "differentSavedAccountShown": true,
+    "keychainReadByAgent": false,
+    "credentialsClearedByInstallEvidence": false
+  },
+  "combinedBuild": {
+    "mainSHA256": "64cf996e192fa3cfff2386c0369893f2bb45499dd8ba188956ca543a72af8f44",
+    "dylibSHA256": "542e9d2f8b419df3de7b6cdcefead301e473c8ff82c6553bdc117212ad2c8e0f",
+    "builtAt": "2026-11-09T07:29:40.140859+08:00",
+    "configuration": "signed normal Debug",
+    "sourceHEAD": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "profileExpires": "2026-11-15T00:30:17Z",
+    "sourceInputs": {
+      "ios/Nastart/Nastart/Core/Stores/KeychainStore.swift": "93a2ebd76892a7b8187cef5a2bc2e4a59b445b1780bd9aec9f9d076fdb860c4d",
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadPlaybackCore.swift": "adf5c8c346fbe33ea24220cfd1592ce10f687483b9c8b76bd4ba2fee4b721dc8",
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadView.swift": "150c8944e82b1e30224ec38959b2210ee4cb529d3dbdbe4b4b1687a2221e6e41",
+      "ios/Nastart/Nastart/Playback/Core/PlaybackIntent.swift": "0f5c57caaec56b400c097ac1896a1095e8c3c3eb3ab814c824e8cfd232b9af97",
+      "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift": "ad47798cde51e3510f3777330da69bd4945c596f6085274cce8bdc485e318a16",
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift": "284a5427c7a3c308608ca087689bae36f51eb8345d56518a84ed308b67d497b7"
+    },
+    "authTargetedTestsPassed": 6,
+    "hlsTargetedTestsPassedOnPrecedingTimingBuild": 7,
+    "hlsCandidateRuntimeRetest": "not triggered in these playback windows",
+    "iphone13": {
+      "install": {
+        "installed": true,
+        "preferencesEqual": true,
+        "preferencesSaved": true,
+        "installDispatched": true,
+        "installedAt": "2026-11-09T07:32:10.772208+08:00",
+        "bundleVerified": true
+      },
+      "accountRestored": "lagransun",
+      "catalogHTTPStatus": 401,
+      "deviceIdentifierPreferenceUnchanged": true,
+      "catalogDidNotReachPlayback": true,
+      "jellyfinWindowCleanup": {
+        "startedAt": "2026-11-09T08:05:12.216123+08:00",
+        "runnerReinstalled": false,
+        "normalLaunchArguments": [],
+        "normalLaunchEnvironment": {},
+        "installedIdentityMatched": true,
+        "ready": true,
+        "ownedLocalProcessesStopped": true,
+        "remainingAppOrRunner": 0
+      },
+      "filePlayback": {
+        "sampleBytes": 128795641934,
+        "ordinaryExit": true,
+        "playerScreenshotShowsBuffering": true,
+        "firstFrameClockIsNotScreenMeasurement": true,
+        "events": [
+          {
+            "event": "network_condition_changed",
+            "at": "2026-11-09T08:10:59.862697+08:00",
+            "metrics": {
+              "constrained": "false",
+              "expensive": "false",
+              "networkClass": "wifi"
+            }
+          },
+          {
+            "event": "route_selected",
+            "at": "2026-11-09T08:10:59.864909+08:00",
+            "metrics": {
+              "routeKind": "localRangeProxy"
+            }
+          },
+          {
+            "event": "preload_cancelled",
+            "at": "2026-11-09T08:10:59.865972+08:00",
+            "metrics": {
+              "preloadedBytes": "0",
+              "reason": "bytesNotMaterialized"
+            }
+          },
+          {
+            "event": "first_frame",
+            "at": "2026-11-09T08:11:02.260798+08:00",
+            "metrics": {
+              "firstFramePositionSeconds": "15.091",
+              "tapToFirstFrameMs": "2525"
+            }
+          },
+          {
+            "event": "seek_started",
+            "at": "2026-11-09T08:11:22.549892+08:00",
+            "metrics": {
+              "seekDeltaSeconds": "15.085",
+              "seekTargetSeconds": "50.378"
+            }
+          },
+          {
+            "event": "seek_recovered",
+            "at": "2026-11-09T08:11:23.832468+08:00",
+            "metrics": {
+              "seekRecoveryMs": "1292",
+              "seekTargetSeconds": "50.378"
+            }
+          },
+          {
+            "event": "seek_started",
+            "at": "2026-11-09T08:11:29.429266+08:00",
+            "metrics": {
+              "seekDeltaSeconds": "-14.915",
+              "seekTargetSeconds": "41.061"
+            }
+          },
+          {
+            "event": "seek_recovered",
+            "at": "2026-11-09T08:11:30.627293+08:00",
+            "metrics": {
+              "seekRecoveryMs": "1207",
+              "seekTargetSeconds": "41.061"
+            }
+          }
+        ]
+      },
+      "fileWindowCleanup": {
+        "startedAt": "2026-11-09T08:10:14.104644+08:00",
+        "runnerReinstalled": false,
+        "normalLaunchArguments": [],
+        "normalLaunchEnvironment": {},
+        "installedIdentityMatched": true,
+        "ready": true,
+        "ownedLocalProcessesStopped": true,
+        "remainingAppOrRunner": 0
+      }
+    },
+    "ipad": {
+      "verifiedAt": "2026-11-09T08:09:45+08:00",
+      "freshIdentity": "iPad15,7 / iPadOS 26.6 / USB",
+      "install": {
+        "installed": true,
+        "normalLaunch": false,
+        "preferencesSaved": true,
+        "previousAppDiagnosticAgeSeconds": 1031,
+        "identifiedAppStopped": true,
+        "installDispatched": true,
+        "installedAt": "2026-11-09T08:05:34.577580+08:00",
+        "bundleVerified": true,
+        "preferencesEqual": true
+      },
+      "catalogLoadedAfterColdLaunch": true,
+      "expectedAccountDisplayed": true,
+      "sampleBytes": 128795641934,
+      "realResumeAndRestartImagesVerified": true,
+      "ordinaryExitAfterResume": true,
+      "ordinaryExitAfterRestart": true,
+      "cleanup": {
+        "ready": true,
+        "cleanupVerified": true,
+        "startedAt": "2026-11-09T08:06:08.432385+08:00",
+        "forwarderStopped": true,
+        "remaining": 0,
+        "endedAt": "2026-11-09T08:09:45.376076+08:00"
+      },
+      "events": [
+        {
+          "at": "2026-11-09T08:07:19.589119+08:00",
+          "event": "network_condition_changed",
+          "metrics": {
+            "constrained": "false",
+            "expensive": "false",
+            "networkClass": "wifi"
+          }
+        },
+        {
+          "at": "2026-11-09T08:07:19.591197+08:00",
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "at": "2026-11-09T08:07:19.592615+08:00",
+          "event": "preload_cancelled",
+          "metrics": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "at": "2026-11-09T08:07:19.814550+08:00",
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "requestedTrackID": "9",
+            "selectionDispatchMs": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T08:07:19.814787+08:00",
+          "event": "audio_track_changed",
+          "metrics": {
+            "engineTrackID": "2"
+          }
+        },
+        {
+          "at": "2026-11-09T08:07:22.524273+08:00",
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "6792.130",
+            "tapToFirstFrameMs": "2986"
+          }
+        },
+        {
+          "at": "2026-11-09T08:07:38.943999+08:00",
+          "event": "seek_started",
+          "metrics": {
+            "seekDeltaSeconds": "15.021999999999935",
+            "seekTargetSeconds": "6823.536"
+          }
+        },
+        {
+          "at": "2026-11-09T08:07:41.040181+08:00",
+          "event": "seek_recovered",
+          "metrics": {
+            "seekRecoveryMs": "2106",
+            "seekTargetSeconds": "6823.536"
+          }
+        },
+        {
+          "at": "2026-11-09T08:07:49.290792+08:00",
+          "event": "seek_started",
+          "metrics": {
+            "seekDeltaSeconds": "-14.957000000000335",
+            "seekTargetSeconds": "6816.896"
+          }
+        },
+        {
+          "at": "2026-11-09T08:07:53.732789+08:00",
+          "event": "seek_recovered",
+          "metrics": {
+            "seekRecoveryMs": "4449",
+            "seekTargetSeconds": "6816.896"
+          }
+        },
+        {
+          "at": "2026-11-09T08:08:15.357558+08:00",
+          "event": "seek_started",
+          "metrics": {
+            "seekDeltaSeconds": "0.02099999999973079",
+            "seekTargetSeconds": "6838.637"
+          }
+        },
+        {
+          "at": "2026-11-09T08:08:15.357980+08:00",
+          "event": "audio_track_changed",
+          "metrics": {
+            "engineTrackID": "1",
+            "requestedTrackID": "1",
+            "selectionDispatchMs": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T08:08:17.807757+08:00",
+          "event": "seek_recovered",
+          "metrics": {
+            "seekRecoveryMs": "2460",
+            "seekTargetSeconds": "6838.637"
+          }
+        },
+        {
+          "at": "2026-11-09T08:08:30.775502+08:00",
+          "event": "subtitle_track_changed",
+          "metrics": {
+            "requestedTrackID": "-1",
+            "selectionDispatchMs": "0"
+          }
+        },
+        {
+          "at": "2026-11-09T08:09:05.678355+08:00",
+          "event": "network_condition_changed",
+          "metrics": {
+            "constrained": "false",
+            "expensive": "false",
+            "networkClass": "wifi"
+          }
+        },
+        {
+          "at": "2026-11-09T08:09:05.679314+08:00",
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "at": "2026-11-09T08:09:05.680115+08:00",
+          "event": "preload_cancelled",
+          "metrics": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "at": "2026-11-09T08:09:05.895972+08:00",
+          "event": "audio_track_changed",
+          "metrics": {
+            "engineTrackID": "1"
+          }
+        },
+        {
+          "at": "2026-11-09T08:09:06.211268+08:00",
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "0.055",
+            "tapToFirstFrameMs": "543"
+          }
+        }
+      ]
+    }
+  },
+  "authorizedReauthentication": {
+    "baseline401": true,
+    "existingPackagePrefix": "542e9d2f",
+    "explicitSignInAt": "2026-11-09T08:18:36+08:00",
+    "catalogLoaded": true,
+    "coldRestartNewPID": true,
+    "coldCatalogLoadedAt": "2026-11-09T08:19:35+08:00",
+    "coldExpectedAccountDisplayed": true,
+    "mediaPlaybackStarted": false,
+    "ownedCleanupVerified": true
+  }
+}

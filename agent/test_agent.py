@@ -1,11 +1,34 @@
+import hashlib
+import http.client
+import io
+import json
+import os
+import shutil
+import socket
+import socketserver
+import ssl
+import stat
+import subprocess
+import threading
 import tempfile
+import time
 import unittest
 import sys
+from contextlib import contextmanager, redirect_stderr
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from nastart_agent import AgentState, handshake, host_snapshot, valid_pairing_code
+from docker_socket_proxy import DockerSocketProxy, is_allowed
+from nastart_agent import (
+    AgentServer,
+    AgentState,
+    handshake,
+    host_snapshot,
+    sample_interval_seconds,
+    valid_pairing_code,
+)
 
 
 class AgentStateTests(unittest.TestCase):
@@ -55,6 +78,398 @@ class AgentStateTests(unittest.TestCase):
             snapshot = host_snapshot(state)
             self.assertIn("host", snapshot)
             self.assertIn("containers", snapshot)
+
+
+class EventHistoryTests(unittest.TestCase):
+    def setUp(self):
+        self.data_dir = Path(self.enterContext(tempfile.TemporaryDirectory()))
+        self.state = AgentState(self.data_dir, "123456")
+
+    def sampling_server(self):
+        # Drive samples directly to exercise transitions without sleeping.
+        with patch("nastart_agent.threading.Thread.start"):
+            return self.enterContext(AgentServer(("127.0.0.1", 0), self.state))
+
+    def test_history_keeps_latest_100_entries(self):
+        for index in range(105):
+            self.assertIsNone(self.state.pair("654321", source=f"192.0.2.{index}"))
+
+        expected_sources = [f"192.0.2.{index}" for index in range(104, 4, -1)]
+        self.assertEqual([event["source"] for event in self.state.recent_events()], expected_sources)
+        restored = AgentState(self.data_dir, None)
+        self.assertEqual(restored.recent_events(), self.state.recent_events())
+
+    def test_history_round_trips_and_corrupt_file_starts_empty(self):
+        path = self.data_dir / "events.json"
+        self.assertEqual(self.state.recent_events(), [])
+        self.state.pair("654321", source="192.0.2.10")
+        expected = self.state.recent_events()
+        self.assertEqual(json.loads(path.read_bytes()), expected)
+        self.assertEqual(AgentState(self.data_dir, None).recent_events(), expected)
+
+        for payload in (b"{incomplete", b"\xff", b"{}", b'[{"type":"pairing.failed"}]'):
+            with self.subTest(payload=payload):
+                path.write_bytes(payload)
+                self.assertEqual(AgentState(self.data_dir, None).recent_events(), [])
+
+    def test_only_changed_container_state_records_event(self):
+        server = self.sampling_server()
+        running = {"id": "abc123abc123", "name": "example", "state": "running", "status": "Up"}
+        unchanged = dict(running, status="Up 10 seconds")
+        exited = dict(running, state="exited")
+        with patch("nastart_agent.docker_containers", side_effect=[
+            ([running], None), ([unchanged], None), ([exited], None), ([exited], None)
+        ]):
+            server._sample_docker()
+            self.assertEqual(self.state.recent_events(), [])
+            server._sample_docker()
+            self.assertEqual(self.state.recent_events(), [])
+            server._sample_docker()
+            server._sample_docker()
+
+        [event] = self.state.recent_events()
+        self.assertIs(type(event["timestamp"]), int)
+        self.assertEqual(event, {
+            "type": "container.state",
+            "timestamp": event["timestamp"],
+            "containerId": "abc123abc123",
+            "containerName": "example",
+            "from": "running",
+            "to": "exited",
+        })
+
+    def test_docker_availability_records_each_flip(self):
+        server = self.sampling_server()
+        with patch("nastart_agent.docker_containers", side_effect=[
+            ([], "ConnectionRefusedError"), ([], "FileNotFoundError"),
+            ([], None), ([], "ConnectionRefusedError"),
+        ]):
+            server._sample_docker()
+            server._sample_docker()
+            self.assertEqual(self.state.recent_events(), [])
+            server._sample_docker()
+            server._sample_docker()
+
+        events = self.state.recent_events()
+        self.assertEqual([(event["type"], event["available"], event["detail"]) for event in events], [
+            ("docker.availability", False, "ConnectionRefusedError"),
+            ("docker.availability", True, None),
+        ])
+
+    def test_sampler_recovers_from_exception_without_holding_state_lock(self):
+        server = self.sampling_server()
+        stopped = {"id": "abc123abc123", "name": "example", "state": "exited"}
+        running = dict(stopped, state="running")
+        samples = iter([([stopped], None), ([running], None)])
+        state_lock_samples = []
+
+        def read_docker():
+            state_lock_samples.append(self.state.lock.locked())
+            if len(state_lock_samples) == 2:
+                raise RuntimeError("unexpected Docker error")
+            return next(samples)
+
+        with patch("nastart_agent.docker_containers", side_effect=read_docker), patch.object(
+            server._stop_sampling, "wait", side_effect=[False, False, True]
+        ):
+            server._sample_docker_loop()
+
+        self.assertEqual(state_lock_samples, [False, False, False])
+        [event] = self.state.recent_events()
+        self.assertEqual((event["from"], event["to"]), ("exited", "running"))
+
+    def test_failed_pairing_event_contains_only_source_and_timestamp(self):
+        self.assertIsNone(self.state.pair("654321", source="192.0.2.5"))
+        self.assertIsNotNone(self.state.pair("123456", source="192.0.2.5"))
+        [event] = self.state.recent_events()
+        self.assertEqual(set(event), {"type", "timestamp", "source"})
+        self.assertEqual(event["type"], "pairing.failed")
+        self.assertEqual(event["source"], "192.0.2.5")
+        self.assertIs(type(event["timestamp"]), int)
+
+    def test_sample_interval_defaults_and_clamps(self):
+        with patch.dict(os.environ):
+            os.environ.pop("NASTART_SAMPLE_INTERVAL_SECONDS", None)
+            self.assertEqual(sample_interval_seconds(), 30)
+            for value, expected in (("2", 10), ("10", 10), ("45", 45), ("bad", 30)):
+                with self.subTest(value=value):
+                    os.environ["NASTART_SAMPLE_INTERVAL_SECONDS"] = value
+                    self.assertEqual(sample_interval_seconds(), expected)
+
+
+@unittest.skipUnless(shutil.which("openssl"), "OpenSSL executable required")
+class CertificateTests(unittest.TestCase):
+    def setUp(self):
+        self.data_dir = Path(self.enterContext(tempfile.TemporaryDirectory()))
+        self.state = AgentState(self.data_dir, "123456")
+        self.cert = self.data_dir / "tls-cert.pem"
+        self.key = self.data_dir / "tls-key.pem"
+
+    def new_fixture(self, cert, key, days, common_name):
+        subprocess.run(
+            ["openssl", "req", "-x509", "-newkey", "rsa:2048", "-keyout", str(key), "-out", str(cert),
+             "-days", str(days), "-nodes", "-subj", f"/O=Nastart Fixture/CN={common_name}"],
+            capture_output=True, check=True, timeout=15,
+        )
+
+    def test_generates_and_reuses_certificate_with_expected_metadata(self):
+        now = time.time()
+        self.assertIsNotNone(self.state.configure_tls(None, None))
+        info = handshake(self.state)["certificate"]
+        pem = self.cert.read_text(encoding="ascii")
+        der = ssl.PEM_cert_to_DER_cert(pem)
+        self.assertEqual(info["fingerprintSha256"], hashlib.sha256(der).hexdigest())
+        self.assertEqual(info["subject"], socket.gethostname())
+        self.assertAlmostEqual(info["notAfter"], now + 3650 * 86400, delta=5)
+        self.assertEqual(self.state.certificate_check()["status"], "ok")
+        self.assertEqual(stat.S_IMODE(self.cert.stat().st_mode), 0o644)
+        self.assertEqual(stat.S_IMODE(self.key.stat().st_mode), 0o600)
+        certificate_text = subprocess.check_output(
+            ["openssl", "x509", "-in", str(self.cert), "-noout", "-text"], text=True, timeout=15,
+        )
+        for value in ("Public-Key: (2048 bit)", "rsaEncryption", f"DNS:{socket.gethostname()}",
+                      "DNS:localhost", "IP Address:127.0.0.1"):
+            self.assertIn(value, certificate_text)
+        expiry = subprocess.check_output(
+            ["openssl", "x509", "-in", str(self.cert), "-noout", "-enddate"], text=True, timeout=15,
+        ).strip().removeprefix("notAfter=")
+        self.assertEqual(info["notAfter"], ssl.cert_time_to_seconds(expiry))
+
+        restarted = AgentState(self.data_dir, None)
+        self.assertIsNotNone(restarted.configure_tls(None, None))
+        self.assertEqual(restarted.certificate, info)
+        self.assertEqual(self.cert.read_text(encoding="ascii"), pem)
+
+    def test_renews_one_day_certificate_on_startup(self):
+        self.new_fixture(self.cert, self.key, 1, "short-lived")
+        old_cert = self.cert.read_bytes()
+        old_key = self.key.read_bytes()
+        self.assertIsNotNone(self.state.configure_tls(None, None))
+        self.assertNotEqual(self.cert.read_bytes(), old_cert)
+        self.assertNotEqual(self.key.read_bytes(), old_key)
+        self.assertEqual(self.state.certificate["subject"], socket.gethostname())
+        self.assertEqual(self.state.certificate_check()["status"], "ok")
+        self.assertEqual(list(self.data_dir.glob(".tls-*")), [])
+
+    def test_uses_explicit_short_lived_certificate_and_reports_expiration(self):
+        cert = self.data_dir / "explicit-cert.pem"
+        key = self.data_dir / "explicit-key.pem"
+        self.new_fixture(cert, key, 1, "named, fixture")
+        original = cert.read_bytes()
+        self.assertIsNotNone(self.state.configure_tls(cert, key))
+        self.assertEqual(self.state.certificate["subject"], "named, fixture")
+        self.assertAlmostEqual(self.state.certificate["notAfter"], time.time() + 86400, delta=5)
+        self.assertEqual(self.state.certificate_check()["status"], "expiring")
+        with patch("nastart_agent.time.time", return_value=self.state.certificate["notAfter"] + 1):
+            self.assertEqual(self.state.certificate_check()["status"], "expired")
+        self.assertEqual(cert.read_bytes(), original)
+        self.assertFalse(self.cert.exists())
+        self.assertFalse(self.key.exists())
+
+    def test_generation_failure_falls_back_without_leaving_partial_files(self):
+        log = io.StringIO()
+        failure = subprocess.CalledProcessError(1, "openssl")
+        with patch("nastart_agent.run_openssl", side_effect=failure), redirect_stderr(log):
+            self.assertIsNone(self.state.configure_tls(None, None))
+        self.assertIsNone(self.state.certificate)
+        self.assertEqual(self.state.certificate_check()["status"], "unavailable")
+        self.assertIn("serving plain HTTP", log.getvalue())
+        self.assertFalse(self.cert.exists())
+        self.assertFalse(self.key.exists())
+        self.assertEqual(list(self.data_dir.glob(".tls-*")), [])
+
+
+class DockerHealthcheckTests(unittest.TestCase):
+    agent_dir = Path(__file__).resolve().parent
+
+    @contextmanager
+    def start_agent(self, data_dir, *, openssl_available=True):
+        with socket.socket() as listener:
+            listener.bind(("127.0.0.1", 0))
+            port = listener.getsockname()[1]
+        env = dict(os.environ, NASTART_PORT=str(port))
+        env.pop("NASTART_TLS_CERT", None)
+        env.pop("NASTART_TLS_KEY", None)
+        if not openssl_available:
+            env["PATH"] = str(data_dir)
+        with (data_dir / "stderr.log").open("wb") as log, subprocess.Popen(
+            [sys.executable, str(self.agent_dir / "nastart_agent.py"), "--host", "127.0.0.1",
+             "--data-dir", str(data_dir), "--pairing-code", "123456"],
+            env=env, stdout=subprocess.DEVNULL, stderr=log,
+        ) as agent:
+            try:
+                yield agent, env, port
+            finally:
+                if agent.poll() is None:
+                    agent.terminate()
+                    try:
+                        agent.wait(timeout=3)
+                    except subprocess.TimeoutExpired:
+                        agent.kill()
+                        agent.wait()
+
+    def compose_health_probe(self):
+        compose_lines = (self.agent_dir / "compose.yaml").read_text(encoding="utf-8").splitlines()
+        probe_spec = next(line.strip().removeprefix("test: ") for line in compose_lines
+                          if line.strip().startswith("test: "))
+        mode, executable, *args = json.loads(probe_spec)
+        self.assertEqual((mode, executable), ("CMD", "python3"))
+        return [sys.executable, *args]
+
+    def wait_for_health(self, agent, probe, env):
+        deadline = time.monotonic() + 8
+        while True:
+            self.assertIsNone(agent.poll(), "Agent exited before the healthcheck succeeded")
+            result = subprocess.run(probe, cwd=self.agent_dir, env=env, capture_output=True, text=True, timeout=3)
+            if result.returncode == 0:
+                return
+            if time.monotonic() >= deadline:
+                self.fail(f"Healthcheck never succeeded: {result.stderr}")
+            time.sleep(0.05)
+
+    def test_compose_probe_succeeds_while_agent_runs_and_fails_after_stop(self):
+        probe = self.compose_health_probe()
+        with tempfile.TemporaryDirectory() as directory:
+            with self.start_agent(Path(directory)) as (agent, env, _):
+                self.wait_for_health(agent, probe, env)
+            result = subprocess.run(probe, cwd=self.agent_dir, env=env, capture_output=True, timeout=3)
+            self.assertNotEqual(result.returncode, 0)
+
+    def test_missing_openssl_serves_http_with_certificate_unavailable(self):
+        probe = self.compose_health_probe()
+        with tempfile.TemporaryDirectory() as directory:
+            data_dir = Path(directory)
+            with self.start_agent(data_dir, openssl_available=False) as (agent, env, port):
+                self.wait_for_health(agent, probe, env)
+                connection = http.client.HTTPConnection("127.0.0.1", port, timeout=2)
+                try:
+                    connection.request("POST", "/v1/pair", body=b'{"code":"123456"}',
+                                       headers={"Content-Type": "application/json"})
+                    response = connection.getresponse()
+                    self.assertEqual(response.status, 200)
+                    paired = json.load(response)
+                    self.assertIsNone(paired["certificate"])
+                    connection.request("GET", "/v1/diagnostics", headers={"Authorization": f"Bearer {paired['token']}"})
+                    response = connection.getresponse()
+                    self.assertEqual(response.status, 200)
+                    checks = {check["id"]: check for check in json.load(response)["checks"]}
+                    self.assertEqual(checks["certificate"]["status"], "unavailable")
+                    self.assertIn("OpenSSL executable not found", checks["certificate"]["detail"])
+                finally:
+                    connection.close()
+            self.assertIn("Warning: OpenSSL executable not found", (data_dir / "stderr.log").read_text())
+            self.assertFalse((data_dir / "tls-cert.pem").exists())
+
+
+class RecordingDockerHandler(socketserver.StreamRequestHandler):
+    def handle(self):
+        request_line = self.rfile.readline().decode("ascii").rstrip("\r\n")
+        headers = []
+        while header := self.rfile.readline():
+            if header == b"\r\n":
+                break
+            headers.append(header)
+        self.server.requests.append((request_line, headers))
+        self.wfile.write(
+            f"HTTP/1.0 {self.server.status} Test\r\n"
+            f"Content-Length: {len(self.server.body)}\r\n\r\n".encode("ascii") + self.server.body
+        )
+
+
+class DockerSocketProxyTests(unittest.TestCase):
+    allowed_path = "/v1.41/containers/json?all=1"
+    denied_requests = (
+        ("POST", "/v1.41/containers/fixture/stop"),
+        ("DELETE", "/v1.41/containers/fixture"),
+        ("GET", "/version"),
+        ("GET", "/v1.41/version"),
+        ("GET", "/v1.41/containers/json"),
+        ("GET", "/v1.41/containers/json?all=1&foo=bar"),
+        ("GET", "/v1.41/containers/json?all=1&all=1"),
+        ("GET", "/v1.41/containers/json?all=0"),
+        ("GET", "//v1.41/containers/json?all=1"),
+        ("PATCH", allowed_path),
+        ("HEAD", allowed_path),
+    )
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.directory = Path(temporary.name)
+        backend_path = self.directory / "backend.sock"
+        self.proxy_path = self.directory / "proxy.sock"
+        self.backend = socketserver.UnixStreamServer(str(backend_path), RecordingDockerHandler)
+        self.backend.requests = []
+        self.backend.status = 200
+        self.backend.body = b'[{"Id": "fixture", "Names": ["/fixture"]}]\n'
+        self.start_server(self.backend)
+        self.proxy = DockerSocketProxy(str(self.proxy_path), str(backend_path))
+        self.start_server(self.proxy)
+
+    def start_server(self, server):
+        thread = threading.Thread(target=server.serve_forever, kwargs={"poll_interval": 0.01}, daemon=True)
+        thread.start()
+        self.addCleanup(server.server_close)
+        self.addCleanup(thread.join, 3)
+        self.addCleanup(server.shutdown)
+
+    def request(self, method, path, body=None, headers=None):
+        request_headers = {"Host": "localhost", **(headers or {})}
+        if body is not None:
+            request_headers["Content-Length"] = str(len(body))
+        lines = [f"{method} {path} HTTP/1.1", *(f"{key}: {value}" for key, value in request_headers.items())]
+        request = "\r\n".join([*lines, "", ""]).encode("ascii")
+        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as connection:
+            connection.settimeout(2)
+            connection.connect(str(self.proxy_path))
+            # Send the whole fixture before the proxy can close on a denied header.
+            connection.sendall(request + (body or b""))
+            with http.client.HTTPResponse(connection, method=method) as response:
+                response.begin()
+                return response.status, response.read()
+
+    def test_allowlist_parses_exactly_one_all_parameter(self):
+        self.assertTrue(is_allowed("GET", self.allowed_path))
+        self.assertTrue(is_allowed("GET", "/v1.41/containers/json?all=%31"))
+        for method, path in self.denied_requests:
+            with self.subTest(method=method, path=path):
+                self.assertFalse(is_allowed(method, path))
+
+    def test_forwards_allowed_request_and_returns_body_unchanged(self):
+        status, body = self.request("GET", self.allowed_path, headers={"X-Fixture": "local-only"})
+        self.assertEqual((status, body), (200, self.backend.body))
+        (line, headers), = self.backend.requests
+        self.assertEqual(line, f"GET {self.allowed_path} HTTP/1.1")
+        self.assertNotIn(b"X-Fixture: local-only\r\n", headers)
+
+    def test_preserves_backend_status_and_body(self):
+        self.backend.status = 503
+        self.backend.body = b'{ "message": "Docker is temporarily unavailable" }\n'
+        self.assertEqual(self.request("GET", self.allowed_path), (503, self.backend.body))
+        self.assertEqual(len(self.backend.requests), 1)
+
+    def test_denials_never_reach_backend_and_do_not_log_body(self):
+        log = io.StringIO()
+        with redirect_stderr(log):
+            for method, path in self.denied_requests:
+                with self.subTest(method=method, path=path):
+                    self.assertEqual(self.request(method, path, body=b"local-only-fixture"),
+                                     (403, b"" if method == "HEAD" else b'{"error":"forbidden"}'))
+                    self.assertEqual(self.backend.requests, [])
+        self.assertEqual(log.getvalue().splitlines(),
+                         [f"{method!r} {path!r}" for method, path in self.denied_requests])
+
+    def test_unavailable_backend_returns_502(self):
+        self.proxy.docker_socket_path = str(self.directory / "missing.sock")
+        self.assertEqual(self.request("GET", self.allowed_path), (502, b'{"error":"bad-gateway"}'))
+
+    def test_replaces_stale_socket_with_explicit_permissions(self):
+        stale_path = self.directory / "stale.sock"
+        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as stale:
+            stale.bind(str(stale_path))
+        with DockerSocketProxy(str(stale_path), self.proxy.docker_socket_path):
+            self.assertTrue(stale_path.is_socket())
+            self.assertEqual(stat.S_IMODE(stale_path.stat().st_mode), 0o666)
 
 
 if __name__ == "__main__":

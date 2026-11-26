@@ -1,0 +1,44 @@
+#!/bin/sh
+set -eu
+
+package=${SYNOPKG_PKGNAME:-nastart-agent}
+var_dir=${SYNOPKG_PKGVAR:-/var/packages/$package/var}
+uid=$(id -u)
+gid=$(id -g)
+
+fail() {
+    if [ -n "${SYNOPKG_TEMP_LOGFILE:-}" ]; then
+        printf 'Nastart Agent: %s\n' "$1" >> "$SYNOPKG_TEMP_LOGFILE" || :
+    fi
+    printf 'Nastart Agent: %s\n' "$1" >&2
+    exit 1
+}
+
+[ "$uid" != 0 ] || fail "The Agent must run as the unprivileged DSM package account."
+case "$var_dir" in
+    *[!a-zA-Z0-9_./-]*) fail "The package data directory contains unsupported characters." ;;
+    /*) ;;
+    *) fail "The package data directory must be absolute." ;;
+esac
+
+umask 077
+
+# Only the filtered proxy receives the socket's existing group inside its
+# container. The package account's host group memberships are unchanged.
+socket_gid=$(stat -c '%g' /var/run/docker.sock 2>/dev/null) ||
+    fail "Could not read the Container Manager socket group."
+case "$socket_gid" in ''|*[!0-9]*) fail "Invalid Container Manager socket group." ;; esac
+
+# DSM invokes the Worker before postinst. Write the project's interpolation
+# file into the extracted incoming package before DSM puts it in target.
+staging=${SYNOPKG_PKGINST_TEMP_DIR:-}
+[ -n "$staging" ] || fail "DSM did not provide a package staging directory."
+project=$staging/package/project
+[ -f "$project/compose.yaml" ] || project=$staging/project
+[ -f "$project/compose.yaml" ] || fail "The staged Compose configuration was not found."
+pending=$(mktemp "$project/.env.XXXXXX") || fail "Could not prepare the Compose environment."
+trap 'rm -f "$pending"' EXIT
+printf 'NASTART_SPK_UID=%s\nNASTART_SPK_GID=%s\nNASTART_SPK_DATA_DIR=%s\nNASTART_SPK_DOCKER_GID=%s\n' \
+    "$uid" "$gid" "$var_dir" "$socket_gid" > "$pending" &&
+    chmod 644 "$pending" && mv -f "$pending" "$project/.env" ||
+    fail "Could not write the Compose environment."

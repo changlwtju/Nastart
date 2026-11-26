@@ -199,8 +199,17 @@ extension View {
 
     /// Keep the remote focus clearance at the edges, without a large blank
     /// header above every information page.
-    func tvPageInsets() -> some View {
-        padding(.horizontal, 70).padding(.top, TVLayout.pageTop).padding(.bottom, 40)
+    @ViewBuilder func tvPageInsets() -> some View {
+        if #available(tvOS 17.0, *) {
+            // Resolve against the scroll viewport, not the intrinsic width of a
+            // short title or a NavigationLink's originating grid cell.
+            frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 70).padding(.top, TVLayout.pageTop).padding(.bottom, 40)
+                .containerRelativeFrame(.horizontal, alignment: .leading)
+        } else {
+            frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 70).padding(.top, TVLayout.pageTop).padding(.bottom, 40)
+        }
     }
 }
 
@@ -296,9 +305,10 @@ struct TVLoginView: View {
     @State private var loginTask: Task<Void, Never>?
     @FocusState private var field: Field?
     private enum Field: Hashable { case server, user, password, otp }
-    init(initialKind: String = "DSM", initialServer: URL? = nil) {
+    init(initialKind: String = "DSM", initialServer: URL? = nil, initialUser: String = "") {
         _connectionKind = State(initialValue: initialKind)
         _server = State(initialValue: initialServer?.absoluteString ?? "")
+        _user = State(initialValue: initialUser)
     }
     var body: some View {
         HStack(alignment: .center, spacing: 90) {
@@ -352,8 +362,9 @@ struct TVLoginView: View {
                             let url = try TVJellyfinClient.serverURL(server)
                             let account = try await TVJellyfinClient(server: url, deviceID: state.deviceID)
                                 .login(user: user, password: password)
+                            _ = try await TVJellyfinClient(account: account, deviceID: state.deviceID).libraries()
                             try Task.checkCancellation()
-                            try state.signIn(account)
+                            try state.signIn(account, password: password)
                         }
                         password = ""
                         otp = ""
@@ -382,6 +393,7 @@ struct TVLoginView: View {
                             for _ in 0..<90 {
                                 try await Task.sleep(nanoseconds: 2_000_000_000)
                                 if let account = try await client.completeQuickConnect(pending.Secret) {
+                                    _ = try await TVJellyfinClient(account: account, deviceID: state.deviceID).libraries()
                                     try Task.checkCancellation(); try state.signIn(account)
                                     password = ""; dismiss(); return
                                 }
@@ -407,9 +419,11 @@ struct TVLoginView: View {
 struct TVLibraryView: View {
     @EnvironmentObject private var state: TVAppState
     let client: TVJellyfinClient
+    var reconnect: (() -> Void)? = nil
     @State private var libraries: [TVMediaItem] = []
     @State private var loading = true
     @State private var error: String?
+    @State private var authorizationRejected = false
     @State private var reload = UUID()
     @State private var resuming: [TVMediaItem] = []
     @State private var recent: [TVMediaItem] = []
@@ -481,31 +495,51 @@ struct TVLibraryView: View {
             }
             .tvPageTheme()
             .task(id: reload) {
-                loading = true; error = nil
+                loading = true; error = nil; authorizationRejected = false
                 defer { loading = false }
                 do { let result = try await client.libraries(); try Task.checkCancellation(); libraries = result }
+                catch TVClientError.http(let status) where status == 401 || status == 403 {
+                    if status == 401, !Task.isCancelled, await state.renewJellyfinSession(rejected: client) { return }
+                    guard !Task.isCancelled else { return }
+                    await client.diagnoseLibraryAuthorization()
+                    guard !Task.isCancelled else { return }
+                    authorizationRejected = true
+                    error = TVClientError.http(status).localizedDescription
+                }
                 catch { if !Task.isCancelled { self.error = (error as? TVClientError)?.localizedDescription ?? "媒体库加载失败。" } }
             }
             .task(id: reload) {
                 resumeLoading = true; resumeError = false
                 defer { resumeLoading = false }
                 do { let rows = try await client.homeItems(resuming: true); try Task.checkCancellation(); resuming = rows }
+                catch TVClientError.http(401) {
+                    if !Task.isCancelled, await state.renewJellyfinSession(rejected: client) { return }
+                    if !Task.isCancelled { resumeError = true }
+                }
                 catch { if !Task.isCancelled { resumeError = true } }
             }
             .task(id: reload) {
                 recentLoading = true; recentError = false
                 defer { recentLoading = false }
                 do { let rows = try await client.homeItems(resuming: false); try Task.checkCancellation(); recent = rows }
+                catch TVClientError.http(401) {
+                    if !Task.isCancelled, await state.renewJellyfinSession(rejected: client) { return }
+                    if !Task.isCancelled { recentError = true }
+                }
                 catch { if !Task.isCancelled { recentError = true } }
             }
         }
     }
     private var homeRetryAction: some View {
-        Button { reload = UUID() } label: {
-            Label { Text("重试").foregroundStyle(Color.primary) } icon: {
+        Button {
+            if authorizationRejected, let reconnect { reconnect() }
+            else { reload = UUID() }
+        } label: {
+            Label { Text(authorizationRejected && reconnect != nil ? "重新登录" : "重试").foregroundStyle(Color.primary) } icon: {
                 Image(systemName: "arrow.clockwise").foregroundStyle(TVTheme.accent)
             }.padding(.horizontal, 18).padding(.vertical, 12)
         }.buttonStyle(TVTileStyle())
+            .accessibilityIdentifier(authorizationRejected && reconnect != nil ? "tv.media.reauthenticate" : "tv.media.retry")
     }
 }
 

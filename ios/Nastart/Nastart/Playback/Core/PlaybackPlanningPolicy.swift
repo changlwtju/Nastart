@@ -1,24 +1,247 @@
+import CryptoKit
 import Foundation
 
-/// Repeating the same pending track choice must not invalidate its candidate.
-/// Timeline/PiP ownership and non-track requests remain distinct user intents.
-struct PlaybackSourceChangeRequestTracker {
+/// Orders overlapping source replacements. One attempt is prepared at a time.
+/// Each new request folds into the stream that should play next, then either
+/// replaces the attempt in flight or waits behind it. The view keeps the
+/// loaders, tasks and players and acts on what this returns.
+struct PlaybackSourceChangeCoordinator {
     struct Tracks: Equatable {
         let audio: Int?
         let subtitle: Int?
-        let seekGeneration: Int
-        let pictureInPictureGeneration: Int
     }
 
-    private var latestTracks: Tracks?
-
-    mutating func accept(_ tracks: Tracks?) -> Bool {
-        if let tracks, latestTracks == tracks { return false }
-        latestTracks = tracks
-        return true
+    enum Change: Equatable {
+        /// An audio or subtitle choice that needs a new stream.
+        case tracks(Tracks)
+        /// A position the playing stream cannot seek to.
+        case seek(Double)
+        /// Another item, such as the next episode. The value says which.
+        case item(Int)
+        /// The app lowering the rendition by itself.
+        case automatic
     }
 
-    mutating func finish() { latestTracks = nil }
+    /// The stream to prepare, as changes to the one that is playing.
+    struct Target: Equatable {
+        var tracks: Tracks?
+        var seekSeconds: Double?
+        var item: Int?
+        var isAutomatic = false
+
+        /// Moving the playhead pauses the outgoing stream while the new one
+        /// is prepared. Other changes keep it playing until the handoff.
+        var holdsPlayback: Bool { item != nil || seekSeconds != nil }
+    }
+
+    struct Attempt: Equatable {
+        let id: Int
+        let target: Target
+        /// Whether the new stream starts paused. Nil when the outgoing stream
+        /// keeps playing: read its state at the handoff instead.
+        let startsPaused: Bool?
+    }
+
+    /// The playing session, read when the event happens.
+    struct Live: Equatable {
+        var seekGeneration = 0
+        var pictureInPictureGeneration = 0
+        /// Picture in picture is starting or active and keeps its renderer.
+        var pictureInPictureOwnsRenderer = false
+        var wantsPlayback = true
+        /// The playing stream's selection. Nil when the caller cannot vouch
+        /// for it; no request then counts as a return to that stream.
+        var tracks: Tracks?
+    }
+
+    enum Submission: Equatable {
+        /// Nothing was in flight. Prepare this now.
+        case start(Attempt)
+        /// The attempt in flight must not commit; this follows it.
+        case replaces
+        /// Follows the attempt in flight, which carries on.
+        case queued
+        /// Returns to the playing stream: the attempt in flight is dropped.
+        case cancels
+        /// Already on its way.
+        case coalesced
+        /// Does not apply: the app's own change while another is in flight,
+        /// or a change to an item that is being replaced.
+        case ignored
+    }
+
+    enum Outcome {
+        case committed, failed
+        /// Gave way: replaced, or the session moved on under it.
+        case abandoned
+        /// The player is closing. Nothing follows.
+        case cancelled
+    }
+
+    struct Completion: Equatable {
+        var next: Attempt?
+        /// Tell the user their change failed.
+        var reportsFailure = false
+        /// The outgoing stream was held paused and nothing holds it now.
+        var resumesOutgoing = false
+    }
+
+    private(set) var current: Attempt?
+    /// The session when `current` began.
+    private var boundary = Live()
+    /// `current` must not commit.
+    private var isReplaced = false
+    /// What follows `current`: the whole next stream once `current` is
+    /// replaced, otherwise a track choice waiting for a seek to commit.
+    private var pending: Target?
+    /// Set while an attempt holds the outgoing stream paused.
+    private var playbackWantedBeforeHold: Bool?
+    private var lastID = 0
+
+    var isChanging: Bool { current != nil }
+    var isChangingItem: Bool { current?.target.item != nil || pending?.item != nil }
+    var holdsPlayback: Bool { current?.target.holdsPlayback ?? false }
+
+    mutating func submit(_ change: Change, live: Live) -> Submission {
+        guard let current else {
+            var target = Target()
+            switch change {
+            case .tracks(let tracks):
+                guard live.tracks != tracks else { return .coalesced }
+                target.tracks = tracks
+            case .seek(let seconds): target.seekSeconds = seconds
+            case .item(let item): target.item = item
+            case .automatic: target.isAutomatic = true
+            }
+            return .start(begin(target, live: live))
+        }
+        let viable = !isReplaced && boundaryAllows(live)
+        switch change {
+        case .automatic:
+            return .ignored
+        case .item(let item):
+            if pending?.item == item || (pending == nil && viable && current.target.item == item) {
+                return .coalesced
+            }
+            // Tracks and positions asked of the outgoing item go with it.
+            pending = Target(item: item)
+            isReplaced = true
+            return .replaces
+        case .tracks, .seek:
+            break
+        }
+        if pending?.item != nil || (pending == nil && viable && current.target.item != nil) {
+            return .ignored
+        }
+        // The user's changes still on their way. An attempt that can no
+        // longer commit keeps its place only if it will be prepared again.
+        var wanted = Target()
+        if !isReplaced, !current.target.isAutomatic, viable || retriesAfterSeek(current.target, live: live) {
+            wanted = current.target
+        }
+        if let pending {
+            wanted.tracks = pending.tracks ?? wanted.tracks
+            wanted.seekSeconds = pending.seekSeconds ?? wanted.seekSeconds
+        }
+        switch change {
+        case .tracks(let tracks): wanted.tracks = tracks
+        case .seek(let seconds): wanted.seekSeconds = seconds
+        case .item, .automatic: break
+        }
+        if viable, !current.target.isAutomatic {
+            if current.target.holdsPlayback, wanted.seekSeconds == current.target.seekSeconds {
+                // The screen is already waiting on this seek. Let it commit
+                // and change tracks afterwards without a second wait.
+                let delivered = current.target.tracks ?? live.tracks
+                let follow = wanted.tracks.flatMap { $0 == delivered ? nil : Target(tracks: $0) }
+                let unchanged = follow == pending
+                pending = follow
+                return unchanged || follow == nil ? .coalesced : .queued
+            }
+            if wanted == current.target { return .coalesced }
+        }
+        if wanted.tracks == live.tracks { wanted.tracks = nil }
+        guard wanted != Target() else {
+            if current.target.isAutomatic, !isReplaced { return .coalesced }
+            let unchanged = isReplaced && pending == nil
+            pending = nil
+            isReplaced = true
+            return unchanged ? .coalesced : .cancels
+        }
+        let unchanged = isReplaced && pending == wanted
+        pending = wanted
+        isReplaced = true
+        return unchanged ? .coalesced : .replaces
+    }
+
+    /// Whether this attempt is still the one to hand off to. Ask at every
+    /// point the preparation resumes, and last thing before the handoff.
+    func mayCommit(_ id: Int, live: Live) -> Bool {
+        current?.id == id && !isReplaced && boundaryAllows(live)
+    }
+
+    mutating func finish(_ id: Int, _ outcome: Outcome, live: Live) -> Completion {
+        guard let attempt = current, attempt.id == id else { return Completion() }
+        let wasCurrent = !isReplaced && boundaryAllows(live)
+        let retries = !isReplaced && retriesAfterSeek(attempt.target, live: live)
+        var next = pending
+        current = nil
+        pending = nil
+        isReplaced = false
+        var done = Completion()
+        switch outcome {
+        case .cancelled:
+            playbackWantedBeforeHold = nil
+            return done
+        case .committed:
+            playbackWantedBeforeHold = nil
+        case .failed, .abandoned:
+            done.reportsFailure = outcome == .failed && !attempt.target.isAutomatic && wasCurrent
+            // A seek made the candidate start in the wrong place; the
+            // choice itself still stands.
+            if next == nil, retries { next = attempt.target }
+        }
+        if next?.tracks == live.tracks { next?.tracks = nil }
+        if next == Target() { next = nil }
+        if next?.holdsPlayback != true {
+            done.resumesOutgoing = playbackWantedBeforeHold == true
+            playbackWantedBeforeHold = nil
+        }
+        if let next { done.next = begin(next, live: live) }
+        return done
+    }
+
+    private mutating func begin(_ target: Target, live: Live) -> Attempt {
+        lastID += 1
+        var startsPaused: Bool?
+        if target.holdsPlayback {
+            // A chain of held attempts keeps the answer from before the
+            // first one paused the stream. Another item always plays.
+            let wanted = playbackWantedBeforeHold ?? live.wantsPlayback
+            playbackWantedBeforeHold = wanted
+            startsPaused = target.item == nil && !wanted
+        }
+        let attempt = Attempt(id: lastID, target: target, startsPaused: startsPaused)
+        current = attempt
+        boundary = live
+        isReplaced = false
+        return attempt
+    }
+
+    /// A new picture-in-picture owner stops any handoff. A seek only
+    /// invalidates a candidate aligned to the playing stream's clock.
+    private func boundaryAllows(_ live: Live) -> Bool {
+        guard let current else { return false }
+        return live.pictureInPictureGeneration == boundary.pictureInPictureGeneration
+            && !live.pictureInPictureOwnsRenderer
+            && (current.target.holdsPlayback || live.seekGeneration == boundary.seekGeneration)
+    }
+
+    private func retriesAfterSeek(_ target: Target, live: Live) -> Bool {
+        target.tracks != nil && !target.holdsPlayback
+            && live.seekGeneration != boundary.seekGeneration
+            && live.pictureInPictureGeneration == boundary.pictureInPictureGeneration
+    }
 }
 
 /// A missing Jellyfin index asks the server to choose its default subtitle.
@@ -145,7 +368,7 @@ enum PlaybackJellyfinPlaylistQuery {
 /// Complete VOD media and single-variant masters backed by that media are
 /// reusable within one route. Keep raw text for current URI/seek rewriting.
 final class PlaybackVODPlaylistCache: @unchecked Sendable {
-    private struct Entry { let route: String; let data: Data; let vodChildKey: String? }
+    private struct Entry { let route: String; let url: URL; let data: Data; let vodChildKey: String? }
     private let lock = NSLock()
     private var entries: [String: Entry] = [:]
     private var order: [String] = []
@@ -164,6 +387,15 @@ final class PlaybackVODPlaylistCache: @unchecked Sendable {
         }
         return entry.data
     }
+#if DEBUG
+    func candidateMedia(route: String, root: URL) -> (Data, URL)? {
+        lock.lock(); defer { lock.unlock() }
+        guard let rootEntry = entries[key(route: route, url: root)] else { return nil }
+        guard let child = rootEntry.vodChildKey else { return (rootEntry.data, root) }
+        guard let media = entries[child], media.vodChildKey == nil else { return nil }
+        return (media.data, media.url)
+    }
+#endif
     func store(_ data: Data, route: String, url: URL) {
         guard data.count <= maximumEntryBytes, data.count <= maximumBytes,
               let text = String(data: data, encoding: .utf8),
@@ -203,7 +435,7 @@ final class PlaybackVODPlaylistCache: @unchecked Sendable {
     private func insert(_ data: Data, route: String, url: URL, vodChildKey: String?) {
         lock.lock(); defer { lock.unlock() }
         let k = key(route: route, url: url)
-        entries[k] = Entry(route: route, data: data, vodChildKey: vodChildKey)
+        entries[k] = Entry(route: route, url: url, data: data, vodChildKey: vodChildKey)
         order.removeAll { $0 == k }; order.append(k)
         while entries.values.reduce(0, { $0 + $1.data.count }) > maximumBytes,
               let oldest = order.first {
@@ -626,8 +858,123 @@ final class PlaybackProxyTaskDiagnostics: @unchecked Sendable {
     }
 }
 
+/// What one playback route (origin + network kind) can deliver, merged from
+/// every kind of evidence. The kinds bound the rate differently:
+/// - sustained delivery of an original stream estimates it;
+/// - a pre-play probe estimates it only when the sample is large enough,
+///   otherwise it shows the route does at least that much;
+/// - server rendition (HLS segment) delivery only ever shows that much.
+/// Start, resume, restart and the in-play fallback all read this one figure.
+/// Model and reasoning: docs/archive/handoffs/2026-11/CLAUDE-2026-11-10-ROUTE-DECISION-MODEL.md
+enum PlaybackRouteCapacityPolicy {
+    /// Route evidence older than this says nothing about the present.
+    static let evidenceMaximumAge: TimeInterval = 600
+    /// A floor this far above an estimate shows the estimate is outdated or
+    /// read low; the estimate is then dropped rather than kept as a limit.
+    static let refutationFactor = 1.5
+
+    struct Sample: Equatable {
+        let bitrate: Int
+        /// Seconds since it was measured.
+        let age: TimeInterval
+    }
+
+    struct Probe: Equatable {
+        let bitrate: Int
+        let age: TimeInterval
+        /// See `probeBoundsBothSides(networkKey:)`.
+        let boundsBothSides: Bool
+    }
+
+    enum Basis: String { case playbackDelivery, preplayProbe, renditionLowerBound, none }
+
+    struct Assessment: Equatable {
+        /// The single figure decisions use: the estimate, or the floor when
+        /// floors are all there is.
+        let capacity: Int?
+        /// `capacity` estimates the rate (true) or only bounds it from below.
+        let boundsBothSides: Bool
+        let basis: Basis
+        /// Median sustained delivery, whether or not it still stands.
+        let sustained: Int?
+        /// Median of the rendition delivery that counts; see `assess`.
+        let renditionLowerBound: Int?
+        let probe: Int?
+
+        static let empty = Assessment(capacity: nil, boundsBothSides: false, basis: .none,
+                                     sustained: nil, renditionLowerBound: nil, probe: nil)
+    }
+
+    /// The 4 MB probe taken on Wi-Fi or Ethernet is long enough to read near
+    /// the real rate. The 1 MB (cellular) and 512 KB probes can finish inside
+    /// TCP slow start and read several times low, so they are floors only.
+    static func probeBoundsBothSides(networkKey: String) -> Bool {
+        networkKey == "wifi"
+    }
+
+    /// Rules, strongest evidence first:
+    /// 1. Sustained original delivery is the estimate. Rendition delivery
+    ///    counts beside it only when measured afterwards: an older floor
+    ///    describes the route before that delivery, and a single probe never
+    ///    overrides real delivery. A later rendition floor well above the
+    ///    estimate (`refutationFactor`) replaces it.
+    /// 2. Without sustained delivery, a probe that bounds both sides is the
+    ///    estimate until rendition delivery is well above it.
+    /// 3. Otherwise only floors are known; the highest one is the figure.
+    static func assess(sustained: [Sample], rendition: [Sample], probe: Probe?,
+                       maximumAge: TimeInterval = evidenceMaximumAge) -> Assessment {
+        func isFresh(_ bitrate: Int, _ age: TimeInterval) -> Bool {
+            bitrate > 0 && age.isFinite && age >= 0 && age <= maximumAge
+        }
+        let sustained = sustained.filter { isFresh($0.bitrate, $0.age) }
+        let rendition = rendition.filter { isFresh($0.bitrate, $0.age) }
+        let probe = probe.flatMap { isFresh($0.bitrate, $0.age) ? $0 : nil }
+
+        if let estimate = median(sustained.map(\.bitrate)), let newest = sustained.map(\.age).min() {
+            let later = median(rendition.filter { $0.age < newest }.map(\.bitrate))
+            if let later, Double(later) >= Double(estimate) * refutationFactor {
+                return Assessment(capacity: later, boundsBothSides: false, basis: .renditionLowerBound,
+                                  sustained: estimate, renditionLowerBound: later, probe: probe?.bitrate)
+            }
+            return Assessment(capacity: max(estimate, later ?? 0), boundsBothSides: true,
+                              basis: .playbackDelivery, sustained: estimate,
+                              renditionLowerBound: later, probe: probe?.bitrate)
+        }
+        let floor = median(rendition.map(\.bitrate))
+        guard let probe else {
+            guard let floor else { return .empty }
+            return Assessment(capacity: floor, boundsBothSides: false, basis: .renditionLowerBound,
+                              sustained: nil, renditionLowerBound: floor, probe: nil)
+        }
+        let refuted = floor.map { Double($0) >= Double(probe.bitrate) * refutationFactor } ?? false
+        if probe.boundsBothSides, !refuted {
+            return Assessment(capacity: max(probe.bitrate, floor ?? 0), boundsBothSides: true,
+                              basis: .preplayProbe, sustained: nil,
+                              renditionLowerBound: floor, probe: probe.bitrate)
+        }
+        return Assessment(capacity: max(probe.bitrate, floor ?? 0), boundsBothSides: false,
+                          basis: (floor ?? 0) >= probe.bitrate ? .renditionLowerBound : .preplayProbe,
+                          sustained: nil, renditionLowerBound: floor, probe: probe.bitrate)
+    }
+
+    private static func median(_ values: [Int]) -> Int? {
+        guard !values.isEmpty else { return nil }
+        let sorted = values.sorted()
+        return sorted[sorted.count / 2]
+    }
+}
+
 final class PlaybackRecentThroughputStore: @unchecked Sendable {
-    static let shared = PlaybackRecentThroughputStore()
+    static let shared: PlaybackRecentThroughputStore = {
+#if DEBUG
+        // A device test that needs every launch to start without route
+        // evidence opts out explicitly. Normal launches keep it.
+        if ProcessInfo.processInfo.environment["NASTART_TEST_ROUTE_EVIDENCE"] == "memory" {
+            return PlaybackRecentThroughputStore()
+        }
+#endif
+        return PlaybackRecentThroughputStore(persistence: .standard)
+    }()
 
     struct Estimate {
         enum Source: String { case completedTransfer, bodyWindow }
@@ -647,14 +994,210 @@ final class PlaybackRecentThroughputStore: @unchecked Sendable {
         let uptime: TimeInterval
     }
 
+    /// Route evidence carries two clocks. `uptime` is the caller's monotonic
+    /// clock, which stops while the device sleeps and restarts with it; the
+    /// wall time covers sleep and a relaunch. A sample is as old as the
+    /// larger of the two says, so neither a nap nor a new process makes old
+    /// evidence look recent.
+    private struct RouteSample {
+        let bitrate: Int
+        let uptime: TimeInterval
+        let wall: TimeInterval
+    }
+
+    /// Where route evidence is kept between launches. Only a digest of each
+    /// route, the measured rates and their times are written: no address,
+    /// account, path or media identity.
+    struct Persistence {
+        let url: URL
+
+        static var standard: Persistence? {
+            FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first.map {
+                Persistence(url: $0.appendingPathComponent("playback-route-evidence.json"))
+            }
+        }
+    }
+
+    private struct Snapshot: Codable {
+        struct Entry: Codable {
+            let b: Int
+            let t: TimeInterval
+        }
+        struct Route: Codable {
+            var sustained: [Entry]
+            var rendition: [Entry]
+        }
+        var version = 1
+        var routes: [String: Route]
+    }
+
     private let lock = NSLock()
     private var samples: [Sample] = []
     private var bodySamples: [Sample] = []
+
+    // Longer-lived delivery evidence per playback route (origin + network
+    // kind): sustained original delivery, and apart from it the delivery of
+    // server HLS segments. Segments arrive at the rendition's pace and the
+    // transcoder's speed, so they only prove the route does at least that
+    // much. `PlaybackRouteCapacityPolicy.assess` merges the two with the probe.
+    static let routeEvidenceMaximumAge = PlaybackRouteCapacityPolicy.evidenceMaximumAge
+    /// Matches the shortest qualified body window.
+    static let sustainedTransferMinimumSeconds: TimeInterval = 2
+    private static let routeEvidenceLimit = 16
+    private static let routeLimit = 16
+    private var traceRoutes: [String: String] = [:]
+    private var routeSamples: [String: [RouteSample]] = [:]
+    private var routeLowerBoundSamples: [String: [RouteSample]] = [:]
+
+    private let wallClock: () -> TimeInterval
+    private let persistence: Persistence?
+    private let persistenceQueue = DispatchQueue(label: "Nastart.PlaybackRouteEvidence", qos: .utility)
+    private var persistenceScheduled = false
+    /// Route samples carried over from the previous launch.
+    let restoredRouteSampleCount: Int
+
+    /// Without `persistence` the evidence lives and dies with this instance.
+    /// `uptimeClock` places restored samples on the caller's monotonic clock.
+    init(persistence: Persistence? = nil,
+         wallClock: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 },
+         uptimeClock: () -> TimeInterval = { ProcessInfo.processInfo.systemUptime }) {
+        self.persistence = persistence
+        self.wallClock = wallClock
+        var restored = 0
+        if let persistence, let data = try? Data(contentsOf: persistence.url), data.count <= 262_144,
+           let snapshot = try? JSONDecoder().decode(Snapshot.self, from: data), snapshot.version == 1 {
+            let wallNow = wallClock(), uptimeNow = uptimeClock()
+            let maximumAge = PlaybackRecentThroughputStore.routeEvidenceMaximumAge
+            let sampleLimit = PlaybackRecentThroughputStore.routeEvidenceLimit
+            func restoredSamples(_ entries: [Snapshot.Entry]) -> [RouteSample] {
+                Array(entries.compactMap { entry -> RouteSample? in
+                    let elapsed = wallNow - entry.t
+                    // A time ahead of the clock cannot be aged, so it is not trusted.
+                    guard entry.b > 0, elapsed.isFinite, elapsed >= -5,
+                          elapsed <= maximumAge else { return nil }
+                    return RouteSample(bitrate: entry.b, uptime: uptimeNow - max(elapsed, 0), wall: entry.t)
+                }.suffix(sampleLimit))
+            }
+            let stored = snapshot.routes.filter { $0.key.count == 32 }.sorted { $0.key < $1.key }
+            for (route, evidence) in stored.prefix(PlaybackRecentThroughputStore.routeLimit) {
+                let sustained = restoredSamples(evidence.sustained)
+                let rendition = restoredSamples(evidence.rendition)
+                if !sustained.isEmpty { routeSamples[route] = sustained }
+                if !rendition.isEmpty { routeLowerBoundSamples[route] = rendition }
+                restored += sustained.count + rendition.count
+            }
+        }
+        restoredRouteSampleCount = restored
+    }
+
+    /// Routes are held under a digest so the stored file names no server.
+    private static func storageKey(_ routeKey: String) -> String {
+        SHA256.hash(data: Data(routeKey.utf8)).prefix(16).map { String(format: "%02x", $0) }.joined()
+    }
+
+    /// Associate a playback trace with the route its bytes come from.
+    func bindRoute(traceID: String?, routeKey: String) {
+        guard let traceID, !traceID.isEmpty, !routeKey.isEmpty else { return }
+        lock.lock(); defer { lock.unlock() }
+        traceRoutes[traceID] = Self.storageKey(routeKey)
+        if traceRoutes.count > 64, let stale = traceRoutes.keys.first(where: { $0 != traceID }) {
+            traceRoutes.removeValue(forKey: stale)
+        }
+    }
+
+    /// Nil for a sample from the caller's future, which cannot be aged.
+    private static func elapsed(since sample: RouteSample, now: TimeInterval,
+                                wallNow: TimeInterval) -> TimeInterval? {
+        guard now >= sample.uptime else { return nil }
+        return max(now - sample.uptime, wallNow - sample.wall)
+    }
+
+    private func freshLocked(_ samples: [RouteSample]?, now: TimeInterval,
+                             maximumAge: TimeInterval) -> [PlaybackRouteCapacityPolicy.Sample] {
+        let wallNow = wallClock()
+        return (samples ?? []).compactMap { sample in
+            guard let elapsed = Self.elapsed(since: sample, now: now, wallNow: wallNow),
+                  elapsed <= maximumAge else { return nil }
+            return .init(bitrate: sample.bitrate, age: elapsed)
+        }
+    }
+
+    private static func median(_ samples: [PlaybackRouteCapacityPolicy.Sample]) -> Int? {
+        let rates = samples.map(\.bitrate).sorted()
+        return rates.isEmpty ? nil : rates[rates.count / 2]
+    }
+
+    /// Every route sample still within the retention window, with its age,
+    /// for `PlaybackRouteCapacityPolicy.assess`.
+    func routeEvidence(routeKey: String, now: TimeInterval,
+                       maximumAge: TimeInterval = PlaybackRecentThroughputStore.routeEvidenceMaximumAge)
+        -> (sustained: [PlaybackRouteCapacityPolicy.Sample], rendition: [PlaybackRouteCapacityPolicy.Sample]) {
+        let route = Self.storageKey(routeKey)
+        lock.lock(); defer { lock.unlock() }
+        return (freshLocked(routeSamples[route], now: now, maximumAge: maximumAge),
+                freshLocked(routeLowerBoundSamples[route], now: now, maximumAge: maximumAge))
+    }
+
+    /// Median of qualified playback delivery samples on this route within the
+    /// retention window, or nil when there is none.
+    func routeCapacity(routeKey: String, now: TimeInterval,
+                       maximumAge: TimeInterval = PlaybackRecentThroughputStore.routeEvidenceMaximumAge) -> Int? {
+        Self.median(routeEvidence(routeKey: routeKey, now: now, maximumAge: maximumAge).sustained)
+    }
+
+    /// Median of server-rendition (HLS segment) delivery on this route: a
+    /// lower bound on what the route sustains, never an upper bound.
+    func routeLowerBound(routeKey: String, now: TimeInterval,
+                         maximumAge: TimeInterval = PlaybackRecentThroughputStore.routeEvidenceMaximumAge) -> Int? {
+        Self.median(routeEvidence(routeKey: routeKey, now: now, maximumAge: maximumAge).rendition)
+    }
+
+    private func appendRouteSampleLocked(traceID: String, bitrate: Int, now: TimeInterval,
+                                         isLowerBound: Bool = false) {
+        guard let route = traceRoutes[traceID] else { return }
+        let wallNow = wallClock()
+        var list = ((isLowerBound ? routeLowerBoundSamples : routeSamples)[route] ?? []).filter { sample in
+            guard let elapsed = Self.elapsed(since: sample, now: now, wallNow: wallNow) else { return false }
+            return elapsed <= Self.routeEvidenceMaximumAge
+        }
+        list.append(RouteSample(bitrate: bitrate, uptime: now, wall: wallNow))
+        if list.count > Self.routeEvidenceLimit { list.removeFirst(list.count - Self.routeEvidenceLimit) }
+        if isLowerBound { routeLowerBoundSamples[route] = list } else { routeSamples[route] = list }
+        guard persistence != nil, !persistenceScheduled else { return }
+        persistenceScheduled = true
+        // Batch the samples of a few seconds into one small write, away from
+        // the transfer callbacks. Losing the last few on a kill costs nothing.
+        persistenceQueue.asyncAfter(deadline: .now() + 5) { [weak self] in self?.persistRouteEvidence() }
+    }
+
+    /// Writes the route evidence that is still valid. A failed write only
+    /// means the next launch measures again.
+    func persistRouteEvidence() {
+        guard let persistence else { return }
+        lock.lock()
+        persistenceScheduled = false
+        let wallNow = wallClock()
+        func entries(_ samples: [RouteSample]?) -> [Snapshot.Entry] {
+            (samples ?? []).filter {
+                wallNow - $0.wall <= Self.routeEvidenceMaximumAge
+            }.map { Snapshot.Entry(b: $0.bitrate, t: $0.wall) }
+        }
+        var routes: [String: Snapshot.Route] = [:]
+        for route in Set(routeSamples.keys).union(routeLowerBoundSamples.keys) {
+            let stored = Snapshot.Route(sustained: entries(routeSamples[route]),
+                                        rendition: entries(routeLowerBoundSamples[route]))
+            if !stored.sustained.isEmpty || !stored.rendition.isEmpty { routes[route] = stored }
+        }
+        lock.unlock()
+        guard let data = try? JSONEncoder().encode(Snapshot(routes: routes)) else { return }
+        try? data.write(to: persistence.url, options: .atomic)
+    }
 
     func recordQualifiedBodyWindow(traceID: String?, bitrate: Int, now: TimeInterval) {
         guard let traceID, !traceID.isEmpty, bitrate > 0, now.isFinite else { return }
         lock.lock(); defer { lock.unlock() }
         guard !bodySamples.contains(where: { $0.traceID == traceID && $0.uptime > now }) else { return }
+        appendRouteSampleLocked(traceID: traceID, bitrate: bitrate, now: now)
         // Two adjacent, unpressured body windows are newer delivery evidence
         // than startup/tail requests. Retire those older completions so their
         // lower quartile cannot pin the estimate after supply has recovered.
@@ -667,13 +1210,22 @@ final class PlaybackRecentThroughputStore: @unchecked Sendable {
     }
 
     func record(traceID: String?, bytes: Int64, seconds: TimeInterval,
-                backpressureSeconds: TimeInterval, now: TimeInterval) {
+                backpressureSeconds: TimeInterval, now: TimeInterval,
+                isServerRendition: Bool = false) {
         guard let traceID, !traceID.isEmpty, bytes >= 1_048_576,
               seconds.isFinite, seconds >= 0.25,
               backpressureSeconds < 0.1, now.isFinite else { return }
         let rate = Double(bytes) * 8 / seconds
         guard rate.isFinite, rate > 0, rate < Double(Int.max) else { return }
         lock.lock()
+        // For the route, an original transfer estimates the rate only once it
+        // has run long enough to leave connection ramp-up, like a body
+        // window. A shorter one (a header, index or tail read) reads low on a
+        // fast route and stays with this playback's own estimate below.
+        if isServerRendition || seconds >= Self.sustainedTransferMinimumSeconds {
+            appendRouteSampleLocked(traceID: traceID, bitrate: Int(rate), now: now,
+                                    isLowerBound: isServerRendition)
+        }
         samples.removeAll { now - $0.uptime > 90 || now < $0.uptime }
         samples.append(Sample(traceID: traceID, bitrate: Int(rate), uptime: now))
         if samples.count > 32 { samples.removeFirst(samples.count - 32) }
@@ -742,14 +1294,98 @@ enum PlaybackAdaptiveBitratePolicy {
         return Double(sourceBitrate) > Double(measuredCapacity) * 1.5
     }
 
+    /// A rendition is asked for at this share of the capacity figure, which
+    /// keeps delivery at twice its bitrate.
+    static let renditionShare = 0.5
+
     /// Keep delivery well above the rendition's target bitrate. Each retry
     /// must select a lower rendition, even if the old capacity sample is high.
     static func target(currentCeiling: Int, capacity: Int?, networkKey: String) -> Int? {
         guard currentCeiling > 250_000 else { return nil }
-        let safeCapacity = capacity.map { Int(Double($0) * 0.5) }
+        let safeCapacity = capacity.map { Int(Double($0) * renditionShare) }
         let unknownCapacityLimit = networkKey == "cellular" ? 4_000_000 : 8_000_000
         let limit = min(currentCeiling - 1, safeCapacity ?? unknownCapacityLimit)
         return ladder.first { $0 <= limit } ?? 250_000
+    }
+}
+
+/// Original stream or a server rendition, and at which bitrate, from the
+/// route's capacity assessment. Private routes, an explicit quality and
+/// codec or subtitle requirements are settled by the caller before this.
+enum PlaybackRouteDecisionPolicy {
+    /// The source may exceed the capacity figure by this much before the
+    /// original is ruled out: delivery measurements read low far more often
+    /// than high. Same margin as the in-play `isOriginalClearlyUnsustainable`.
+    static let sustainMargin = 1.5
+    /// With rendition delivery as the only evidence and the source beyond
+    /// its margin, the original is still tried while the source stays within
+    /// this multiple of that floor. Two limits meet near 3. A rendition floor
+    /// can read about half the real rate, so the original may yet fit
+    /// (1.5 x 2). And if the floor is the real rate, the original's first
+    /// frame grows in proportion: S19 resumed in 16.9 s at 3.3x.
+    static let explorationFactor = 3.0
+    /// Automatic renditions on public routes stop here, so the server can
+    /// produce the first segment quickly.
+    static let publicRenditionCeiling = 20_000_000
+
+    enum OriginalVerdict: String {
+        /// Original: the source bitrate is unknown, nothing to compare.
+        case unknownDemand
+        /// Original: the route has no evidence yet.
+        case noEvidence
+        /// Original: the capacity figure covers the source.
+        case fits
+        /// Original, as a bounded trial: only a rendition floor is known and
+        /// the source is within reach of it. The attempt leaves sustained
+        /// evidence either way.
+        case explore
+        /// Server rendition: an estimate of the rate is clearly below the source.
+        case measuredInsufficient
+        /// Server rendition: only floors are known and the source is far above them.
+        case lowerBoundTooFar
+
+        var prefersServerRendition: Bool {
+            self == .measuredInsufficient || self == .lowerBoundTooFar
+        }
+    }
+
+    static func originalVerdict(sourceBitrate: Int?,
+                                assessment: PlaybackRouteCapacityPolicy.Assessment) -> OriginalVerdict {
+        guard let sourceBitrate, sourceBitrate > 0 else { return .unknownDemand }
+        guard let capacity = assessment.capacity, capacity > 0 else { return .noEvidence }
+        let source = Double(sourceBitrate)
+        if source <= Double(capacity) * sustainMargin { return .fits }
+        if assessment.boundsBothSides { return .measuredInsufficient }
+        // A single small probe is a momentary reading; only rendition
+        // delivery, a median over many segments, justifies a trial.
+        if let floor = assessment.renditionLowerBound, source <= Double(floor) * explorationFactor {
+            return .explore
+        }
+        return .lowerBoundTooFar
+    }
+
+    /// The automatic rendition ceiling on a public route: the fast-start
+    /// ceiling, held to the network kind's own cap (cellular, constrained).
+    static func renditionCeiling(networkBitrateCap: Int?) -> Int {
+        guard let networkBitrateCap, networkBitrateCap > 0 else { return publicRenditionCeiling }
+        return min(publicRenditionCeiling, networkBitrateCap)
+    }
+
+    /// The rendition to start with: the highest ladder rung within the
+    /// ceiling that `renditionShare` of the capacity figure covers. With no
+    /// figure at all the network kind's conservative default applies.
+    static func startupBitrate(capacity: Int?, ceiling: Int, unknownCapacityBitrate: Int) -> Int {
+        let ladder = PlaybackAdaptiveBitratePolicy.ladder
+        let lowest = ladder[ladder.count - 1]
+        guard let capacity, capacity > 0 else { return max(min(ceiling, unknownCapacityBitrate), lowest) }
+        let limit = min(Double(ceiling), Double(capacity) * PlaybackAdaptiveBitratePolicy.renditionShare)
+        return ladder.first { Double($0) <= limit } ?? lowest
+    }
+
+    /// Capacity for stepping down a stream that is already struggling: what
+    /// that stream is getting now, held to the route figure when it is lower.
+    static func fallbackCapacity(live: Int?, route: Int?) -> Int? {
+        [live, route].compactMap { $0 }.filter { $0 > 0 }.min()
     }
 }
 

@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-10",
+  "localTimezone": "Asia/Shanghai",
+  "package": {
+    "mainSHA256": "5e97386a67441070c5305c4abc65c96b2ee6bc8fa27e4837d983b13edfc8069a",
+    "dylibSHA256": "01a6ec564dbc666db22a32687792b94e8d09b38875de760eb9bc1d3cdd991175",
+    "builtAt": "2026-11-10T03:41:18.352557+08:00",
+    "configuration": "signed Debug with Jellyfin standard identity authorization",
+    "sourceHEAD": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "profileExpires": "2026-11-15T00:30:17+00:00",
+    "sourceInputCount": 498,
+    "sourceManifestSHA256": "29dd2eccfe692d9d2079ac2e825209d66f155fcb4518e1e7537a8269de9f0eab"
+  },
+  "sample": {
+    "code": "S19",
+    "sizeBytes": 128795641934,
+    "fixedStartSeconds": 346.993
+  },
+  "ipad": {
+    "model": "iPad15,7",
+    "os": "26.6",
+    "transport": "USB",
+    "mediaNetwork": "home Wi-Fi/LAN",
+    "existingInstallReceiptMatched": true,
+    "normalHomeVerified": true,
+    "jellyfin": {
+      "primerPlayerReached": true,
+      "ordinaryExitVerified": false,
+      "measuredReopen": false,
+      "outcome": "exit control not verified by driver"
+    },
+    "deviceFiles": {
+      "playbackDispatched": false,
+      "outcome": "long-directory scroll timed out"
+    },
+    "smb": {
+      "route": {
+        "ms": 2,
+        "decodeEngine": "ksPlayer",
+        "playMethod": "directPlay",
+        "routeKind": "localRangeProxy",
+        "plannedStartSeconds": "346.993",
+        "connectionAddressKind": "privateIP"
+      },
+      "internalFirstFrame": {
+        "ms": 9117,
+        "firstFrameSignal": "playbackClock",
+        "firstFramePositionSeconds": "347.134",
+        "tapToFirstFrameMs": "9721"
+      },
+      "preload": {
+        "ms": 3,
+        "reason": "bytesNotMaterialized",
+        "preloadedBytes": "0"
+      },
+      "actualPictureAndSubtitleVerified": true,
+      "audioTrackId": 1,
+      "subtitleTrackSwitch": {
+        "from": 8,
+        "to": 9,
+        "ms": 14589
+      },
+      "requestedAudio2NotVerified": true,
+      "measuredReopen": false,
+      "ordinaryExitVerified": false,
+      "firstPostFrameStall": {
+        "firstObservedMs": 11317,
+        "lastObservedMs": 20887,
+        "nextProgressSampleMs": 21897,
+        "playbackPositionSeconds": 348.392,
+        "fullyContainedOneSecondBins": [
+          {
+            "ms": 12275,
+            "tcpPayloadBytes": 205616,
+            "taggedNastartPayloadBytes": 205616
+          },
+          {
+            "ms": 13275,
+            "tcpPayloadBytes": 1900392,
+            "taggedNastartPayloadBytes": 1900392
+          },
+          {
+            "ms": 14275,
+            "tcpPayloadBytes": 5047820,
+            "taggedNastartPayloadBytes": 5047820
+          },
+          {
+            "ms": 15275,
+            "tcpPayloadBytes": 3332772,
+            "taggedNastartPayloadBytes": 3332772
+          },
+          {
+            "ms": 16275,
+            "tcpPayloadBytes": 3792096,
+            "taggedNastartPayloadBytes": 3792096
+          },
+          {
+            "ms": 17275,
+            "tcpPayloadBytes": 5016272,
+            "taggedNastartPayloadBytes": 5016272
+          },
+          {
+            "ms": 18275,
+            "tcpPayloadBytes": 6254928,
+            "taggedNastartPayloadBytes": 6254928
+          },
+          {
+            "ms": 19275,
+            "tcpPayloadBytes": 2449800,
+            "taggedNastartPayloadBytes": 2449800
+          }
+        ],
+        "taggedIncomingSmbTcpPayloadBytes": 27999696
+      },
+      "selectedTransportEvents": [
+        {
+          "event": "readerTransferFinished",
+          "localTransfer": 2,
+          "ms": 395,
+          "range": "bytes=128795625367-128795641933",
+          "status": "206",
+          "deliveredBytes": "16567",
+          "expectedBytes": "16567",
+          "result": "complete",
+          "transportScope": "networkReader",
+          "measurementBoundary": "readerDelivery"
+        },
+        {
+          "event": "readerTransferFinished",
+          "localTransfer": 4,
+          "ms": 1918,
+          "range": "bytes=128790818238-128795641933",
+          "status": "206",
+          "deliveredBytes": "4823696",
+          "expectedBytes": "4823696",
+          "result": "complete",
+          "transportScope": "networkReader",
+          "measurementBoundary": "readerDelivery"
+        },
+        {
+          "event": "readerFirstChunkDelivered",
+          "localTransfer": 7,
+          "ms": 15079,
+          "readerToDeliveryMs": "344",
+          "bytes": "1048576",
+          "transportScope": "networkReader",
+          "measurementBoundary": "readerDelivery"
+        },
+        {
+          "event": "readerTransferFinished",
+          "localTransfer": 6,
+          "ms": 15549,
+          "range": "bytes=2995004496-128795641933",
+          "status": "206",
+          "deliveredBytes": "39845888",
+          "expectedBytes": "125800637438",
+          "result": "clientDisconnected",
+          "transportScope": "networkReader",
+          "measurementBoundary": "readerDelivery"
+        }
+      ],
+      "packetBoundary": "Device Wi-Fi ingress, TCP source port 445, Nastart process metadata; may include overhead and retransmits; cannot imply useful file bytes or decoder consumption."
+    },
+    "secondWindow": {
+      "ordinaryLaunchOnly": true,
+      "playbackDispatched": false,
+      "outcome": "expired before preflight gate"
+    },
+    "originalLibraryIndexEqual": true,
+    "cleanup": {
+      "ready": true,
+      "cleanupVerified": true,
+      "startedAt": "2026-11-10T06:26:36.773243+08:00",
+      "forwarderStopped": true,
+      "remaining": 0,
+      "endedAt": "2026-11-10T06:29:10.698151+08:00"
+    },
+    "threeEntryComparisonComplete": false
+  },
+  "iphone18": {
+    "model": "iPhone19,7",
+    "os": "27.0",
+    "transport": "USB",
+    "install": {
+      "installDispatched": true,
+      "installed": true,
+      "normalLaunchRequested": false,
+      "preferencesSaved": true,
+      "identifiedProjectProcessStopped": true,
+      "installedAt": "2026-11-10T06:42:57.428153+08:00",
+      "installedIdentityVerified": true,
+      "preferencesEqual": true,
+      "remainingOwnAppProcess": 0
+    },
+    "offlineLaunch": {
+      "arguments": [
+        "--offline-ui",
+        "source-add",
+        "--offline-ui-theme",
+        "glassDeck",
+        "--offline-ui-appearance",
+        "dark"
+      ],
+      "environment": {},
+      "actualForegroundVerified": true,
+      "normalRootLaunched": false,
+      "all28PreferencesEqual": true,
+      "savedFixedDSMAddressPreserved": true,
+      "actualDSMSessionChecked": false,
+      "playbackDispatched": false,
+      "ownedAppOrRunnerRemaining": 0,
+      "cleanedUpAt": "2026-11-10T06:43:25.045083+08:00"
+    }
+  },
+  "iphone13": {
+    "operationsThisBatch": false,
+    "latestVerifiedInstallSamePackage": true
+  },
+  "matrixCellsNewlyAccepted": 0,
+  "productCodeChanged": false
+}

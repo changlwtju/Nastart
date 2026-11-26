@@ -1,5 +1,121 @@
 # Nastart 播放功能验收矩阵（历史76格＋新iPad38格）
 
+2026-11-21 电视读库、服务详情返回及子页宽度已有源码候选和离线验证，三项修后真机验收均未完成；既有失败及播放验收状态保持。 [电视修正候选](../archive/handoffs/2026-11/CODEX-2026-11-21-TV-THREE-ISSUES-FIX.md)
+
+2026-11-21 Jellyfin 恢复及续播的代码与离线回归已完成。iPad/iPhone 13 S19 同条件实播、seek 与退出书签，以及 iPhone 13/18 交替登录需 Muse 用签名包验收。各格待验状态保留。 [本批交接](../archive/handoffs/2026-11/CODEX-2026-11-21-JELLYFIN-PLAYBACK-AND-SESSION.md)
+
+2026-11-20 新查明 iPhone 13/18 既有备份保存相同 Jellyfin 设备 ID（物理 UDID 不同）；13 当前仍相同。Jellyfin 按账号＋设备 ID 重登撤销旧会话，存在互踢缺陷。今天 13 保存公网会话读库 401，未提交密码；具体撤销操作待服务端日志。S19 设备文件续播有画面但缓冲，采样不完整，窗口已收尾。 原编号/整格状态保持；身份隔离修正及真机回归未完成。 [诊断与接续](../archive/handoffs/2026-11/CODEX-2026-11-20-JELLYFIN-DUPLICATE-DEVICE-ID.md)
+
+2026-11-20 离线回读 11-12 旧包，S19 5G Jellyfin 从头窗首段四次请求未见响应头，设备文件 4G 黑屏窗已收到首个请求的分段并产生内部首帧。11-20 最新包真机播放仍待，风险覆盖保留两处独立待验。 [预检与复盘](../archive/handoffs/2026-11/CODEX-2026-11-20-IPHONE13-PLAYBACK-PREFLIGHT.md)
+
+2026-11-14 iPhone 13 签名 Debug `caa776f8…` 的 4G 冷启动公网读库通过，原 Wi-Fi 已恢复。本窗只验证认证。 [公网冷启动](../archive/handoffs/2026-11/CODEX-2026-11-14-IPHONE13-JELLYFIN-PUBLIC-COLD-RESTORE.md)
+
+2026-11-14 iPhone 13 签名 Debug `caa776f8…` 的 4G 公网认证首窗 401，次窗自动恢复读库，无播放样本。原 Wi-Fi 已恢复。 [4G 公网复核](../archive/handoffs/2026-11/CODEX-2026-11-14-IPHONE13-JELLYFIN-PUBLIC-4G.md)
+
+2026-11-14 iPhone 13 原 Wi-Fi 已覆盖签名 Debug `caa776f8…`，有效内网会话直接读库，公网备用 401。本次为安装和认证对照，无播放样本。 [覆盖对照](../archive/handoffs/2026-11/CODEX-2026-11-14-IPHONE13-JELLYFIN-OVERLAY-VERIFIED.md)
+
+2026-11-14 iPhone 13 旧包原 Wi-Fi 的覆盖前基线读库返回 401，预填新用户名。本次未播放，签名候选尚未安装。 [覆盖前基线](../archive/handoffs/2026-11/CODEX-2026-11-14-IPHONE13-JELLYFIN-OVERLAY-BASELINE.md)
+
+2026-11-14 Jellyfin 公网旧会话处理已通过定向模拟器。尚无新签名包真机读库或播放样本。 [认证与恢复](../archive/handoffs/2026-11/CODEX-2026-11-14-JELLYFIN-PUBLIC-401-RECOVERY.md)
+
+2026-11-14 只读关联 11-13 22:12 与 11-14 09:29 的 Jellyfin 401，两窗均有服务端令牌拒绝。没有新增真机播放样本。 [服务端日志关联](../archive/handoffs/2026-11/CODEX-2026-11-14-JELLYFIN-SERVER-401.md)
+
+2026-11-14 iPhone 13 签名 Debug `c7cf7671…` 原 Wi-Fi，Jellyfin 隔夜内网会话读库通过，公网备用身份探测 401。仅认证证据，本窗无播放复测。 [隔夜读库](../archive/handoffs/2026-11/CODEX-2026-11-14-JELLYFIN-OVERNIGHT-SESSION.md)
+
+2026-11-13 iPhone 13 同包原 Wi-Fi，Jellyfin 《变形金刚》ISO 从 19.187 秒续播，内部首帧 3.223 秒，有实图和音字幕轨 1 / 6。普通退出实见详情且 ISO 资源归零。现场听音与长期会话仍待。 [认证与退出](../archive/handoffs/2026-11/CODEX-2026-11-13-JELLYFIN-SESSION-ISO-EXIT.md)
+
+2026-11-13 iPhone 13 同包原 Wi-Fi，Jellyfin 的《变形金刚》(2007) 与设备文件同名、同 UDF 主片和虚拟长度。Jellyfin 首播内部 2.120 秒、跳转恢复 2.180 秒、普通退出资源归零。续播 64.063 秒起，内部首帧 8.866 秒，10/30 秒图有中文字幕，测试截止原生收尾。22:12 普通冷启动又 401，听音和续播普通退出未验。 [双入口对照](../archive/handoffs/2026-11/CODEX-2026-11-13-TRANSFORMERS-ISO-JELLYFIN-COMPARISON.md)
+
+2026-11-13 同包 iPhone 13 原 Wi-Fi，《碟中谍5》MKV 冷续播内部首帧 7.045 秒，30 秒实图见字幕；《变形金刚2》UDF ISO 内部首帧 1.632 秒，10/30 秒实图有画面，普通退出资源归零。Jellyfin 401 停在登录，实际听音与 Dolby 输出待核。 [补测记录](../archive/handoffs/2026-11/CODEX-2026-11-13-ISO-JELLYFIN-MKV-RESUME.md)
+
+2026-11-13 iPhone 13 最新 Debug `c7cf7671…`、原 Wi-Fi、设备文件。《变形金刚》(2007) ISO UDF 主片首播及续播有实图，+15 内部恢复 8.976 秒，续播 7.320 秒且可见中文字幕。《碟中谍5》55,092,144,234 字节 MKV、DV P7 源，3/10/30 秒出画，+15 内部恢复 4.231 秒。实际 Dolby 输出、听音、ISO Range 响应和 Jellyfin 对照均未验，未关闭整格。 [新样本首轮](../archive/handoffs/2026-11/CODEX-2026-11-13-ISO-MISSION-IMPOSSIBLE-SAMPLES.md)
+
+2026-11-13 同签名 Debug `c7cf7671…`，iPhone 13 原 Wi-Fi 受控 S19 W10 已重现选轨放弃自动降档，手动 KS 原片候选未对齐接管。后续独立 12 Mbps HLS 提交，日志保留 PGS 9，内部首帧 30.045 秒，字幕实图和完整退出未通过本轮验收。复算 5 条、0 不符。 [W10 字幕修正与真机](../archive/handoffs/2026-11/CODEX-2026-11-13-PLAYBACK-POLICY-T5-W10-SUBTITLE-FIX.md)
+
+2026-11-13 最新签名 Debug `c7cf7671…` 已装 iPhone 18，含 W10 字幕接入顺序修正。ISO 专项等待用户下载的《变形金刚》首部样本，当前包该机实播未验。 [安装与样本接续](../archive/handoffs/2026-11/CODEX-2026-11-13-IPHONE18-W10-SUBTITLE-INSTALL.md)
+
+2026-11-13 W10 隔离模拟器的预热层首次接入试验复现轨 9 变为关闭。先完成 URL 初始化、用户明确关闭和同 URL PiP 回挂对照通过。真机字幕保持及听音结论沿用原窗口。 [字幕隔离验证](../archive/handoffs/2026-11/CODEX-2026-11-13-PLAYBACK-POLICY-T5-W10-SUBTITLE-SIM.md)
+
+2026-11-13 iPhone 13 同包 S19 原 Wi-Fi，两次独立降档均提交并保留 PGS 9。20→10 Mbps 窗有实际中文字幕，20→8 Mbps 窗出画且保存轨道，字幕画面未核。每窗复算 2 条、0 不符。WDA 两次未发选轨，旧 W10 体验失败和听音待验保持。 [W10 复核](../archive/handoffs/2026-11/CODEX-2026-11-13-PLAYBACK-POLICY-T5-W10-FOLLOWUP.md)
+
+2026-11-13 T5 签名 Debug `6beee7cb…` 的 W1–W10 换源协调行为已有真机证据。iPhone 13 内网受控 12 Mbps HLS 覆盖 W4/W5/W7 服务端跳转顺序及 W6 的旧集输入保护，iPad 补 W6 连点下一集和 W8 本地跳转重试。S19 内网受控 45 Mbps 限速窗 W10 选轨优先通过，46.410 秒内部首帧及后续独立降档丢字幕保留为体验失败。实际听音待核。 [T5 回归结论](../archive/handoffs/2026-11/CODEX-2026-11-13-PLAYBACK-POLICY-T5-READBACK.md)
+
+2026-11-13 同包 iPhone 13 原 Wi-Fi 空环境 S19 原片续播，AC3 2 / PGS 9，内部首帧 4.343 秒，第 30 秒实图有简体中文字幕。普通退出前的自动降档候选保留字幕参数，未接管。 [正常续播回读](../archive/handoffs/2026-11/CODEX-2026-11-13-PLAYBACK-POLICY-T5-READBACK.md#原-wi-fi-正常续播回读)
+
+2026-11-12 iPad 签名 Debug `6beee7cb…`，S19 内网正常原片 20→12 Mbps 自然降档实际提交。独立的 12 Mbps Debug HLS 窗验证 W8 选轨被本地跳转打断后从目标位置重试并提交，实图有画面。长距离跳转实际仍走引擎，服务端跳转重叠未验。iPhone 13 同包 Jellyfin 资源库 401，设备文件原片实图有片头和字幕。 [T5](../archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T5.md)
+
+2026-11-12 iPhone 13 4G、签名 Debug `8025285b…`。《杀死比尔》38.1 Mbps、fits、音轨要求 12 Mbps HLS，23 秒实图出画，内部首帧 15.897 s。设备文件 S19 匹配 10 Mbps Jellyfin HLS，内部首帧 4.619 s，实际显示未验。 [V7/V10](../archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T2-4G-V7-V10.md)
+
+2026-11-12 iPhone 13、签名 Debug `8025285b…`、4G，S19 公网 Jellyfin 12 Mbps HLS 冷续播实图、原片试探后 10 Mbps HLS 实际接手、普通重开直接 HLS、前后 15 秒时钟恢复。持续播放与实际显示首帧时延仍待验。 [4G 续测](../archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T2-4G-PLAY.md)
+
+2026-11-12 iPhone 13、签名 Debug `8025285b…`、4G，公网 Jellyfin 资源库 401 且显示登录失效。停在播放前，无新增播放验收。 [4G 复核](../archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T2-4G-AUTH.md)
+
+2026-11-12 A16 iPad、同签名 Debug `8025285b…`，S19 SMB 原画起播、22.285 秒续播、前后 15 秒及普通退出有真机证据，轨道 1 / 8。分别观测 2.004 和 3.596 秒的 Reader 相关卡顿，保留持续播放失败证据。 [本轮续测](../archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T3-RESUME.md)
+
+2026-11-12 A16 iPad、同签名 Debug `8025285b…`，S19 SMB 内网原画起播，内部首帧 3.354 s，实图见片头。设备文件原画有 HTTP 交付和内部首帧，30 秒图黑屏。Reader 计时专项留证，续播、跳转及轨道配平未判通过。 [T3](../archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T3.md)
+
+2026-11-12 NAS 恢复后，iPhone 13 同包 5G 公网 Jellyfin S19 从 688.501 秒续播，在准备阶段返回 HTTPS 401；未产生实际 HLS 档位或首帧。S04 搜索无匹配，未发播放。 [续测记录](../archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T2-RESUME.md)
+
+2026-11-12 iPhone 13 5G 上 S19 4 Mbps HLS 起播及 10 Mbps 续播均见实图。10 Mbps 从头窗约 30 秒仍无首帧，连续播放整格未通过。用户报告 NAS 疑似异常重启，后续真片暂停。 [T2](../archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T2.md)
+
+2026-11-12 同包 iPhone 13 上 5G 公网 Jellyfin 资源库 401，播放前阻塞，原 Wi-Fi 已恢复。Wi-Fi 内网重登成功不产生蜂窝播放覆盖。 [T2](../archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T2.md)
+
+2026-11-12 iPad、签名 Debug `8025285b…`、家庭 Wi-Fi 内网 Jellyfin、S19 AC3 2 / PGS 9。起播、续播、从头为原片并普通退出，按实际触发核对 20→12 Mbps。续播约 10 s 和 30 s 均实见缓冲，仍无连续播放整格通过。 [T1 实证](../archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T1.md)
+
+2026-11-10 iPad `01a6ec56…` 内网 S19，SMB 实图与中文字幕成立，出画后记录重复缓冲；一段停顿内仍观测约 28 MB 入站载荷。SMB 目标音轨重开、Jellyfin 重开及设备文件样本进入未完成。18 同包仅离线启动，无新增播放验收。 [诊断记录](../archive/handoffs/2026-11/CODEX-2026-11-10-S19-SAME-BUILD-TRIAD.md)
+
+2026-11-10 `01a6ec56…` 的 13 重登 Jellyfin 后 S19 从头原画实图、普通退出与冷启动库恢复。iPad 同包 SMB Debug 346.993 秒以 AC3 2 / PGS 9 出画，有字幕和缓冲。匹配起点与轨道的上轮 iPad 两入口为另一包，114 格无新增完整验收。 [本轮记录](../archive/handoffs/2026-11/CODEX-2026-11-10-IPHONE13-REAUTH-AND-SMB-TRACK.md)
+
+2026-11-10 iPad `f6b9223f…` Debug S19 346.993 秒定点，Jellyfin、设备文件同 AC3 / PGS 实图出画，SMB 保留轨道未配平和画面未核。13 `01a6ec56…` 的域名与内网 Jellyfin 授权均 401，未发出播放。114 格无新增验收。 [本轮回归](../archive/handoffs/2026-11/CODEX-2026-11-10-JELLYFIN-RECOVERY-HTTP-STATUS.md)
+
+2026-11-09 当前签名 Debug `b9a6e09b…`：A16 iPad 的 Jellyfin 内网 S19 正常原流从头出画、有字幕、普通退出；iPhone 13 的设备文件同片原流从头出画、前后 15 秒有引擎恢复、普通退出，跳后实际画面仍未验。13 Jellyfin 库 401 继续保留，114 格状态不变。 [最新回归](../archive/handoffs/2026-11/CODEX-2026-11-09-JELLYFIN-SAME-ACCOUNT-LAN-RECOVERY.md)
+
+2026-11-09 当前签名 Debug `a827696b…`：iPad S19 Jellyfin 两个限速夹具窗均实际从原流切到 HLS、有画面字幕并普通退出，开启组验证复用，未测得提速。13 S19 内网设备文件原画从头出画、前后 15 秒恢复及普通退出；保留缓冲实图和 Jellyfin 播放前 401 失败。无外网或听音证据，114 格状态保持。 [真机回归](../archive/handoffs/2026-11/CODEX-2026-11-09-S19-CANDIDATE-SEGMENT-DEVICE.md)
+
+2026-11-09 合成 iOS 27 模拟器同条件的 HLS 首段复用候选内部对齐成功，关闭探针的窗口保留未解码；七项定向通过。无真机安装、实际候选提交或大文件弱网验收，114 格状态保持。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-S19-CANDIDATE-SEGMENT-RETRY.md)
+
+2026-11-09 原画缓冲恢复及 HLS 首段重试补本机合成证据；候选确有解码对照，但未提交切换，无新增真机证据，114 格状态保持。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-S19-RANGE-AND-HLS-TIMING.md)
+
+2026-11-09 iPhone 13、A16 iPad 同签名 Debug `807b3c7e…`，内网 Wi-Fi、128.8 GB S19 设备文件原画。13 从头实图、二次缓冲约 8.04 秒后恢复并普通退出；iPad 旧书签 382.253 秒冷续播实图、可见中文字幕及普通退出，4.872 秒为内部首帧。114 格状态保持。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-S19-INDEPENDENT-CAPTURE.md)
+
+2026-11-09 18、13 同包 `807b3c7e…`，Wi-Fi 设备文件 128.8 GB S19。从头实画仅 18 有独立图；18 前后 15 秒有内部恢复及普通退出，13 复测触控掉线前未发跳转。114 格状态保持。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE18-13-S19-USB.md)
+
+2026-11-09 Matroska 合成五窗验证 Cues 与目标 Cluster 两类等待，归模拟器诊断。iPad 真片新窗口未开，114 格状态保持。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-S19-MATROSKA-CUES.md)
+
+2026-11-09 隔离模拟器以可解码合成 MP4 验证原流尾部索引等待及目标正文慢读，证据归合成诊断；正式大文件和显示首帧结论不变，114 格状态保持。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-S19-PLAYER-RANGE.md)
+
+2026-11-09 iPhone 13、签名 Debug `807b3c7e…`、内网 Jellyfin：128.8 GB S19 在 1709.641 秒冷续播并实际出画、普通退出，26.313 秒短断点重开不可见。114 格状态保持。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-S19-MATCHED-SMB-AND-RANGE.md)
+
+2026-11-09 A16 iPad `807b3c7e…` 的 S19 SMB 以相同实际起点和 AC3/PGS 对齐设备文件、Jellyfin 并实际出画。定点使用显式 Debug 参数。HTTP 慢读夹具为传输层独立证据。114 格状态保持。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-S19-MATCHED-SMB-AND-RANGE.md)
+
+2026-11-09 A16 iPad 在 `807b3c7e…` 的显式 Debug 定点窗口，以同一 128.8 GB S19、346.993 秒验证三入口原流出画。设备文件首窗黑屏本次未复现，SMB 与另两路起始轨道不同，作为诊断证据。114 格状态保持。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-IPAD-S19-FIXED-START.md)
+
+2026-11-09 A16 iPad、`fe63a311…`、内网 Wi-Fi 的 128.8 GB S19 补 Jellyfin 原流续播、从头、跳转、DTS/AC3/PGS 选择及普通退出。续播 350.541 秒有画面和 PGS 字幕，未测听音或切换时延。114 格验收状态保持。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-IPAD-S19-JELLYFIN-CONTROLS.md)
+
+2026-11-09 A16 iPad、`fe63a311…`、128.8 GB S19，同机内网三入口原流均有实图。SMB 直连 Reader 补续播、从头、前后跳转、引擎选轨及普通退出。设备文件首窗从 346.993 秒书签重开后黑屏缓冲，353.666 秒的实际引擎起点复测可出画。记录为部分回归和失败证据，114 格验收状态保持。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-IPAD-S19-THREE-ENTRY.md)
+
+2026-11-09 13 在 `fe63a311…` 使用现有 13.0 GB MKV，验证 SMB 和 WebDAV 原流直连出画、前进 15 秒、普通退出。WebDAV 使用 Wi-Fi 域名，未测对端，暂不作内外网归类。保持 114 格验收状态。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE13-READER-SMB-WEBDAV.md)
+
+2026-11-09 共享代理 Reader 以合成影片核解码、有限窗、撤销和正文完整性；14 项定向通过。NetworkMedia 包测试 30 通过、6 SMB 外部夹具跳过。A16 iPad 与 13 已保留数据覆盖 `fe63a311…`；iPad 的内网 SMB、FTP 用同一 13.0 GB MKV 核了直连起播、前进 15 秒和普通退出，13 用 128.8 GB S19 核 Jellyfin 原流短播。保持 114 格验收状态。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-NETWORK-READER-PROXY.md)
+
+2026-11-09 最新签名 Debug `a444e8d9…` 的 iPad S19 设备文件同包对照，实测普通 Wi-Fi、原流、片头和相同音字幕，实验接手并送出 14,147 字节，首段未重复。13 Jellyfin 的同包对照实际交付 34,441 字节，无 ETag、首段未重复。四窗有实际画面及普通退出；Pad 906/649 ms、13 952/785 ms 都是内部首帧。20 项合成定向通过。此窗不测实际听音或显示首帧时间，114 格无新增通过。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-ORIGINAL-RESPONSE-HANDOFF.md)
+
+2026-11-09 10:02 iPad 同一临时签名包原流对照，同片片头、同轨道和 Wi-Fi，两窗普通退出。启用组实际预读 0、未改变首个 Range，首帧为内部计时。恢复正常包并验证首页，114 格无新增通过。 [iPad 对照](../archive/handoffs/2026-11/CODEX-2026-11-09-IPAD-ASYNC-PREFIX-AB.md)
+
+2026-11-09 09:55 两机同一正常签名 Debug 的 S19 原流短播覆盖 Jellyfin、设备文件和普通退出。四窗共 12 条真实 206，补上版本标识和路由证据。未做预读对照、听音或显示首帧，114 格无新增通过。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-ORIGINAL-VALIDATOR-AUDIT.md)
+
+2026-11-09 09:37 新建空白模拟器最终 9 项通过。合成 H.264 的 KSPlayer 预读消费、跨窗字节一致、版本变更与撤销通过。无真机、NAS、真实屏幕首帧或速度证据，114 格无新增通过。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-ORIGINAL-PREFIX-PROOF.md)
+
+2026-11-09 09:25 13 用同一签名 Debug 实验包、Wi-Fi 和 App 限速，S19 片头 AC3/关字幕，两轮原流至 HLS 均提交、截图可见标题、普通退出。目标分别 10/12 Mbps，切换后各一次缓冲。显示首帧、听音、长时及自然网络未验，0 新增整格通过。正常包 `542e9d2f…` 已恢复并启动加载资源库。 [当轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE13-HLS-COLD-LEAD-AB.md)
+
+2026-11-09 08:49 iPhone13 `542e9d2f…` 同片片头/AC3/关字幕完成两轮 App 进程限速。两轮均从原流自动切到 12 Mbps HLS，清单 13.74/12.16 秒，首次提前 11 秒后解码至对齐仍等 5.04/7.38 秒。正常退出并收尾，未测实际显示首帧或听音。下一窗只改变首次提前量并配对观察；默认内网自然降档和预读仍待。 [回归记录](../archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE13-HLS-COLD-LEAD-REPEATS.md)
+
+2026-11-09 08:36 13 签名包 `542e9d2f…` 的 S19 内网默认原流窗未自然降档。独立 Debug 12 Mbps HLS 窗完成 AC3 和字幕关闭替换，确认第二候选采用首窗渲染准备耗时加 150 ms，内部对齐 11.60 / 7.70 秒，两窗条件有差异。普通退出与自有设备窗口收尾已核。自然降档配对、显示/听音及预读待续。 [回归记录](../archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE13-HLS-REPLACEMENT-REGRESSION.md)
+
+2026-11-09 `542e9d2f…` 普通 Debug 在 13/Pad 保留覆盖。S19 128.8 GB，Pad Jellyfin 冷启动、实际原流画面、续播/从头、前后 15 秒、引擎选轨和普通退出；13 设备文件原流续播和前后跳转，保留缓冲截图。13 Jellyfin 正确账号后仍 401。声音、显示首帧、HLS 候选切换与完整帧时间未验，114 格无新增整格通过。[当轮证据](../archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE13-JELLYFIN-RESUME.md)
+
+2026-11-09 [同环境三入口补测](../archive/handoffs/2026-11/CODEX-2026-11-09-SHARED-NETWORK-PLAYBACK.md)：892228ff正常Debug已保留安装13/Pad，五项隔离测试过。Pad S19 128.8GB的JF/设备文件/SMB均实画及普通退出/续播/从头/跳转/轨道选择；13文件补验、JF401。真实默认路径wifi/非昂贵/非受限，来源共用规划/KS/原流代理。不同落点与轨道/缓存窗不排名，仍有缓冲；非Release/完整听音/帧时间/HDR/长时或蜂窝验收，114格0新增整格P。
+
 2026-11-08 [共享代理第一步](../archive/handoffs/2026-11/CODEX-2026-11-08-NETWORK-SOURCES-SHARED-PROXY-PHASE1.md)已接入。最终6项隔离测试通过，正常97b3保留安装13。LAN FTP 5.47GB MKV《赌侠》实际播放和前进15秒恢复，206、同trace桥接交付、预读0均有证据。普通退出未验证，原生收窗。A16 Pad未连接，最新包未装。第二步、预读及声字幕/帧时间/长时仍待，0新增整格P。
 
 2026-11-08 [Jellyfin恢复及TV连接](../archive/handoffs/2026-11/CODEX-2026-11-08-JELLYFIN-LOGIN-AND-APPLE-TV-CONNECTION.md)。13同源bb4d保留安装，用户重登后资源库/搜索/详情恢复，《赌侠》原流短时实际画面由两种截图证实。续播、seek、声音、字幕、普通退出及全程帧时间待验，预读仍0。客厅TV认证配对成功，重启后开发连接仍不可用。30项/114格无新增验收。
@@ -414,6 +530,10 @@ TV边界补充（2026-10-19）：[照片/现场复核](../archive/handoffs/2026-
 样本真实身份仍维护在[固定清单](samples/README.md)。扩展样本先核对可达性和规格，不因本节增加容量分档就自动增加已执行覆盖。
 
 2026-11-08 [S19 恢复后抽测](../archive/handoffs/2026-11/CODEX-2026-11-08-LORD-OF-THE-RINGS-PLAYBACK.md)：设备文件的 `Content-Range` 总量 128,795,641,934 bytes，13 Wi-Fi 原流出画，识别 Dolby Vision Profile 7 源；15 秒定位、50% 实画成立，50% 首次恢复后再次缓冲。十分钟窗口记录 9 次缓冲，未通过稳定性；设备输出和同条件 NAS 负载仍开放。Jellyfin 401 单列，iPad 未回归，不增加整格通过数。
+
+2026-11-08 [S19 iPad 续测](../archive/handoffs/2026-11/CODEX-2026-11-08-S19-IPAD-LAN-COMPARISON.md)。同包 Wi-Fi 设备文件开头 200 秒，iPad 记录 0 次缓冲，13 历史窗 1 次。Pad 中段实际画面、SMB 和 FTP 同片短播及三入口正常退出成立。FTP 一次缓冲，SMB 该窗未记录缓冲。十分钟 iPad 稳定性、设备输出和同条件 NAS 负载仍开放，未新增整格通过。
+
+2026-11-08 [S19 中段对照](../archive/handoffs/2026-11/CODEX-2026-11-08-S19-DEEP-SEEK-AB.md)。13 两个同落点窗均出现二次缓冲，2.5 秒门槛候选首次恢复更晚，已撤回。Pad 正式包另一中段点短窗连续推进。稳定性整格保持开放。
 
 ### B. 设备、网络与入口维度
 

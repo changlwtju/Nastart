@@ -1,0 +1,425 @@
+{
+  "date": "2026-11-09",
+  "configuration": "iPad A16 simulator / iOS 27.0 / Debug; Mac loopback; production playback view in isolated UIKit host",
+  "sample": {
+    "bytes": 15056257,
+    "sha256": "81b18fbf6f8345eea4d6f7bc7e1201366070f5a30e5d558780fa82a63d739f26",
+    "cueStart": 15055791,
+    "cueBytes": 466,
+    "cuePoints": 24,
+    "targetSeconds": 14,
+    "targetCue": {
+      "milliseconds": 14000,
+      "clusterOffset": 8799900
+    }
+  },
+  "simulatorWindows": {
+    "baseline": {
+      "timeOfCloseRequestMsAfterHostCreation": 3692,
+      "releaseCount": 1,
+      "route": {
+        "decodeEngine": "ksPlayer",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "plannedStartSeconds": "14.0"
+      },
+      "engineEvents": {
+        "engine_startup_timing": [
+          {
+            "msAfterRoute": 488,
+            "initialPositionSeconds": 14.0,
+            "initialSeekResult": "0",
+            "initialSeekMs": 15.840916661545634,
+            "firstVideoPacketMs": 66.29429166787304,
+            "acceptedVideoFrameMs": 180.8723333379021,
+            "outputSubmittedMs": 200.242041668389,
+            "openMs": 31.472291666432284,
+            "streamInfoMs": 9.321958335931413,
+            "readyMs": 7.844083331292495
+          }
+        ],
+        "engine_startup_incomplete": [],
+        "first_frame": [
+          {
+            "msAfterRoute": 493,
+            "tapToFirstFrameMs": 661.0,
+            "firstFramePositionSeconds": 14.1
+          }
+        ],
+        "video_frame_submitted": [
+          {
+            "msAfterRoute": 417,
+            "acceptedVideoFrameMs": 180.8723333379021,
+            "outputSubmittedMs": 200.242041668389
+          }
+        ]
+      },
+      "reportListsIncomplete": 0,
+      "reportSuccessfulStartPosition": 14.0,
+      "requestedRanges": [
+        {
+          "range": "bytes=0-33554431",
+          "requestMsAfterRoute": 377,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 1,
+          "clientEndMsAfterRequest": 10,
+          "deliveredBytes": 6282692,
+          "upstreamTaskEndedMsAfterRequest": 13
+        },
+        {
+          "range": "bytes=15055791-48610222",
+          "requestMsAfterRoute": 386,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 1,
+          "clientEndMsAfterRequest": null,
+          "deliveredBytes": null,
+          "upstreamTaskEndedMsAfterRequest": 2
+        },
+        {
+          "range": "bytes=429856-33984287",
+          "requestMsAfterRoute": 389,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 1,
+          "clientEndMsAfterRequest": 1,
+          "deliveredBytes": 12713984,
+          "upstreamTaskEndedMsAfterRequest": 2
+        },
+        {
+          "range": "bytes=8799900-42354331",
+          "requestMsAfterRoute": 390,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 0,
+          "clientEndMsAfterRequest": null,
+          "deliveredBytes": null,
+          "upstreamTaskEndedMsAfterRequest": 2
+        }
+      ],
+      "fault": {
+        "offset": -1,
+        "delay": 0,
+        "kbps": 0
+      }
+    },
+    "cues-held": {
+      "timeOfCloseRequestMsAfterHostCreation": 3570,
+      "releaseCount": 1,
+      "route": {
+        "decodeEngine": "ksPlayer",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "plannedStartSeconds": "14.0"
+      },
+      "engineEvents": {
+        "engine_startup_timing": [],
+        "engine_startup_incomplete": [
+          {
+            "msAfterRoute": 3559,
+            "initialPositionSeconds": 14.0,
+            "initialSeekResult": "pending",
+            "initialSeekMs": null,
+            "firstVideoPacketMs": null,
+            "acceptedVideoFrameMs": null,
+            "outputSubmittedMs": null
+          }
+        ],
+        "first_frame": [],
+        "video_frame_submitted": []
+      },
+      "reportListsIncomplete": 1,
+      "reportSuccessfulStartPosition": null,
+      "requestedRanges": [
+        {
+          "range": "bytes=0-33554431",
+          "requestMsAfterRoute": 27,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 0,
+          "clientEndMsAfterRequest": 3535,
+          "deliveredBytes": 7782244,
+          "upstreamTaskEndedMsAfterRequest": 3548
+        },
+        {
+          "range": "bytes=15055791-48610222",
+          "requestMsAfterRoute": 31,
+          "responseStatus": null,
+          "headerMsAfterRequest": null,
+          "clientEndMsAfterRequest": 3542,
+          "deliveredBytes": 0,
+          "upstreamTaskEndedMsAfterRequest": 3544
+        }
+      ],
+      "fault": {
+        "offset": 15055791,
+        "delay": 5500,
+        "kbps": 0
+      }
+    },
+    "cluster-starved": {
+      "timeOfCloseRequestMsAfterHostCreation": 3581,
+      "releaseCount": 1,
+      "route": {
+        "decodeEngine": "ksPlayer",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "plannedStartSeconds": "14.0"
+      },
+      "engineEvents": {
+        "engine_startup_timing": [],
+        "engine_startup_incomplete": [
+          {
+            "msAfterRoute": 3576,
+            "initialPositionSeconds": 14.0,
+            "initialSeekResult": "0",
+            "initialSeekMs": 23.521333336248063,
+            "firstVideoPacketMs": 37.774791664560325,
+            "acceptedVideoFrameMs": null,
+            "outputSubmittedMs": null
+          }
+        ],
+        "first_frame": [],
+        "video_frame_submitted": []
+      },
+      "reportListsIncomplete": 1,
+      "reportSuccessfulStartPosition": null,
+      "requestedRanges": [
+        {
+          "range": "bytes=0-33554431",
+          "requestMsAfterRoute": 25,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 0,
+          "clientEndMsAfterRequest": 16,
+          "deliveredBytes": 8847360,
+          "upstreamTaskEndedMsAfterRequest": 19
+        },
+        {
+          "range": "bytes=15055791-48610222",
+          "requestMsAfterRoute": 31,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 7,
+          "clientEndMsAfterRequest": null,
+          "deliveredBytes": null,
+          "upstreamTaskEndedMsAfterRequest": 10
+        },
+        {
+          "range": "bytes=429856-33984287",
+          "requestMsAfterRoute": 43,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 1,
+          "clientEndMsAfterRequest": 6,
+          "deliveredBytes": 7208960,
+          "upstreamTaskEndedMsAfterRequest": 10
+        },
+        {
+          "range": "bytes=8799900-42354331",
+          "requestMsAfterRoute": 45,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 4,
+          "clientEndMsAfterRequest": 3533,
+          "deliveredBytes": 65536,
+          "upstreamTaskEndedMsAfterRequest": 3534
+        }
+      ],
+      "fault": {
+        "offset": 8799900,
+        "delay": 0,
+        "kbps": 64
+      }
+    },
+    "cues-recover": {
+      "timeOfCloseRequestMsAfterHostCreation": 3553,
+      "releaseCount": 1,
+      "route": {
+        "decodeEngine": "ksPlayer",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "plannedStartSeconds": "14.0"
+      },
+      "engineEvents": {
+        "engine_startup_timing": [
+          {
+            "msAfterRoute": 831,
+            "initialPositionSeconds": 14.0,
+            "initialSeekResult": "0",
+            "initialSeekMs": 683.3184583229013,
+            "firstVideoPacketMs": 697.3194166639587,
+            "acceptedVideoFrameMs": 706.8157499888912,
+            "outputSubmittedMs": 750.2530416677473,
+            "openMs": 3.969458324718289,
+            "streamInfoMs": 9.180333334370516,
+            "readyMs": 0.3148749965475872
+          }
+        ],
+        "engine_startup_incomplete": [],
+        "first_frame": [
+          {
+            "msAfterRoute": 836,
+            "tapToFirstFrameMs": 850.0,
+            "firstFramePositionSeconds": 14.067
+          }
+        ],
+        "video_frame_submitted": [
+          {
+            "msAfterRoute": 764,
+            "acceptedVideoFrameMs": 706.8157499888912,
+            "outputSubmittedMs": 750.2530416677473
+          }
+        ]
+      },
+      "reportListsIncomplete": 0,
+      "reportSuccessfulStartPosition": 14.0,
+      "requestedRanges": [
+        {
+          "range": "bytes=0-33554431",
+          "requestMsAfterRoute": 23,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 1,
+          "clientEndMsAfterRequest": 661,
+          "deliveredBytes": null,
+          "upstreamTaskEndedMsAfterRequest": 1
+        },
+        {
+          "range": "bytes=15055791-48610222",
+          "requestMsAfterRoute": 28,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 650,
+          "clientEndMsAfterRequest": null,
+          "deliveredBytes": null,
+          "upstreamTaskEndedMsAfterRequest": 656
+        },
+        {
+          "range": "bytes=429856-33984287",
+          "requestMsAfterRoute": 687,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 4,
+          "clientEndMsAfterRequest": 20,
+          "deliveredBytes": 7177015,
+          "upstreamTaskEndedMsAfterRequest": 26
+        },
+        {
+          "range": "bytes=8799900-42354331",
+          "requestMsAfterRoute": 697,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 7,
+          "clientEndMsAfterRequest": null,
+          "deliveredBytes": null,
+          "upstreamTaskEndedMsAfterRequest": 20
+        }
+      ],
+      "fault": {
+        "offset": 15055791,
+        "delay": 640,
+        "kbps": 0
+      }
+    },
+    "cluster-recover": {
+      "timeOfCloseRequestMsAfterHostCreation": 3542,
+      "releaseCount": 1,
+      "route": {
+        "decodeEngine": "ksPlayer",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "plannedStartSeconds": "14.0"
+      },
+      "engineEvents": {
+        "engine_startup_timing": [
+          {
+            "msAfterRoute": 840,
+            "initialPositionSeconds": 14.0,
+            "initialSeekResult": "0",
+            "initialSeekMs": 25.526125013129786,
+            "firstVideoPacketMs": 40.271916674100794,
+            "acceptedVideoFrameMs": 197.34941667411476,
+            "outputSubmittedMs": 242.38037499890197,
+            "openMs": 5.069083330454305,
+            "streamInfoMs": 9.103833333938383,
+            "readyMs": 0.3564583312254399
+          }
+        ],
+        "engine_startup_incomplete": [],
+        "first_frame": [
+          {
+            "msAfterRoute": 852,
+            "tapToFirstFrameMs": 865.0,
+            "firstFramePositionSeconds": 14.133
+          }
+        ],
+        "video_frame_submitted": [
+          {
+            "msAfterRoute": 253,
+            "acceptedVideoFrameMs": 197.34941667411476,
+            "outputSubmittedMs": 242.38037499890197
+          }
+        ]
+      },
+      "reportListsIncomplete": 0,
+      "reportSuccessfulStartPosition": 14.0,
+      "requestedRanges": [
+        {
+          "range": "bytes=0-33554431",
+          "requestMsAfterRoute": 30,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 0,
+          "clientEndMsAfterRequest": 11,
+          "deliveredBytes": 7733248,
+          "upstreamTaskEndedMsAfterRequest": 15
+        },
+        {
+          "range": "bytes=15055791-48610222",
+          "requestMsAfterRoute": 35,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 1,
+          "clientEndMsAfterRequest": null,
+          "deliveredBytes": null,
+          "upstreamTaskEndedMsAfterRequest": 7
+        },
+        {
+          "range": "bytes=429856-33984287",
+          "requestMsAfterRoute": 45,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 7,
+          "clientEndMsAfterRequest": 9,
+          "deliveredBytes": 6815744,
+          "upstreamTaskEndedMsAfterRequest": 12
+        },
+        {
+          "range": "bytes=8799900-42354331",
+          "requestMsAfterRoute": 53,
+          "responseStatus": 206,
+          "headerMsAfterRequest": 0,
+          "clientEndMsAfterRequest": 3494,
+          "deliveredBytes": null,
+          "upstreamTaskEndedMsAfterRequest": 3499
+        }
+      ],
+      "fault": {
+        "offset": 8799900,
+        "delay": 0,
+        "kbps": 10800
+      }
+    }
+  },
+  "currentSignedPackageOnMac": {
+    "sourceInputsMatchingSignedPackage": 498,
+    "sourceHead": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "dylibSHA256": "807b3c7e2b2176aee1167d716ea06190b000d0642bcac44b998656b3e46da8b4",
+    "packageBuiltAt": "2026-11-09T17:55:38.740887+08:00",
+    "profileExpires": "2026-11-15T00:30:17+00:00"
+  },
+  "physical": {
+    "ipadUSBPresent": false,
+    "coreDeviceAvailable": false,
+    "installationIdentityReverifiedOnDevice": false,
+    "dispatched": false,
+    "lastSeenAt": "2026-11-09T19:30:26.270080+08:00"
+  },
+  "cleanup": {
+    "endedAt": "2026-11-09T19:30:26.270080+08:00",
+    "simulatorDeleted": true,
+    "fixtureServiceStopped": true,
+    "temporaryTestSourceRestored": true
+  },
+  "excludedSetupAttempts": [
+    "Two simulator runs: harness binding did not dismiss the player by the intended cutoff"
+  ],
+  "fullMatrixPassesAdded": 0,
+  "playbackScriptTestsPassed": 146
+}

@@ -1,0 +1,100 @@
+{
+  "date": "2026-11-09",
+  "sourceHead": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+  "matchesFrozenLocalSourceIncludingDirty": true,
+  "sourceInputCount": 498,
+  "package": {
+    "mainSHA256": "82ffa5d56cfed3fec1fe7a9d1767473bcb9485d5fc745afce4106722ebccf944",
+    "dylibSHA256": "fe63a3119a8949f49357e41d453bd0f9ed82b9746dbc9dbe482245f0051e58f4",
+    "builtAt": "2026-11-09T14:06:44.223351+08:00",
+    "configuration": "signed Debug with shared NetworkMediaByteReader"
+  },
+  "device": {
+    "model": "iPhone14,5",
+    "os": "16.3.1",
+    "controlTransport": "USB",
+    "priorRetainedInstallAt": "2026-11-09T14:15:17.545018+08:00",
+    "installedIdentityCheckedBy": [
+      "Path",
+      "SequenceNumber",
+      "DTXcodeBuild",
+      "CFBundleVersion",
+      "SignerIdentity"
+    ],
+    "reinstalledThisBatch": false,
+    "normalStartup": true,
+    "libraryAndConnectionIndexUnchanged": true,
+    "changedPreferenceKeys": [
+      "diagnostics.entries.v1",
+      "playback.localResume.v1"
+    ]
+  },
+  "sampleBytes": 13047776001,
+  "sampleMatch": "matched existing iPad test sample; same indexed title, file name and total bytes across iPhone 13 SMB and WebDAV, no full-file rehash",
+  "windows": {
+    "smb": {
+      "startedAt": "2026-11-09T14:47:17.309240+08:00",
+      "closedAt": "2026-11-09T14:48:00.093746+08:00",
+      "mediaNetwork": "wifi",
+      "addressKind": "privateIP",
+      "resolvedRemotePeerVerified": false,
+      "connectionScheme": "smb",
+      "appRoute": "sharedReader",
+      "routeKind": "localRangeProxy",
+      "decodeEngine": "ksPlayer",
+      "playMethod": "directPlay",
+      "localRangeHTTPStatuses": [
+        206
+      ],
+      "completedFiniteRangesBytes": [
+        85,
+        2122,
+        174254
+      ],
+      "largestOpenRangeDeliveredBytes": 61865984,
+      "internalFirstFrameMs": 1608,
+      "internalForward15RecoveryMs": 1816,
+      "actualSeekTargetSeconds": 33.1,
+      "visibleFramesBeforeAndAfterSeek": true,
+      "subtitleVisibleAfterSeek": true,
+      "normalExit": true,
+      "appRunnerAndForwarderStopped": true
+    },
+    "webdav": {
+      "startedAt": "2026-11-09T14:48:55.555308+08:00",
+      "closedAt": "2026-11-09T14:49:38.763003+08:00",
+      "mediaNetwork": "wifi",
+      "addressKind": "publicDomain",
+      "resolvedRemotePeerVerified": false,
+      "connectionScheme": "http",
+      "appRoute": "sharedReader",
+      "routeKind": "localRangeProxy",
+      "decodeEngine": "ksPlayer",
+      "playMethod": "directPlay",
+      "localRangeHTTPStatuses": [
+        206
+      ],
+      "completedFiniteRangesBytes": [
+        85,
+        2122,
+        174254
+      ],
+      "largestOpenRangeDeliveredBytes": 61865984,
+      "internalFirstFrameMs": 1355,
+      "internalForward15RecoveryMs": 2405,
+      "actualSeekTargetSeconds": 33.612,
+      "visibleFramesBeforeAndAfterSeek": true,
+      "subtitleVisibleAfterSeek": true,
+      "normalExit": true,
+      "appRunnerAndForwarderStopped": true
+    }
+  },
+  "harnessPrePlaybackStops": 2,
+  "comparisonTool": {
+    "checksPassed": 13,
+    "threeEntryOptIn": true,
+    "realPairedS19CohortsAdded": 0
+  },
+  "fullMatrixPassesAdded": 0,
+  "comparisonLimit": "One window per protocol with different address types and seek targets. Internal times are not screen timing or a speed comparison."
+}

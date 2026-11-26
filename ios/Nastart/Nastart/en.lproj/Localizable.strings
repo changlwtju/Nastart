@@ -608,11 +608,14 @@
 "mine.sync.status.disabled" = "Off";
 "mine.sync.status.checking" = "Checking iCloud";
 "mine.sync.status.available" = "Up to date";
+"mine.sync.status.ready" = "Ready to sync";
 "mine.sync.status.syncing" = "Syncing";
 "mine.sync.status.no_account" = "Sign in to iCloud";
 "mine.sync.status.restricted" = "Restricted";
 "mine.sync.status.failed" = "Sync failed";
 "mine.sync.last_success" = "Last successful sync";
+"mine.sync.pending" = "Pending sync";
+"mine.sync.pending_detail" = "There are unsynced changes";
 "mine.sync.now" = "Sync Now";
 "mine.sync.scope_detail" = "Syncs launchpad cards, safe endpoint metadata, visibility, reminders, themes, and layout through your private iCloud database. Passwords, DSM sessions, Agent tokens, private keys, cookies, and URL queries never leave this device.";
 "mine.sync.applied" = "iCloud changes applied";
@@ -631,6 +634,7 @@
 "mine.sync.error.conflict_retry_limit" = "iCloud changed on another device repeatedly. Try syncing again.";
 "mine.sync.error.incompatible_remote_snapshot" = "The iCloud data was created by a newer app version. Update Nastart before syncing.";
 "mine.sync.error.local_changes_during_sync" = "Local changes are still being made. Try syncing again when editing is complete.";
+"mine.sync.error.generic" = "Could not sync. Try again later.";
 "mine.privacy.security" = "Security";
 "mine.privacy.keychain" = "Keychain";
 "mine.privacy.keychain_desc" = "DSM sign-in credentials are stored in this device’s Keychain and are not included in exports. This shows the local credential state, not whether the NAS is currently connected.";
@@ -711,7 +715,6 @@
 "agent.error.insecure_address" = "Plain HTTP is allowed only on a private network. Use HTTPS for remote Agent access.";
 "agent.error.invalid_response" = "The Agent returned an invalid response.";
 "agent.error.pairing_rejected" = "The Agent rejected this pairing code.";
-"agent.error.unauthorized" = "The Agent token is no longer authorized. Pair again.";
 "agent.error.unsupported_version" = "This Agent API version is not supported.";
 "agent.ssh.connection.section" = "SSH Connection";
 "agent.ssh.connection.footer" = "The SSH password is used only in memory for this installation and is cleared immediately afterward.";
@@ -745,6 +748,9 @@
 "diagnostics.agent.refresh_succeeded" = "Agent inventory refresh succeeded";
 "diagnostics.agent.refresh_failed" = "Agent inventory refresh failed";
 "agent.health.auth_failed" = "Agent authentication failed. Re-pair the Agent if its token changed.";
+"agent.health.connected" = "Agent is connected";
+"agent.health.identity_changed" = "The Agent has changed or its pairing is no longer valid. Pair again.";
+"agent.health.unknown" = "Could not connect to the Agent. Check its settings and try again.";
 "agent.health.unsupported" = "Agent API version is not supported by this app.";
 "agent.health.invalid_address" = "The saved Agent address is invalid or insecure.";
 "agent.health.unreachable" = "The Agent did not respond. Check its address, service, and network.";
@@ -949,6 +955,7 @@
 "diagnostics.media.proxy_transfer_started" = "Media compatibility transfer started";
 "diagnostics.media.proxy_transfer_retry" = "Media compatibility transfer resumed";
 "diagnostics.media.proxy_transfer_finished" = "Media compatibility transfer finished";
+"diagnostics.media.proxy_transfer_progress" = "Media compatibility transfer timing window";
 "diagnostics.media.proxy_listener_ready" = "Playback proxy ready";
 "diagnostics.media.proxy_listener_failed" = "Playback proxy listener failed";
 "diagnostics.media.proxy_listener_restarting" = "Playback proxy restarting";
@@ -991,6 +998,7 @@
 "jellyfin.login.password.show" = "Show password";
 "jellyfin.login.password.hide" = "Hide password";
 "jellyfin.login.action" = "Sign in and load library";
+"jellyfin.login.session_expired" = "Your sign-in has expired. Enter your password again.";
 "jellyfin.login.required" = "Enter your Jellyfin username.";
 "jellyfin.login.failed" = "Jellyfin sign-in failed. Check the address, account, password, and reverse proxy settings.";
 "jellyfin.login.invalid_credentials" = "Jellyfin rejected the username or password.";
@@ -1038,6 +1046,11 @@
 "diagnostics.jellyfin.library_route_requested" = "Jellyfin library entry requested";
 "diagnostics.jellyfin.library_loaded" = "Jellyfin library loaded";
 "diagnostics.jellyfin.library_failed" = "Jellyfin library load failed";
+"diagnostics.jellyfin.session_rejected" = "Jellyfin rejected the saved sign-in";
+"diagnostics.jellyfin.session_unauthorized" = "Jellyfin returned HTTP 401";
+"diagnostics.jellyfin.session_silent_reauth_attempt" = "Renewing Jellyfin sign-in";
+"diagnostics.jellyfin.session_silent_reauth_succeeded" = "Jellyfin sign-in renewed";
+"diagnostics.jellyfin.session_silent_reauth_failed" = "Could not renew Jellyfin sign-in";
 "jellyfin.player.retry_hint" = "Close the player and retry for a fresh Jellyfin stream, or choose Infuse, VidHub, or VLC from the detail screen for direct playback.";
 "dsm.player.retry_hint" = "Nastart could not continue reading this authenticated DSM file. Verify the NAS connection and try again.";
 "jellyfin.player.prepare_failed" = "Unable to Prepare Playback";

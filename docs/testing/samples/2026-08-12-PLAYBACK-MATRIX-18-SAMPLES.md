@@ -63,9 +63,9 @@
 
 | ID | 候选样本 | 要求 | 状态 |
 |---|---|---|---|
-| ISO-01 | 变形金刚系列真实 `.iso`（以 NAS 实际文件为准） | Jellyfin 优先；若设备文件入口可见则增加设备文件对照 | 待现场确认 |
+| ISO-01 | 《变形金刚》(2007) 26 GB（列表）；UDF 主片 28,241,829,888 字节 | 设备文件和 Jellyfin 均已出画、跳转和带字幕续播 | [2026-11-13 双入口对照](../../archive/handoffs/2026-11/CODEX-2026-11-13-TRANSFORMERS-ISO-JELLYFIN-COMPARISON.md) |
 
-一旦 NAS 上出现可访问 ISO，将增加独立 ISO 专项：优先 Jellyfin 入口，检查 ISO9660 主标题、Range 读取、首帧、拖动、音轨/字幕和断点；若设备文件入口也能直接打开，再增加四入口对照。当前 ISO 能力只能标记为“样本缺失，未验证”。
+ISO 专项单独记录实际文件系统、主片、Range 读取、首帧、拖动、音轨、字幕和断点。现已在设备文件验证 ISO-01 的 UDF 主片及《卷土重来》27 GB 主片出画，《月黑之时》29 GB 已见文件、未播放。《碟中谍5：神秘国度》补充 55,092,144,234 字节 MKV 和杜比视界 P7 源，保留既有 S03 编号。 [本轮样本](../../archive/handoffs/2026-11/CODEX-2026-11-13-ISO-MISSION-IMPOSSIBLE-SAMPLES.md) · [补测记录](../../archive/handoffs/2026-11/CODEX-2026-11-13-ISO-JELLYFIN-MKV-RESUME.md)
 
 ## 电视剧专项（不计入 18×4 电影矩阵）
 

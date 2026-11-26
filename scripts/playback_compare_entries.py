@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compare explicitly paired device-file/Jellyfin playback-clock observations.
+"""Compare paired playback clocks for device files, Jellyfin, and optionally network storage.
 
 A manifest supplies externally verified conditions; report JSON supplies trace
 identity and measurements. Unknown or mismatched data blocks aggregate results.
@@ -15,6 +15,8 @@ from statistics import median
 CONDITIONS = ("sampleID", "fileRevision", "audioTrack", "subtitleTrack",
               "startSeconds", "device", "network", "build", "buildMode", "cache")
 ENTRIES = ("dsmFile", "jellyfin")
+NETWORK_PROTOCOLS = ("smb", "ftp", "webdav")
+START_POSITION_TOLERANCE_SECONDS = 0.05
 
 
 def known(value: object) -> bool:
@@ -35,6 +37,14 @@ def compare(manifest: dict, base: Path) -> dict:
     if not isinstance(manifest, dict) or manifest.get("schemaVersion") != 1 or not isinstance(manifest.get("runs"), list):
         issues.append("Expected schemaVersion=1 and a runs array")
         return result
+    entries = ENTRIES
+    network_protocol = manifest.get("networkStorageProtocol")
+    if "networkStorageProtocol" in manifest:
+        if network_protocol not in NETWORK_PROTOCOLS:
+            issues.append("networkStorageProtocol must be smb, ftp, or webdav")
+            return result
+        entries += ("networkStorage",)
+        result["networkStorageProtocol"] = network_protocol
     pairs: dict[str, dict] = {}
     reports: dict[Path, dict] = {}
     used: set[tuple] = set()
@@ -45,8 +55,8 @@ def compare(manifest: dict, base: Path) -> dict:
             if not isinstance(run, dict):
                 raise ValueError("run must be an object")
             pair, entry = run.get("pairID"), run.get("entry")
-            if not known(pair) or entry not in ENTRIES:
-                raise ValueError("pairID and entry=dsmFile/jellyfin are required")
+            if not known(pair) or entry not in entries:
+                raise ValueError(f"pairID and entry from {', '.join(entries)} are required")
             group = pairs.setdefault(pair, {})
             if entry in group:
                 raise ValueError("duplicate entry in pair")
@@ -63,6 +73,8 @@ def compare(manifest: dict, base: Path) -> dict:
                 raise ValueError("performance comparison requires a normal, non-diagnostic build")
             if conditions["cache"] not in ("cold", "warm"):
                 raise ValueError("cache must be cold or warm")
+            if entry == "networkStorage" and conditions.get("sourceProtocol") != network_protocol:
+                raise ValueError("verified sourceProtocol must match networkStorageProtocol")
             if not all(known(run.get(key)) for key in ("report", "playbackTraceID", "planID")):
                 raise ValueError("report, playbackTraceID and planID required")
             path = (base / run["report"]).resolve()
@@ -89,20 +101,28 @@ def compare(manifest: dict, base: Path) -> dict:
                 raise ValueError("legacy/unidentified record cannot be paired")
             if record.get("failureStages") != []:
                 raise ValueError("failed or unaudited playback attempt")
+            engine_start = record.get("engineStartPositionSeconds")
+            if not finite_nonnegative(engine_start):
+                raise ValueError("verified engine start position required")
+            if not math.isclose(engine_start, conditions["startSeconds"], rel_tol=0,
+                                abs_tol=START_POSITION_TOLERANCE_SECONDS):
+                raise ValueError("engine start position differs from declared position")
             elapsed = record.get("tapToFirstFrameMs")
             if record.get("firstFrameSignal") != "playbackClock" or not finite_nonnegative(elapsed):
                 raise ValueError("finite playbackClock measurement required")
             if not all(known(record.get(key)) for key in ("decodeEngine", "playMethod", "routeKind")):
                 raise ValueError("actual route/engine/method required")
             signature = tuple(conditions[key] for key in CONDITIONS) + (record["decodeEngine"], record["playMethod"])
+            if network_protocol is not None:
+                signature += (record["routeKind"],)
             if cohort is None:
                 cohort = signature
             if signature != cohort:
-                raise ValueError("conditions/engine/playMethod differ; use a separate cohort")
+                raise ValueError("conditions or playback route differ; use a separate cohort")
             group[entry] = elapsed
         except (ValueError, OSError, TypeError) as error:
             issues.append(f"run {index}: {error}")
-    complete = [pair for pair in pairs.values() if all(pair.get(entry) is not None for entry in ENTRIES)]
+    complete = [pair for pair in pairs.values() if all(pair.get(entry) is not None for entry in entries)]
     result["completePairs"] = len(complete)
     if len(complete) != len(pairs):
         issues.append("incomplete or invalid pairs retained; no aggregate comparison")
@@ -110,13 +130,18 @@ def compare(manifest: dict, base: Path) -> dict:
         issues.append("at least three complete pairs required for exploratory medians")
     if issues:
         return result
-    values = {entry: [pair[entry] for pair in complete] for entry in ENTRIES}
+    values = {entry: [pair[entry] for pair in complete] for entry in entries}
     deltas = [pair["jellyfin"] - pair["dsmFile"] for pair in complete]
     result["summary"] = {
         entry: {"medianMs": median(samples), "minMs": min(samples), "maxMs": max(samples)}
         for entry, samples in values.items()
     }
     result["summary"]["medianPairedJellyfinMinusDeviceMs"] = median(deltas)
+    if network_protocol is not None:
+        result["summary"]["medianPairedNetworkStorageMinusDeviceMs"] = median(
+            pair["networkStorage"] - pair["dsmFile"] for pair in complete)
+        result["summary"]["medianPairedNetworkStorageMinusJellyfinMs"] = median(
+            pair["networkStorage"] - pair["jellyfin"] for pair in complete)
     result["eligible"] = True
     return result
 

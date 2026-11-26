@@ -42,12 +42,16 @@ struct TasksView: View {
                                 descriptionKey: "tasks.empty.pending.description"
                             )
                         } else {
-                            ForEach(sortedPendingTasks) { task in
+                            let pending = sortedPendingTasks
+                            ForEach(pending) { task in
                                 NavigationLink {
                                     TaskDetailView(task: task, isHistory: false)
                                 } label: {
                                     TaskRow(task: task)
                                 }
+                            }
+                            .onDelete { offsets in
+                                offsets.map { pending[$0] }.forEach { dataStore.deleteTask($0) }
                             }
                         }
                     case .watching:
@@ -74,12 +78,16 @@ struct TasksView: View {
                                 descriptionKey: "tasks.empty.history.description"
                             )
                         } else {
-                            ForEach(sortedHistoryTasks) { task in
+                            let history = sortedHistoryTasks
+                            ForEach(history) { task in
                                 NavigationLink {
                                     TaskDetailView(task: task, isHistory: true)
                                 } label: {
                                     TaskRow(task: task)
                                 }
+                            }
+                            .onDelete { offsets in
+                                offsets.map { history[$0] }.forEach { dataStore.deleteTask($0) }
                             }
                         }
                     }

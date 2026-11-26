@@ -1,0 +1,81 @@
+{
+  "dateLocal": "2026-11-20",
+  "timezone": "Asia/Shanghai",
+  "scope": "Local package preflight and offline reanalysis of November 12 playback captures",
+  "target": "iPhone 13",
+  "source": {
+    "head": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "dirtyPathsAtStart": 169,
+    "matchingFrozenInputs": 647,
+    "configuration": "Normal iOS Debug, Xcode 27.2",
+    "buildCompletedAt": "2026-11-19T07:30:40+08:00",
+    "debugDylibSHA256": "3929988635e08cecf4a02d4224cee7149f7857f5ac7f0910f8222fed4bd52635",
+    "ipaSHA256": "a9453b76ceb7aae94f944be8f862f6b639b27f2b9ec50fe28242350f55247f8e",
+    "ipaCRCAndExecutableMembersVerified": true,
+    "profileContentsCoverPreviouslyRecordedTarget": true,
+    "systemTrustChainRecheck": "CSSMERR_TP_NOT_TRUSTED for both App and Runner"
+  },
+  "device": {
+    "genericIPhoneUSBRegistryEntryObserved": true,
+    "usbmuxdConnect": "EPERM",
+    "freshTargetIdentityVerified": false,
+    "installedPackageRechecked": false,
+    "deviceWindowOpened": false,
+    "networkSettingsChanged": false,
+    "currentBuildPlaybackAttempts": 0
+  },
+  "historicalEvidence": {
+    "buildDebugDylibSHA256": "8025285b9141bd85171c012bd083047af66a0c340c4fe4093f8a0d344897d1b0",
+    "eventTimeBasis": "Seconds relative to each trace's first recorded diagnostic event, or differences between events in that trace",
+    "unreadableSnapshotsInS19JellyfinCapture": 1,
+    "scenes": [
+      {
+        "trace": "4D676234",
+        "plan": "C24C29FF",
+        "source": "S19 Jellyfin 5G from beginning, 10 Mbps HLS",
+        "firstMediaPlaylistDeliveredBytes": 2863855,
+        "firstMediaPlaylistDeliveredAtSeconds": 1.528950,
+        "firstSegmentOrdinal": 0,
+        "firstSegmentIssuedAtSeconds": [2.298903, 6.299639, 16.304459, 26.306224],
+        "firstSegmentReadEOFAfterIssueSeconds": [3.991547, 9.994179, 9.992844, null],
+        "observedFirstSegmentUpstreamHeaders": 0,
+        "engineFirstFrameMs": null,
+        "screenAtApproximately30Seconds": "buffering"
+      },
+      {
+        "trace": "F4DF3ADE",
+        "plan": "9D9D0949",
+        "source": "S19 Jellyfin 5G resume, 10 Mbps HLS",
+        "firstSegmentOrdinal": 166,
+        "firstSegmentIssueToHeadersSeconds": 3.006892,
+        "firstSegmentDeliveredBytes": 5116420,
+        "engineFirstFrameMs": 9838
+      },
+      {
+        "trace": "69E7F11D",
+        "plan": "15A63DCB",
+        "source": "Kill Bill Jellyfin 4G from beginning, 12 Mbps HLS",
+        "firstSegmentOrdinal": 0,
+        "firstSegmentIssueToHeadersSeconds": [11.388117, 7.753191],
+        "firstSegmentDeliveredBytes": [3829, 5998892],
+        "firstSegmentFirstAttemptTerminalSource": "clientBodySend",
+        "firstSegmentSecondAttemptResponseBodyMs": 1401,
+        "engineFirstFrameMs": 15897,
+        "screenAt23Seconds": "movie image visible"
+      },
+      {
+        "trace": "BF2DFD97",
+        "plan": "F4A04B1A",
+        "source": "S19 device files 4G resume, matched Jellyfin 10 Mbps HLS",
+        "firstSegmentOrdinal": 3,
+        "firstSegmentIssueToHeadersSeconds": 2.731190,
+        "firstSegmentDeliveredBytes": 1272384,
+        "engineFirstFrameMs": 4619,
+        "engineFirstFramePositionSeconds": 14.001,
+        "screenAt24Seconds": "black"
+      }
+    ]
+  },
+  "offlinePlaybackTests": {"passed": 158, "failed": 0},
+  "newMatrixPasses": 0
+}

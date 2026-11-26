@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-09",
+  "head": "8db1cc64",
+  "uncommittedSource": true,
+  "configuration": "Debug, iOS 27 isolated simulator, synthetic H.264/TS, loopback HTTP",
+  "matchedAB": {
+    "firstSegmentBodyDelayMs": 2400,
+    "candidateClockSeconds": 4,
+    "laterSegmentsDelayed": false,
+    "off": {"firstSegmentUpstreamGETs": 6, "decodeWithin12000Ms": false},
+    "on": {"firstSegmentUpstreamGETs": 1, "firstSegmentBytesDelivered": 1058816, "firstDecodedFrameMs": 2493, "alignmentMs": 2516, "decodedPTSSeconds": 4}
+  },
+  "previousOnAlignmentMs": 2602,
+  "initialStrictHeaderAttemptReachedReuse": false,
+  "finalTargetedTestsPassed": 7,
+  "finalTargetedTestsFailed": 0,
+  "candidateCommittedToPresentation": false,
+  "defaultEnabled": false,
+  "physicalInstalls": 0,
+  "nasRequests": 0,
+  "testOriginStopped": true,
+  "isolatedSimulatorDeleted": true
+}

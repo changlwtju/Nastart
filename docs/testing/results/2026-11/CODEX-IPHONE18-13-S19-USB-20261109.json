@@ -1,0 +1,194 @@
+{
+  "date": "2026-11-09",
+  "scope": "latest USB iPhone 18 install and iPhone 18/13 serial Wi-Fi S19 device-file original playback",
+  "sampleBytes": 128795641934,
+  "package": {
+    "mainSHA256": "f55fd4f5f7eafc3678ad4fac5a04669f40065316db03411e6acc4d5c305aac80",
+    "dylibSHA256": "807b3c7e2b2176aee1167d716ea06190b000d0642bcac44b998656b3e46da8b4",
+    "builtAt": "2026-11-09T17:55:38.740887+08:00",
+    "configuration": "signed Debug with S19 fixed-start diagnostics",
+    "sourceHEAD": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "profileExpires": "2026-11-15T00:30:17+00:00"
+  },
+  "sourceInputCount": 498,
+  "iphone18": {
+    "install": {
+      "installDispatched": true,
+      "installed": true,
+      "normalLaunchRequested": false,
+      "preferencesSaved": true,
+      "identifiedProjectProcessStopped": true,
+      "installedAt": "2026-11-09T19:44:11.001378+08:00",
+      "installedIdentityVerified": true,
+      "preferencesEqual": true,
+      "remainingOwnAppProcess": 0
+    },
+    "runnerInstall": {
+      "runnerInstalled": true,
+      "NastartReinstalled": false,
+      "installedAt": "2026-11-09T19:52:21.887827+08:00",
+      "normalPreferencesEqual": true,
+      "NastartIdentitySame": true,
+      "runnerVerified": true
+    },
+    "runnerSignature": {
+      "signaturesVerified": true,
+      "nestedCount": 12,
+      "iphone18Covered": true,
+      "profileExpiresUTC": "2026-11-16T11:51:31Z",
+      "runnerSHA256": "1227357e9e3868ccf6fe74f70b3128b30dc6e1f84ce45dc9e9b720e2c05d7206"
+    },
+    "runnerCleanup": {
+      "ready": true,
+      "normalArgs": [],
+      "normalEnv": {},
+      "cleanupVerified": true,
+      "directUSBRSDVerified": true,
+      "forwarderStopped": true,
+      "remainingOwnedCount": 0,
+      "endedAt": "2026-11-09T19:56:03.900445+08:00"
+    },
+    "previousNativeTestTransportReachedReady": false,
+    "normalHomeAndWiFiVerified": true,
+    "DSMConfiguredAddressPreferencePreserved": true,
+    "DSMActualSessionDomainAndPortMatched": true,
+    "playback": {
+      "ordinaryExit": true,
+      "sourceIntentObserved": true,
+      "sourceKind": "dsmFile",
+      "networkClass": "wifi",
+      "expensive": "false",
+      "constrained": "false",
+      "routeKind": "localRangeProxy",
+      "originAddressKind": "privateIP",
+      "playMethod": "directPlay",
+      "engine": "ksPlayer",
+      "plannedStartSeconds": "0.0",
+      "actualStartSeconds": "0.0",
+      "internalFirstFrameMs": 696,
+      "preload": {
+        "reason": "bytesNotMaterialized",
+        "bytes": "0"
+      },
+      "fullSample206": true,
+      "seeks": [
+        {
+          "event": "seek_started",
+          "seekTargetSeconds": 18.636,
+          "seekDeltaSeconds": 15.065
+        },
+        {
+          "event": "seek_recovered",
+          "seekTargetSeconds": 18.636,
+          "seekRecoveryMs": 731.0,
+          "currentSeconds": 18.751
+        },
+        {
+          "event": "seek_started",
+          "seekTargetSeconds": 7.805,
+          "seekDeltaSeconds": -14.957
+        },
+        {
+          "event": "seek_recovered",
+          "seekTargetSeconds": 7.805,
+          "seekRecoveryMs": 456.0,
+          "currentSeconds": 7.923
+        }
+      ]
+    },
+    "forwardPictureSeen": true,
+    "backInternalRecoveryOnly": true,
+    "mediaUpstreamSource": "dsmFileStation"
+  },
+  "iphone13": {
+    "installedIdentityReverified": true,
+    "retainedInstallAt": "2026-11-09T18:17:42.941646+08:00",
+    "reinstalledThisBatch": false,
+    "earlyWindow": {
+      "ordinaryExit": true,
+      "sourceIntentObserved": true,
+      "sourceKind": "dsmFile",
+      "networkClass": "wifi",
+      "expensive": "false",
+      "constrained": "false",
+      "routeKind": "localRangeProxy",
+      "originAddressKind": "privateIP",
+      "playMethod": "directPlay",
+      "engine": "ksPlayer",
+      "plannedStartSeconds": "0.0",
+      "actualStartSeconds": "0.0",
+      "internalFirstFrameMs": 1753,
+      "preload": {
+        "reason": "bytesNotMaterialized",
+        "bytes": "0"
+      },
+      "fullSample206": true,
+      "seeks": [
+        {
+          "event": "seek_started",
+          "seekTargetSeconds": 15.648,
+          "seekDeltaSeconds": 15.084999999999999
+        },
+        {
+          "event": "seek_started",
+          "seekTargetSeconds": 0.6479999999999997,
+          "seekDeltaSeconds": -15.0
+        },
+        {
+          "event": "seek_recovered",
+          "seekTargetSeconds": 0.6479999999999997,
+          "seekRecoveryMs": 2904.0,
+          "currentSeconds": 0.734
+        }
+      ]
+    },
+    "earlyWindowNoPictureAtSampledTimes": true,
+    "finalWindow": {
+      "ordinaryExit": false,
+      "sourceIntentObserved": true,
+      "sourceKind": "dsmFile",
+      "networkClass": "wifi",
+      "expensive": "false",
+      "constrained": "false",
+      "routeKind": "localRangeProxy",
+      "originAddressKind": "privateIP",
+      "playMethod": "directPlay",
+      "engine": "ksPlayer",
+      "plannedStartSeconds": "0.0",
+      "actualStartSeconds": "0.0",
+      "internalFirstFrameMs": 989,
+      "preload": {
+        "reason": "bytesNotMaterialized",
+        "bytes": "0"
+      },
+      "fullSample206": true,
+      "seeks": [],
+      "independentActualPicture": false,
+      "automaticDownshiftRequested": true,
+      "automaticDownshiftReason": "deliveryBelowSourceBitrate",
+      "bufferedAheadAtRequestSeconds": 0.29195832539798827,
+      "downshiftCommitVerified": false,
+      "touchRunnerExited": true,
+      "actualSeekDispatched": false
+    },
+    "finalWindowCleanup": {
+      "startedAt": "2026-11-09T19:56:23.484522+08:00",
+      "runnerReinstalled": false,
+      "normalLaunchArguments": [],
+      "normalLaunchEnvironment": {},
+      "installedIdentityMatched": true,
+      "ready": true,
+      "ownedLocalProcessesStopped": true,
+      "remainingAppOrRunner": 0,
+      "error": "RuntimeError",
+      "endedAt": "2026-11-09T19:57:31.392218+08:00"
+    },
+    "readOnlyReportAndFinalProcessCheck": {
+      "remainingProjectOrRunnerCount": 0,
+      "reportedNamesByType": {}
+    }
+  },
+  "iPadUsed": false,
+  "productionCodeChanged": false,
+  "matrixNewCompletePasses": 0
+}

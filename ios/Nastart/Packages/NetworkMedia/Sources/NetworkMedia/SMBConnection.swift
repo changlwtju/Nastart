@@ -512,15 +512,42 @@ final class SMBWorker: @unchecked Sendable {
   }
 
   func run<T: Sendable>(_ body: @escaping @Sendable (SMBConnection) throws -> T) async throws -> T {
+    try await run(timing: nil, body)
+  }
+
+  /// `timing` hears, on the worker's queue, how long this call waited for the
+  /// queue and how long it then ran. Observation only: nothing is reordered.
+  func run<T: Sendable>(
+    timing: (@Sendable (_ queueWait: TimeInterval, _ work: TimeInterval) -> Void)?,
+    _ body: @escaping @Sendable (SMBConnection) throws -> T
+  ) async throws -> T {
     let signal = SMBCancelSignal()
     return try await withTaskCancellationHandler {
       try await withCheckedThrowingContinuation { continuation in
-        queue.async { [self] in
-          continuation.resume(with: Result { try perform(signal: signal, body) })
+        Self.timed(on: queue, timing: timing, { [self] in try perform(signal: signal, body) }) {
+          continuation.resume(with: $0)
         }
       }
     } onCancel: {
       signal.cancel()
+    }
+  }
+
+  /// Blocking work on a serial queue, with its wait for the queue told apart
+  /// from its own duration. A request behind an unfinished read waits here
+  /// before it reaches the connection.
+  static func timed<T: Sendable>(
+    on queue: DispatchQueue,
+    timing: (@Sendable (_ queueWait: TimeInterval, _ work: TimeInterval) -> Void)?,
+    _ work: @escaping @Sendable () throws -> T,
+    completion: @escaping @Sendable (Result<T, Error>) -> Void
+  ) {
+    let enqueued = ProcessInfo.processInfo.systemUptime
+    queue.async {
+      let started = ProcessInfo.processInfo.systemUptime
+      let result = Result { try work() }
+      timing?(max(started - enqueued, 0), max(ProcessInfo.processInfo.systemUptime - started, 0))
+      completion(result)
     }
   }
 

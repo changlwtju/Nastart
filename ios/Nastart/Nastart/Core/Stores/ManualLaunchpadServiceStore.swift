@@ -37,14 +37,7 @@ struct LaunchpadOrderStore {
     }
 }
 
-struct StoredManualLaunchpadService: Codable, Identifiable {
-    let id: UUID
-    let name: String
-    let endpointString: String
-    let categoryRawValue: String
-    let iconText: String
-    let createdAt: Date
-
+extension StoredManualLaunchpadService {
     var launchpadService: LaunchpadService? {
         guard
             !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,

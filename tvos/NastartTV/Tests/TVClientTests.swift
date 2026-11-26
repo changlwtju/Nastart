@@ -133,7 +133,7 @@ final class TVClientTests: XCTestCase {
             body: ["Username": "name", "Pw": "private-password"])
         XCTAssertEqual(request.httpMethod, "POST")
         XCTAssertNil(request.url?.query)
-        XCTAssertEqual(request.value(forHTTPHeaderField: "X-Emby-Token"), "fixture-token")
+        XCTAssertTrue(request.value(forHTTPHeaderField: "Authorization")?.contains("Token=\"fixture-token\"") == true)
         let body = try XCTUnwrap(JSONSerialization.jsonObject(with: try XCTUnwrap(request.httpBody)) as? [String: String])
         XCTAssertEqual(body["Pw"], "private-password")
         XCTAssertTrue(request.value(forHTTPHeaderField: "Authorization")?.contains("Nastart TV") == true)
@@ -297,18 +297,117 @@ private struct TVPublicProbeFixture: PublicMediaServiceTransport {
 
 private final class TVDSMStub: URLProtocol {
     static var reply: ((URLRequest) throws -> [String: Any])?
+    static var status: ((URLRequest) -> Int)?
     override class func canInit(with request: URLRequest) -> Bool { true }
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
     override func startLoading() {
         do {
             let object = try Self.reply!(request)
             let data = try JSONSerialization.data(withJSONObject: object)
-            client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!, cacheStoragePolicy: .notAllowed)
+            let status = Self.status?(request) ?? 200
+            client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil, headerFields: nil)!, cacheStoragePolicy: .notAllowed)
             client?.urlProtocol(self, didLoad: data)
             client?.urlProtocolDidFinishLoading(self)
         } catch { client?.urlProtocol(self, didFailWithError: error) }
     }
     override func stopLoading() {}
+}
+
+final class TVJellyfinLibraryRoutingTests: XCTestCase {
+    override func tearDown() {
+        TVDSMStub.reply = nil
+        TVDSMStub.status = nil
+        super.tearDown()
+    }
+
+    private func fixture() -> TVJellyfinClient {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [TVDSMStub.self]
+        return TVJellyfinClient(server: URL(string: "https://media.example.test/jellyfin")!,
+            token: "fixture-token", userID: "viewer", deviceID: "fixture-tv",
+            session: URLSession(configuration: configuration))
+    }
+
+    func testCurrentLibraryRoutePreservesMountUserAndToken() async throws {
+        let client = fixture(); defer { client.session.invalidateAndCancel() }
+        TVDSMStub.reply = { request in
+            let url = try XCTUnwrap(request.url)
+            XCTAssertEqual(url.path, "/jellyfin/UserViews")
+            XCTAssertEqual(URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems,
+                           [URLQueryItem(name: "UserId", value: "viewer")])
+            XCTAssertTrue(request.value(forHTTPHeaderField: "Authorization")?.contains("Token=\"fixture-token\"") == true)
+            return ["Items": [["Id": "movie-lib", "Name": "Movies"]]]
+        }
+        let libraries = try await client.libraries()
+        XCTAssertEqual(libraries.first?.Id, "movie-lib")
+    }
+
+    func testModernAuthorizationWorksWhenLegacyHeadersAreIgnored() async throws {
+        let client = fixture(); defer { client.session.invalidateAndCancel() }
+        var paths: [String] = []
+        TVDSMStub.reply = { request in
+            paths.append(try XCTUnwrap(request.url?.lastPathComponent))
+            return ["Items": [["Id": "movie-lib", "Name": "Movies"]]]
+        }
+        TVDSMStub.status = { request in
+            request.value(forHTTPHeaderField: "Authorization")?.contains("Token=\"fixture-token\"") == true ? 200 : 401
+        }
+        let libraries = try await client.libraries()
+        XCTAssertEqual(libraries.count, 1)
+        _ = try await client.homeItems(resuming: true)
+        _ = try await client.homeItems(resuming: false)
+        XCTAssertEqual(paths, ["UserViews", "Resume", "Items"])
+    }
+
+    func testRejectedTokenThenLoginUsesNewTokenOnAllHomeRequests() async throws {
+        let old = fixture(); defer { old.session.invalidateAndCancel() }
+        var paths: [String] = []
+        TVDSMStub.reply = { request in
+            let leaf = try XCTUnwrap(request.url?.lastPathComponent)
+            paths.append(leaf)
+            if leaf == "AuthenticateByName" {
+                return ["AccessToken": "refreshed", "User": ["Id": "viewer", "Name": "Viewer"]]
+            }
+            return ["Items": [["Id": "library", "Name": "Movies"]]]
+        }
+        TVDSMStub.status = { request in
+            request.url?.lastPathComponent == "AuthenticateByName" || request.value(forHTTPHeaderField: "Authorization")?.contains("Token=\"refreshed\"") == true ? 200 : 401
+        }
+        do { _ = try await old.libraries(); XCTFail("Old token must be rejected") }
+        catch TVClientError.http(401) { }
+        let account = try await old.login(user: "Viewer", password: "fixture-password")
+        let renewed = TVJellyfinClient(server: account.server, token: account.token, userID: account.userID,
+                                      deviceID: old.deviceID, session: old.session)
+        _ = try await renewed.libraries()
+        _ = try await renewed.homeItems(resuming: true)
+        _ = try await renewed.homeItems(resuming: false)
+        XCTAssertEqual(paths, ["UserViews", "AuthenticateByName", "UserViews", "Resume", "Items"])
+    }
+
+    func testUnauthenticatedLoginDoesNotSendTokenParameter() throws {
+        let client = TVJellyfinClient(server: URL(string: "https://fixture.test")!, deviceID: "tv")
+        XCTAssertFalse(try client.request(["Users", "AuthenticateByName"]).value(forHTTPHeaderField: "Authorization")!.contains("Token="))
+    }
+
+    func testUnsupportedRouteFallsBackButUnauthorizedDoesNot() async throws {
+        let client = fixture(); defer { client.session.invalidateAndCancel() }
+        var paths: [String] = []
+        TVDSMStub.reply = { request in
+            paths.append(try XCTUnwrap(request.url?.path))
+            return ["Items": []]
+        }
+        TVDSMStub.status = { $0.url?.lastPathComponent == "UserViews" ? 404 : 200 }
+        _ = try await client.libraries()
+        XCTAssertEqual(paths, ["/jellyfin/UserViews", "/jellyfin/Users/viewer/Views"])
+        paths.removeAll()
+        TVDSMStub.status = { _ in 401 }
+        do {
+            _ = try await client.libraries()
+            XCTFail("401 should reach the session renewal layer")
+        } catch TVClientError.http(401) {
+            XCTAssertEqual(paths, ["/jellyfin/UserViews"])
+        }
+    }
 }
 
 final class TVSourceProtocolTests: XCTestCase {

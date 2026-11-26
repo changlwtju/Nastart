@@ -37,7 +37,7 @@
 ## 三、待 Codex 处理
 
 ### A. 先做（时间敏感或阻塞后续）
-1. **Apple TV 仍无法安装**（iPhone 13、iPad、iPhone 18 已于 11-08 重新签名）。11-08 排查结果：电视在局域网广播正常（`_remotepairing._tcp`，49152 端口通），配对每次都成功，但建立开发隧道时立即报 `RemotePairingError 1005: This device does not support tunnel connections`，CoreDevice 只把它记成 `RemotePairingWirelesslyPairableDevice`。已排除：Shadowrocket/TUN、中文设备名（曾导致 hostname 生成失败，已改名 `Appletv`，错误依旧）、Xcode 版本（27.0 → 27.2 后依旧）。电视已升级 tvOS 27.2。“设置 → 隐私与安全性”里没有开发者模式开关。11-08 16:00 已重启 Mac 和电视并重新配对：电视首次以真机出现在 `devicectl list`（UDID `REDACTED-DEVICE-07`，CoreDevice ID `REDACTED-DEVICE-08`，配对状态 paired，Device State unavailable）。`remotepairingd` 能通过蓝牙和 Bonjour 识别它，但之后没有发起隧道连接；`devicectl device info apps` 现报 `CoreDeviceError 4016`（无法满足使用断言，可用状态为空）。电视“设置 → 隐私与安全性”里仍然没有开发者模式开关，判断是 tvOS 27.2 或 CoreDevice 的问题。暂停，等系统更新后再试，或者向 Apple 反馈。16:10 在 Mac 上删掉配对记录（`devicectl manage unpair`）后重新配对，两次都失败：Device Hub 报 `DeviceKitError 5000 / NSError -1`。`remotepairingd` 显示，连电视手动配对广播（`F8751598…`，`private-host-4.example.invalid:55747`）时，TCP 一直停在 preparing，10 秒后被取消；直接测 55747 端口被拒绝，常规端口 49152 能连上。重启后 Shadowrocket 又自动连上了（utun4 是默认路由），还没测过关掉它之后配对。**现在 Mac 上没有这台电视的配对记录**，用户决定先放一放。
+1. **Apple TV 仍无法安装**（iPhone 13、iPad、iPhone 18 已于 11-08 重新签名）。11-08 排查结果：电视在局域网广播正常（`_remotepairing._tcp`，49152 端口通），配对每次都成功，但建立开发隧道时立即报 `RemotePairingError 1005: This device does not support tunnel connections`，CoreDevice 只把它记成 `RemotePairingWirelesslyPairableDevice`。已排除：Shadowrocket/TUN、中文设备名（曾导致 hostname 生成失败，已改名 `Appletv`，错误依旧）、Xcode 版本（27.0 → 27.2 后依旧）。电视已升级 tvOS 27.2。“设置 → 隐私与安全性”里没有开发者模式开关。11-08 16:00 已重启 Mac 和电视并重新配对：电视首次以真机出现在 `devicectl list`（UDID `REDACTED-DEVICE-07`，CoreDevice ID `REDACTED-DEVICE-08`，配对状态 paired，Device State unavailable）。`remotepairingd` 能通过蓝牙和 Bonjour 识别它，但之后没有发起隧道连接；`devicectl device info apps` 现报 `CoreDeviceError 4016`（无法满足使用断言，可用状态为空）。电视“设置 → 隐私与安全性”里仍然没有开发者模式开关，判断是 tvOS 27.2 或 CoreDevice 的问题。暂停，等系统更新后再试，或者向 Apple 反馈。16:10 在 Mac 上删掉配对记录（`devicectl manage unpair`）后重新配对，两次都失败：Device Hub 报 `DeviceKitError 5000 / NSError -1`。`remotepairingd` 显示，连电视手动配对广播（`F8751598…`，`private-host-4.example.invalid:55747`）时，TCP 一直停在 preparing，10 秒后被取消；直接测 55747 端口被拒绝，常规端口 49152 能连上。重启后 Shadowrocket 又自动连上了（utun4 是默认路由），还没测过关掉它之后配对。**现在 Mac 上没有这台电视的配对记录**，用户决定先放一放。22:53 用户在 Device Hub 里重新配对成功：Pairing State 为 Paired，Transport 为 Local Network，但 Tunnel State 为 Unavailable，DDI Services 为 Disabled。Device Hub 显示的 UDID 是 `D419330F-…6C38DD6F5`，形如 UUID，不是硬件 UDID；`devicectl list devices` 里没有出现这台电视。问题仍然卡在建立隧道这一步。
 2. **方案已审**：Codex 的[审查报告](CODEX-2026-11-08-SHARED-PROXY-PLAN-REVIEW.md)有条件接受第一步。第一步要先等 Codex 修好共享代理的 Range 语义（后缀范围 `bytes=-500` 被改成读文件头、非法范围被静默修正），并补齐路由撤销、诊断关联和有界并发 4。启动预读 0 字节已确认是“只观察”适配器的设计行为，真实字节预读属于实现缺口，由 Codex 负责。**Claude 额度将尽，第一步建议也由 Codex 接手**（范围：`LaunchpadLayoutViews.swift`、`WebDAVPlaybackSession.swift`、`WebDAVMediaHTTPTests.swift`，以及 13、iPad 顺序对照）。
 3. **审查集成**：本文所列各份交接的文件（各交接末尾有“请 Codex 处理”清单），并更新共享状态，包括：NAS 已恢复、FTP/SMB 已接入并经真实 NAS 验证、TMDB 已接入但真实接口待验、13/iPad 由 Claude 调试的阶段结束。
 
@@ -105,3 +105,18 @@
 - **可补的样本空缺**：4K 原盘 Remux 大文件、杜比视界（UHD 原盘一般是 Profile 7，带 HDR10 底层，可能有 FEL）、TrueHD 7.1。DTS、杜比视界 Profile 5/8、音乐文件仍然没有样本。
 - **已观察到**：Mac Safari 用 Jellyfin 网页播放时转码，NAS CPU 约 60%，画面黑屏。原因未确认，可能是软件色调映射、TrueHD 转码或烧录字幕。原生客户端直接播放应该基本不占 NAS CPU。
 - **建议测试**：Jellyfin 直连、SMB、FTP 和设备文件入口，比较首帧、跳转、长时播放、音轨与字幕切换、内存，以及 HDR/杜比视界的显示效果。iPhone 13 是 A15，iPad 是 A16，两台都能硬解 HEVC 10bit。TrueHD 在 App 内怎么处理（软解、转换还是不支持）要实测确认。这个文件体积很大，要注意缓冲窗口和内存。
+
+## Apple TV 有线复测（11-09 21:18–21:30，Claude）
+
+- **网络**：电视改用以太网，IP 192.168.1.35，路由器 192.168.1.1。机型 A2843（128 GB，带网口）。ping 通，TCP 49152 能连上。
+- **配对**：21:25:45 用户在 Device Hub 手动配对成功（`setupManualPairing succeeded`），日志里拿到了真实 UDID `00008110-000235903E99801E`。Device Hub 显示 Paired、Local Network，Tunnel State 为 Disconnected，DDI Disabled。
+- **连接**：用真实 UDID 执行 `devicectl device info apps`，返回 1000（找不到设备）；`devicectl list devices` 里没有这台电视。
+- **关键观察**：电视在 `Appletv.local:49152` 发布了已配对状态的 `_remotepairing._tcp` 广播（本轮实例为 `F39DF4E3-…`，`ver=26 flags=0`）。15 分钟内，remotepairingd 从未把这条广播解析成已配对的身份。被解析成 `CUPairedPeer ac62b9d6…` 的只有手动配对入口的广播（`BA084B70`、`663118AF`、`DE3557BB`、`983556CA`、`28C15ABB`）。推测：Mac 认不出电视的常规广播属于刚配对的这台电视，所以只能把手动配对入口当作目标，而这个入口不支持隧道，于是报 1005，或者 Tunnel 显示 Disconnected。下一步可以比较 authTag 的解析过程，用 iPad 的无线广播作对照，或者在第二台 Mac 上看同一条广播能不能被解析。
+- **排除了 Wi-Fi 问题**：改用有线后现象不变。Mac 端 Shadowrocket（utun4 是默认路由）和 Tailscale 仍在运行。
+
+## 调试证据存放约定（11-10，用户确认）
+
+- **实时和最近两周的证据**：放在 Mac 本地 `~/Library/Application Support/Nastart/DebugEvidence`，采集工具和路径都不变。
+- **旧证据**：归档到 NAS 的 `homes/changlwtju/Nastart-DebugEvidence`，本机挂载在 `/Volumes/homes`。读取时直接读 NAS，不必先拷回本地。10 月的 320 个文件夹（约 198 GB）已于 11-09 22:57 复制完成，正在逐个核对；本地删除要等用户确认。
+- **归档脚本**：`~/Library/Application Support/Nastart/evidence-move/archive_evidence.sh [天数]`，默认处理 14 天前的文件夹。脚本先复制，再核对文件数和字节数，只把核对一致的文件夹列进 `verified-for-delete.txt`。删除要单独运行 `--delete-verified`，删除前会再核对一次，删除方式是移到废纸篓。
+- **远程访问**：计划在 NAS 上装 Tailscale，通过它远程读取证据。不要在公网开放 SMB（445/139）。

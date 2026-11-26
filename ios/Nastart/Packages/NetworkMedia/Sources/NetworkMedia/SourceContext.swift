@@ -125,6 +125,7 @@ struct NetworkContentPage<Content: View>: View {
     var headerActionIdentifier: String = "network.page.action"
     var headerAction: (() -> Void)? = nil
     var backAction: (() -> Void)? = nil
+    var usesNativeBack = false
     @ViewBuilder let content: Content
     @Environment(\.dismiss) private var dismiss
     var body: some View {
@@ -148,7 +149,7 @@ struct NetworkContentPage<Content: View>: View {
                 .frame(maxWidth: .infinity)
         }.font(.system(size: 28)).buttonStyle(NetworkTVActionStyle())
             .modifier(NetworkPageStyle()).navigationTitle("")
-            .onExitCommand { if let backAction { backAction() } else { dismiss() } }
+            .onExitCommand(perform: usesNativeBack ? nil : (backAction ?? { dismiss() }))
         #else
         List { content }.modifier(NetworkReadableWidth()).modifier(NetworkPageStyle()).navigationTitle(networkText(title))
         #endif

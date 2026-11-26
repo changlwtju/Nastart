@@ -1,10 +1,18 @@
 import Foundation
 import CryptoKit
 
-/// The decoder receives a revocable loopback capability. Policy and bookmarks
-/// receive the source's separate origin and version identity, never credentials.
+/// Policy and bookmarks use the separate origin and version identity. The
+/// transport carries a scoped capability, never raw credentials.
 public struct NetworkMediaPlaybackSource: Sendable {
-    public let playbackURL: URL
+    public enum Transport: Sendable {
+        case reader(any NetworkMediaByteReader)
+        case bridge(URL)
+    }
+    public let transport: Transport
+    public var playbackURL: URL? {
+        if case .bridge(let url) = transport { return url }
+        return nil
+    }
     public let originURL: URL
     public let title: String
     public let byteCount: Int64
@@ -25,8 +33,20 @@ public struct NetworkMediaPlaybackSource: Sendable {
         if scope.ftpSecurity != nil { bytes = try FTPMediaResource(library: library, file: file, credential: nil).byteCount }
         else if scope.isSMB { bytes = try SMBMediaResource(library: library, file: file, credential: nil).byteCount }
         else { bytes = try WebDAVMediaResource(library: library, file: file).byteCount }
-        self.playbackURL = playbackURL
-        originURL = scope.baseURL
+        try self.init(library: library, file: file, transport: .bridge(playbackURL),
+                      title: title, bytes: bytes, origin: scope.baseURL)
+    }
+
+    init(library: NetworkLibrary, file: RemoteMediaEntry, credential: WebDAVCredential?, title: String) throws {
+        let reader = try networkMediaReader(library: library, file: file, credential: credential)
+        try self.init(library: library, file: file, transport: .reader(reader), title: title, bytes: reader.byteCount,
+                      origin: WebDAVScope(storageAddress: library.address).baseURL)
+    }
+
+    private init(library: NetworkLibrary, file: RemoteMediaEntry, transport: Transport, title: String,
+                 bytes: Int64, origin: URL) throws {
+        self.transport = transport
+        originURL = origin
         self.title = title; byteCount = bytes
         fileExtension = (file.path.name as NSString).pathExtension.lowercased()
         stableID = try Self.stableID(library: library, file: file, byteCount: bytes)

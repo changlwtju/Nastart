@@ -1,0 +1,616 @@
+{
+  "sample": {
+    "id": "S19",
+    "bytes": 128795641934
+  },
+  "package": {
+    "mainSHA256": "a4663c5d608a56e5ec1f96fc10d7b3455e1f4ca27e47da12275d552909882a01",
+    "dylibSHA256": "a827696b34841522f4879c6ae631cc10f6134fbe05e35c1e45dac1916d96117e",
+    "builtAt": "2026-11-09T22:05:18.086687+08:00",
+    "configuration": "signed Debug, candidate segment retry opt-in at launch",
+    "sourceHEAD": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "profileExpires": "2026-11-15T00:30:17+00:00"
+  },
+  "sourceInputCount": 498,
+  "buildInputsUnchanged": true,
+  "privateEvidencePointer": "/tmp/nastart-s19-hls-retry-physical-current",
+  "packageRelativeToPrivateEvidence": "product/Nastart.app",
+  "installs": {
+    "iphone13": {
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "transport": "USB",
+      "identityRechecked": true,
+      "installedAt": "2026-11-09T22:07:03.697733+08:00",
+      "inPlace": true,
+      "installationPreferencesEqual": true,
+      "normalHomeAndWifiVerified": true,
+      "normalLaunchArgs": [],
+      "normalLaunchEnvironment": {},
+      "firstNormalCleanupAt": "2026-11-09T22:07:46.234676+08:00",
+      "runnerReinstalled": false
+    },
+    "ipad": {
+      "model": "iPad15,7",
+      "system": "26.6",
+      "transport": "USB",
+      "identityRechecked": true,
+      "installedAt": "2026-11-09T22:07:14.529394+08:00",
+      "inPlace": true,
+      "installationPreferencesEqual": true,
+      "normalHomeAndWifiVerified": true,
+      "normalLaunchArgs": [],
+      "normalLaunchEnvironment": {},
+      "firstNormalCleanupAt": "2026-11-09T22:07:58.098319+08:00",
+      "runnerReinstalled": false
+    }
+  },
+  "windows": [
+    {
+      "device": "phone",
+      "window": "on",
+      "entry": "jellyfin",
+      "ordinaryExit": false,
+      "playIssued": false,
+      "failure": "RuntimeError",
+      "eventCounts": {},
+      "events": [],
+      "tracksVisible": [],
+      "cleanup": {
+        "remainingAppOrRunner": 0,
+        "ownedLocalProcessesStopped": true,
+        "endedAt": "2026-11-09T22:09:08.453609+08:00"
+      },
+      "failureStage": "libraryBeforePlay",
+      "httpStatus": 401,
+      "transport": "https",
+      "searchUnavailable": true,
+      "sameServerLANVerifiedBeforeRejection": true,
+      "sameAccountSavedOnBothEndpoints": true,
+      "authenticatedLANFallbackObserved": false,
+      "reloginPerformed": false
+    },
+    {
+      "device": "pad",
+      "window": "on",
+      "entry": "jellyfin",
+      "ordinaryExit": true,
+      "playIssued": true,
+      "failure": null,
+      "eventCounts": {
+        "network_condition_changed": 2,
+        "intent_created": 2,
+        "route_selected": 2,
+        "preload_cancelled": 1,
+        "subtitle_track_changed": 1,
+        "audio_track_changed": 1,
+        "first_frame": 2,
+        "debugThrottleStarted": 1,
+        "replacement_warmup_started": 1,
+        "replacement_candidate_manifest_prepared": 1,
+        "candidateSegmentProbeStarted": 1,
+        "candidateSegmentProbeJoined": 1,
+        "candidateSegmentProbeReady": 1,
+        "candidateSegmentProbeDelivered": 1,
+        "replacement_candidate_decoded": 1,
+        "replacement_candidate_aligned": 1,
+        "replacement_committed": 1
+      },
+      "events": [
+        {
+          "t": 7.887,
+          "event": "network_condition_changed",
+          "details": {
+            "networkClass": "wifi"
+          }
+        },
+        {
+          "t": 7.887,
+          "event": "intent_created",
+          "details": {}
+        },
+        {
+          "t": 7.888,
+          "event": "route_selected",
+          "details": {
+            "plannedStartSeconds": "0.0",
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "t": 7.889,
+          "event": "preload_cancelled",
+          "details": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "t": 8.615,
+          "event": "subtitle_track_changed",
+          "details": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "t": 8.616,
+          "event": "audio_track_changed",
+          "details": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "t": 8.927,
+          "event": "first_frame",
+          "details": {
+            "firstFramePositionSeconds": "0.120",
+            "tapToFirstFrameMs": "1083"
+          }
+        },
+        {
+          "t": 13.019,
+          "event": "debugThrottleStarted",
+          "details": {
+            "stage": "debugThrottleStarted"
+          }
+        },
+        {
+          "t": 19.404,
+          "event": "network_condition_changed",
+          "details": {
+            "networkClass": "wifi"
+          }
+        },
+        {
+          "t": 19.405,
+          "event": "intent_created",
+          "details": {}
+        },
+        {
+          "t": 19.405,
+          "event": "route_selected",
+          "details": {
+            "plannedStartSeconds": "10.21",
+            "routeKind": "localHLS"
+          }
+        },
+        {
+          "t": 19.406,
+          "event": "replacement_warmup_started",
+          "details": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "t": 24.142,
+          "event": "replacement_candidate_manifest_prepared",
+          "details": {
+            "cachedVOD": "true",
+            "elapsedMs": "4600",
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "t": 24.539,
+          "event": "candidateSegmentProbeStarted",
+          "details": {
+            "acceptedReaders": "1",
+            "bytes": "0",
+            "stage": "candidateSegmentProbeStarted"
+          }
+        },
+        {
+          "t": 28.423,
+          "event": "candidateSegmentProbeJoined",
+          "details": {
+            "acceptedReaders": "2",
+            "bytes": "580401",
+            "stage": "candidateSegmentProbeJoined"
+          }
+        },
+        {
+          "t": 28.522,
+          "event": "candidateSegmentProbeReady",
+          "details": {
+            "acceptedReaders": "2",
+            "bytes": "606864",
+            "stage": "candidateSegmentProbeReady"
+          }
+        },
+        {
+          "t": 28.525,
+          "event": "candidateSegmentProbeDelivered",
+          "details": {
+            "acceptedReaders": "2",
+            "bytes": "606864",
+            "stage": "candidateSegmentProbeDelivered"
+          }
+        },
+        {
+          "t": 28.624,
+          "event": "replacement_candidate_decoded",
+          "details": {
+            "candidateSeconds": "19.493333333333332",
+            "elapsedMs": "9215",
+            "engine": "KSPlayer",
+            "indicatedBitrate": "12000000.0",
+            "manifestPrepareMs": "4728",
+            "rendererPrepareMs": "4486",
+            "target": "19.493333333333332"
+          }
+        },
+        {
+          "t": 30.385,
+          "event": "replacement_candidate_aligned",
+          "details": {
+            "candidateSeconds": "21.401237023",
+            "elapsedMs": "10907",
+            "engine": "KSPlayer",
+            "indicatedBitrate": "12000000.0",
+            "manifestPrepareMs": "4728",
+            "rendererPrepareMs": "6178",
+            "target": "19.493333333333332"
+          }
+        },
+        {
+          "t": 30.385,
+          "event": "replacement_committed",
+          "details": {
+            "candidateSeconds": "21.401237023",
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "t": 31.391,
+          "event": "first_frame",
+          "details": {
+            "firstFramePositionSeconds": "22.500",
+            "tapToFirstFrameMs": "11986"
+          }
+        }
+      ],
+      "tracksVisible": [
+        "音轨、English (compatibility track) - Dolby Digital - 5.1",
+        "字幕、Chinese (Simplified) - PGSSUB"
+      ],
+      "cleanup": {
+        "remaining": 0,
+        "cleanupVerified": true,
+        "forwarderStopped": true,
+        "endedAt": "2026-11-09T22:11:29.108249+08:00"
+      },
+      "screenEvidence": {
+        "openingLogo": true,
+        "subtitlesAfterCommit": true
+      },
+      "candidateOutputBitrateBps": 12000000,
+      "candidateAdoptedEngine": "AVPlayer",
+      "sharedProbeSegment": {
+        "matchedReaders": 2,
+        "upstreamReads": 1,
+        "bytes": 606864,
+        "upstreamElapsedMs": 3983,
+        "ordinalRecorded": false
+      }
+    },
+    {
+      "device": "pad",
+      "window": "off",
+      "entry": "jellyfin",
+      "ordinaryExit": true,
+      "playIssued": true,
+      "failure": null,
+      "eventCounts": {
+        "network_condition_changed": 2,
+        "intent_created": 2,
+        "route_selected": 2,
+        "preload_cancelled": 1,
+        "subtitle_track_changed": 1,
+        "audio_track_changed": 1,
+        "first_frame": 2,
+        "debugThrottleStarted": 1,
+        "replacement_warmup_started": 1,
+        "replacement_candidate_manifest_prepared": 1,
+        "replacement_candidate_decoded": 1,
+        "replacement_candidate_aligned": 1,
+        "replacement_committed": 1
+      },
+      "events": [
+        {
+          "t": 8.057,
+          "event": "network_condition_changed",
+          "details": {
+            "networkClass": "wifi"
+          }
+        },
+        {
+          "t": 8.058,
+          "event": "intent_created",
+          "details": {}
+        },
+        {
+          "t": 8.058,
+          "event": "route_selected",
+          "details": {
+            "plannedStartSeconds": "0.0",
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "t": 8.059,
+          "event": "preload_cancelled",
+          "details": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "t": 8.413,
+          "event": "subtitle_track_changed",
+          "details": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "t": 8.413,
+          "event": "audio_track_changed",
+          "details": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "t": 8.737,
+          "event": "first_frame",
+          "details": {
+            "firstFramePositionSeconds": "0.098",
+            "tapToFirstFrameMs": "707"
+          }
+        },
+        {
+          "t": 13.186,
+          "event": "debugThrottleStarted",
+          "details": {
+            "stage": "debugThrottleStarted"
+          }
+        },
+        {
+          "t": 19.877,
+          "event": "network_condition_changed",
+          "details": {
+            "networkClass": "wifi"
+          }
+        },
+        {
+          "t": 19.878,
+          "event": "intent_created",
+          "details": {}
+        },
+        {
+          "t": 19.879,
+          "event": "route_selected",
+          "details": {
+            "plannedStartSeconds": "10.594",
+            "routeKind": "localHLS"
+          }
+        },
+        {
+          "t": 19.881,
+          "event": "replacement_warmup_started",
+          "details": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "t": 25.555,
+          "event": "replacement_candidate_manifest_prepared",
+          "details": {
+            "cachedVOD": "true",
+            "elapsedMs": "5670",
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "t": 28.943,
+          "event": "replacement_candidate_decoded",
+          "details": {
+            "candidateSeconds": "21.783333333333335",
+            "elapsedMs": "9061",
+            "engine": "KSPlayer",
+            "manifestPrepareMs": "5670",
+            "rendererPrepareMs": "3390",
+            "target": "21.784166666666668"
+          }
+        },
+        {
+          "t": 30.504,
+          "event": "replacement_candidate_aligned",
+          "details": {
+            "candidateSeconds": "21.783333333333335",
+            "elapsedMs": "10529",
+            "engine": "KSPlayer",
+            "indicatedBitrate": "12000000.0",
+            "manifestPrepareMs": "5670",
+            "rendererPrepareMs": "4858",
+            "target": "21.784166666666668"
+          }
+        },
+        {
+          "t": 30.504,
+          "event": "replacement_committed",
+          "details": {
+            "candidateSeconds": "21.783333333333335",
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "t": 30.955,
+          "event": "first_frame",
+          "details": {
+            "firstFramePositionSeconds": "22.000",
+            "tapToFirstFrameMs": "11077"
+          }
+        }
+      ],
+      "tracksVisible": [
+        "音轨、English (compatibility track) - Dolby Digital - 5.1",
+        "字幕、Chinese (Simplified) - PGSSUB"
+      ],
+      "cleanup": {
+        "remaining": 0,
+        "cleanupVerified": true,
+        "forwarderStopped": true,
+        "endedAt": "2026-11-09T22:13:42.080214+08:00"
+      },
+      "screenEvidence": {
+        "openingLogo": true,
+        "subtitlesAfterCommit": true
+      },
+      "candidateOutputBitrateBps": 12000000,
+      "candidateAdoptedEngine": "AVPlayer",
+      "firstLoggedCandidateOrdinarySegment": {
+        "ordinal": 5,
+        "upstreamGETs": 1,
+        "upstreamElapsedMs": 3309
+      }
+    },
+    {
+      "device": "phone",
+      "window": "original",
+      "entry": "deviceFiles",
+      "ordinaryExit": true,
+      "playIssued": true,
+      "failure": null,
+      "eventCounts": {
+        "network_condition_changed": 1,
+        "intent_created": 1,
+        "route_selected": 1,
+        "preload_cancelled": 1,
+        "audio_track_changed": 1,
+        "first_frame": 1,
+        "seek_started": 2,
+        "seek_recovered": 2
+      },
+      "events": [
+        {
+          "t": 1.647,
+          "event": "network_condition_changed",
+          "details": {
+            "networkClass": "wifi"
+          }
+        },
+        {
+          "t": 1.649,
+          "event": "intent_created",
+          "details": {}
+        },
+        {
+          "t": 1.65,
+          "event": "route_selected",
+          "details": {
+            "plannedStartSeconds": "0.0",
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "t": 1.651,
+          "event": "preload_cancelled",
+          "details": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "t": 2.325,
+          "event": "audio_track_changed",
+          "details": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "t": 2.619,
+          "event": "first_frame",
+          "details": {
+            "firstFramePositionSeconds": "0.072",
+            "tapToFirstFrameMs": "1169"
+          }
+        },
+        {
+          "t": 24.156,
+          "event": "seek_started",
+          "details": {
+            "engine": "KSPlayer",
+            "seekTargetSeconds": "31.115"
+          }
+        },
+        {
+          "t": 27.015,
+          "event": "seek_recovered",
+          "details": {
+            "engine": "KSPlayer",
+            "seekRecoveryMs": "2871",
+            "seekTargetSeconds": "31.115"
+          }
+        },
+        {
+          "t": 30.481,
+          "event": "seek_started",
+          "details": {
+            "engine": "KSPlayer",
+            "seekTargetSeconds": "19.706000000000003"
+          }
+        },
+        {
+          "t": 32.353,
+          "event": "seek_recovered",
+          "details": {
+            "engine": "KSPlayer",
+            "seekRecoveryMs": "1887",
+            "seekTargetSeconds": "19.706000000000003"
+          }
+        }
+      ],
+      "seekTouches": [
+        "forward",
+        "backward"
+      ],
+      "cleanup": {
+        "remainingAppOrRunner": 0,
+        "ownedLocalProcessesStopped": true,
+        "endedAt": "2026-11-09T22:15:31.962914+08:00"
+      },
+      "screenEvidence": {
+        "openingLogo": true,
+        "briefBufferingObserved": true,
+        "clockAfterForwardSeconds": 33,
+        "openingPictureAfterBackward": true
+      }
+    }
+  ],
+  "ipadLastEmptyEnvironmentCleanupAt": "2026-11-09T22:15:59.739983+08:00",
+  "throttleFixture": {
+    "capBps": 45000000,
+    "delaySeconds": 5,
+    "durationSeconds": 70,
+    "firstSharedSegmentUsesOrdinaryDeliveryThrottle": false
+  },
+  "conclusion": {
+    "ipadPhysicalReuseAndCommitVerified": true,
+    "defaultChanged": false,
+    "performanceImprovementDemonstrated": false,
+    "singleOrderedPair": true,
+    "serverLoadAndCacheControlled": false,
+    "exactSegmentPairMatched": false,
+    "timeToScreenFirstFrameMeasured": false,
+    "acceptanceCellsChanged": 0,
+    "networkStoragePlaybackTestedThisBatch": false,
+    "cellularTested": false
+  },
+  "scope": {
+    "appleTVPausedByUser": true,
+    "iphone18Touched": false,
+    "NASSettingsChanged": false,
+    "NASMediaModified": false,
+    "accountsOrCredentialsChanged": false,
+    "ownDeviceWindowsClosed": true
+  }
+}

@@ -2232,7 +2232,7 @@ final class DSMClient {
         let memoryPercent: Double?
     }
 
-    private static func mapContainers(
+    static func mapContainers(
         _ data: DSMJSONValue?,
         resourceData: DSMJSONValue? = nil,
         hostTotalMemoryBytes: Double? = nil
@@ -2246,15 +2246,15 @@ final class DSMClient {
         return items.compactMap { item in
             guard let name = directTextValue(
                 in: item,
-                keys: ["name", "Name", "container_name", "containerName", "container", "service", "title", "id", "Id", "Names"]
+                keys: DSMServiceIdentity.containerNameKeys
             ) else { return nil }
             let identifier = directTextValue(in: item, keys: ["id", "Id", "container_id", "containerId"])
                 ?? name.lowercased()
             guard seen.insert(identifier).inserted else { return nil }
             let image = directTextValue(
                 in: item,
-                keys: ["image", "Image", "image_name", "imageName", "repository", "repo", "tag", "imageTag", "image_tag"]
-            ) ?? "-"
+                keys: DSMServiceIdentity.containerImageKeys
+            ) ?? DSMServiceIdentity.missingImage
             let stateText = directTextValue(
                 in: item,
                 keys: ["status", "Status", "state", "State", "status_text", "display_status", "up_time", "health"]
@@ -2461,28 +2461,9 @@ final class DSMClient {
 
         services += containers.map { container in
             let resolvedEndpoint = containerEndpoints[container.id]
-            return LaunchpadService(
-                id: StableIdentifier.uuid("service|container|\(container.id.uuidString.lowercased())"),
-                name: LaunchpadDefaultVisibilityPolicy.isInfrastructureContainer(image: container.image)
-                    ? container.name : (ServiceIconRegistry.identity(name: container.image).displayName
-                        ?? Self.displayName(for: container.name)),
-                iconText: Self.iconText(for: container.name),
-                category: Self.category(for: container.name),
-                status: container.status,
-                subtitle: Self.subtitle(for: container),
-                detail: container.image,
-                isMedia: Self.isMedia(container.name),
-                cpu: container.cpu,
-                memoryText: container.memoryText,
-                memory: container.memoryPercent,
-                ports: container.ports,
-                endpoint: resolvedEndpoint?.url,
-                alternateEndpoint: resolvedEndpoint?.alternateURL,
-                source: resolvedEndpoint?.source ?? .container,
-                isLaunchpadVisible: Self.shouldAutomaticallyShowContainerService(
-                    container,
-                    endpoint: resolvedEndpoint?.url
-                )
+            return Self.mapContainerService(
+                container, endpoint: resolvedEndpoint?.url, alternateEndpoint: resolvedEndpoint?.alternateURL,
+                source: resolvedEndpoint?.source ?? .container
             )
         }
 
@@ -2528,6 +2509,35 @@ final class DSMClient {
         }
     }
 
+    static func mapContainerService(
+        _ container: DockerContainer,
+        endpoint: URL? = nil,
+        alternateEndpoint: URL? = nil,
+        source: LaunchpadServiceSource = .container
+    ) -> LaunchpadService {
+        return LaunchpadService(
+            id: StableIdentifier.uuid("service|container|\(container.id.uuidString.lowercased())"),
+            name: DSMServiceIdentity.containerDisplayName(name: container.name, image: container.image),
+            iconText: Self.iconText(for: container.name),
+            category: Self.category(for: container.name),
+            status: container.status,
+            subtitle: Self.subtitle(for: container),
+            detail: container.image,
+            isMedia: Self.isMedia(container.name),
+            cpu: container.cpu,
+            memoryText: container.memoryText,
+            memory: container.memoryPercent,
+            ports: container.ports,
+            endpoint: endpoint,
+            alternateEndpoint: alternateEndpoint,
+            source: source,
+            isLaunchpadVisible: Self.shouldAutomaticallyShowContainerService(
+                container,
+                endpoint: endpoint
+            )
+        )
+    }
+
     private static func mapPackageServices(_ data: DSMJSONValue?, session: DSMSession) -> [LaunchpadService] {
         guard let data else { return [] }
         let packageRoot = data.firstDirectValue(for: ["result", "data"]) ?? data
@@ -2535,14 +2545,14 @@ final class DSMClient {
         return packages.compactMap { item in
             guard let name = directTextValue(
                 in: item,
-                keys: ["display_name", "displayName", "name", "id", "package", "package_name", "pkgname"]
+                keys: DSMServiceIdentity.packageNameKeys
             ) else { return nil }
             guard isInstalledPackage(item) else { return nil }
             let endpoint = packageEndpoint(for: item, baseURL: session.baseURL)
             let status = packageStatus(item)
             return LaunchpadService(
                 id: StableIdentifier.uuid("service|package|\(name.lowercased())"),
-                name: displayName(for: name),
+                name: DSMServiceIdentity.displayName(for: name),
                 iconText: iconText(for: name),
                 category: category(for: name),
                 status: status,
@@ -3151,39 +3161,7 @@ final class DSMClient {
     private static func directTextValue(in item: DSMJSONValue, keys: [String]) -> String? {
         guard let value = item.firstDirectValue(for: keys) else { return nil }
         let text = value.stringValue ?? value.arrayValue?.compactMap(\.stringValue).first
-        let normalized = text?
-            .trimmingCharacters(in: CharacterSet(charactersIn: "/").union(.whitespacesAndNewlines))
-        return normalized?.isEmpty == false ? normalized : nil
-    }
-
-    private static func displayName(for rawName: String) -> String {
-        let name = rawName.trimmingCharacters(in: .whitespacesAndNewlines)
-        if let displayName = ServiceIconRegistry.identity(name: name).displayName {
-            return displayName
-        }
-        let lower = name.lowercased()
-        let compact = compactServiceIdentifier(name)
-        if ["container", "container manager", "docker"].contains(lower) { return "Container Manager" }
-        if lower.contains("file station") { return "File Station" }
-        if lower.contains("synology photos") || compact.contains("synologyphotos") { return "Synology Photos" }
-        if lower.contains("download station") { return "Download Station" }
-        if lower.contains("synology drive") || compact.contains("synologydrive")
-            || compact.contains("cloudstationserver") {
-            return "Synology Drive"
-        }
-        if lower.contains("video station") { return "Video Station" }
-        if lower.contains("audio station") { return "Audio Station" }
-        if lower.contains("jellyfin") { return "Jellyfin" }
-        if lower.contains("emby") { return "Emby" }
-        if lower.contains("plex") { return "Plex" }
-        if lower.contains("navidrome") { return "Navidrome" }
-        if lower.contains("qbittorrent") { return "qBittorrent" }
-        if compact.contains("homeassistant") { return "Home Assistant" }
-        if compact.contains("codeserver") { return "code-server" }
-        if compact.contains("codexserver") { return "codex-server" }
-        if compact.contains("tinymediamanager") { return "tinyMediaManager" }
-        if compact.contains("metacubexd") { return "MetaCubeXD" }
-        return name.isEmpty ? "Service" : name
+        return DSMServiceIdentity.discoveryText(text)
     }
 
     private static func iconText(for name: String) -> String {

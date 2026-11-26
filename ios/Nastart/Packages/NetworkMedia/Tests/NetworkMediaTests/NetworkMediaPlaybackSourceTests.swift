@@ -14,7 +14,19 @@ final class NetworkMediaPlaybackSourceTests: XCTestCase {
         XCTAssertEqual(source.playbackURL, renderer)
         XCTAssertEqual(source.originURL, URL(string: "https://nas.example.test/dav/"))
         XCTAssertEqual(source.byteCount, 4096); XCTAssertEqual(source.fileExtension, "mkv")
-        XCTAssertNil(source.originURL.user); XCTAssertNil(source.originURL.password); XCTAssertNil(source.playbackURL.query)
+        XCTAssertNil(source.originURL.user); XCTAssertNil(source.originURL.password); XCTAssertNil(source.playbackURL?.query)
+    }
+    func testReaderUsesSameVersionIdentityWithoutStartingABridge() throws {
+        let (library, file) = try fixture()
+        let direct = try NetworkMediaPlaybackSource(library: library, file: file, credential: nil, title: "Movie")
+        let bridge = try NetworkMediaPlaybackSource(library: library, file: file,
+            playbackURL: URL(string: "http://127.0.0.1:49152/capability/video.mkv")!, title: "Movie")
+        guard case .reader(let reader) = direct.transport else { return XCTFail("Expected direct Reader") }
+        XCTAssertNil(direct.playbackURL)
+        XCTAssertEqual(reader.byteCount, direct.byteCount)
+        XCTAssertEqual(reader.fileName, "movie.mkv")
+        XCTAssertEqual(direct.stableID, bridge.stableID)
+        XCTAssertEqual(direct.originURL, bridge.originURL)
     }
     func testReopeningBridgeDoesNotChangeFileIdentity() throws {
         let (library, file) = try fixture()
@@ -51,5 +63,6 @@ final class NetworkMediaPlaybackSourceTests: XCTestCase {
         let unknownVersion = RemoteMediaEntry(path: file.path, isDirectory: false, size: 4096)
         library.files = [unknownVersion]
         XCTAssertThrowsError(try NetworkMediaPlaybackSource(library: library, file: unknownVersion, playbackURL: renderer, title: "Movie"))
+        XCTAssertThrowsError(try NetworkMediaPlaybackSource(library: library, file: unknownVersion, credential: nil, title: "Movie"))
     }
 }

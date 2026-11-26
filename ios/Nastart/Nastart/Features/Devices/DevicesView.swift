@@ -3,6 +3,7 @@ import UIKit
 import QuickLook
 import Network
 import JellyfinAPI
+import NetworkMedia
 
 struct DevicesView: View {
     @EnvironmentObject private var dataStore: AppDataStore
@@ -1276,12 +1277,12 @@ private struct FilePreviewView: View {
                let sourceBitrate = match.sourceBitrate ?? match.durationSeconds.flatMap({ duration in
                     duration > 0 ? Int(Double(item.sizeBytes ?? 0) * 8 / duration) : nil
                }),
-               PlaybackAdaptiveBitratePolicy.isOriginalClearlyUnsustainable(
-                    sourceBitrate: sourceBitrate, measuredCapacity: match.measuredCapacity,
-                    isPrivateRoute: false, forcesOriginal: false),
-               let bitrate = PlaybackAdaptiveBitratePolicy.target(
-                    currentCeiling: sourceBitrate, capacity: match.measuredCapacity,
-                    networkKey: fileNetwork.cacheKey),
+               // The same verdict and rendition ceiling as the Jellyfin entry
+               // on this network, with this lookup's probe as the evidence.
+               let bitrate = JellyfinMatchedFileStream.startupRendition(
+                    sourceBitrate: sourceBitrate, probe: match.measuredCapacity,
+                    probeAge: Date().timeIntervalSince(match.measuredAt),
+                    networkBitrateCap: fileNetwork.bitrateCap),
                let selection = JellyfinMatchedFileStream.initialSelection(
                     match: match,
                     resume: playbackResumeKey.flatMap { LocalPlaybackResumeStore.shared.entry(for: $0) },
@@ -1307,6 +1308,8 @@ private struct FilePreviewView: View {
                         messageKey: "diagnostics.files.preview_stream_started",
                         details: ["transport": "verifiedJellyfinHLS",
                                   "bitrate": String(bitrate),
+                                  "sourceBitrate": String(sourceBitrate),
+                                  "probeCapacity": match.measuredCapacity.map(String.init) ?? "none",
                                   "prepareMs": String(Int(Date().timeIntervalSince(requestedAt) * 1_000)),
                                   "playbackTraceID": request.playbackTraceID ?? "-"])
                     PlayerOrientationController.prepareForPresentation(.landscape)
@@ -1879,8 +1882,7 @@ enum JellyfinOriginalFileRouteResolver {
                 accessToken: stored.accessToken,
                 client: "Nastart",
                 deviceName: UIDevice.current.model,
-                deviceID: UserDefaults.standard.string(forKey: "jellyfin.client.device-id")
-                    ?? UIDevice.current.identifierForVendor?.uuidString ?? "Nastart",
+                deviceID: JellyfinDeviceIdentity.persistentDeviceID,
                 version: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1"
             ), sessionConfiguration: configuration
         )
@@ -1894,6 +1896,12 @@ enum JellyfinOriginalFileRouteResolver {
         do {
             items = try await client.send(Paths.getItems(parameters: parameters)).value.items ?? []
         } catch {
+            if JellyfinHTTPStatus.code(for: error) == 401 {
+                DiagnosticLogStore.shared.record(.warning, categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.files.jellyfin_original_lookup",
+                    details: ["stage": "originalRouteLookup", "httpStatus": "401",
+                              "deviceIDPrefix": String(client.configuration.deviceID.prefix(8))])
+            }
             return nil
         }
         let filename = file.name.lowercased()
@@ -1974,6 +1982,25 @@ enum JellyfinMatchedFileStream {
         var mediaStreams: [MediaStream] = []
     }
 
+    /// The rendition to start on instead of the original, or nil to play the
+    /// original. The lookup's 1 MB probe is the only evidence here; like the
+    /// Jellyfin entry's small probe it shows the route does at least that
+    /// much, so the original is left only when the source is clearly beyond
+    /// it. The rendition stays within the public ceiling for this network.
+    nonisolated static func startupRendition(sourceBitrate: Int, probe: Int?, probeAge: TimeInterval,
+                                             networkBitrateCap: Int?) -> Int? {
+        let assessment = PlaybackRouteCapacityPolicy.assess(sustained: [], rendition: [],
+            probe: probe.map { .init(bitrate: $0, age: max(probeAge, 0), boundsBothSides: false) })
+        guard let capacity = assessment.capacity,
+              PlaybackRouteDecisionPolicy.originalVerdict(
+                sourceBitrate: sourceBitrate, assessment: assessment).prefersServerRendition else { return nil }
+        let ceiling = PlaybackRouteDecisionPolicy.renditionCeiling(networkBitrateCap: networkBitrateCap)
+        let rendition = PlaybackRouteDecisionPolicy.startupBitrate(
+            capacity: capacity, ceiling: ceiling, unknownCapacityBitrate: ceiling)
+        // The lowest rung is not a step down from a source already below it.
+        return rendition < sourceBitrate ? rendition : nil
+    }
+
     static func resolve(file: FileItem, services: [LaunchpadService],
                         siblingItems: [FileItem]?, dsmSession: DSMSession?) async -> Match? {
         guard let size = file.sizeBytes, size >= 16 * 1024 * 1024 * 1024 else { return nil }
@@ -2018,8 +2045,7 @@ enum JellyfinMatchedFileStream {
         let client = JellyfinClient(configuration: .init(
             url: endpoint, accessToken: stored.accessToken, client: "Nastart",
             deviceName: UIDevice.current.model,
-            deviceID: UserDefaults.standard.string(forKey: "jellyfin.client.device-id")
-                ?? UIDevice.current.identifierForVendor?.uuidString ?? "Nastart",
+            deviceID: JellyfinDeviceIdentity.persistentDeviceID,
             version: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1"
         ), sessionConfiguration: configuration)
         let playbackClient = JellyfinClient(configuration: client.configuration,
@@ -2089,11 +2115,19 @@ enum JellyfinMatchedFileStream {
         } catch {
             probeTask.cancel()
             let nsError = error as NSError
+            var details = ["result": "mediaLookupFailed",
+                           "errorDomain": nsError.domain, "errorCode": String(nsError.code),
+                           "target": DiagnosticLogStore.redactedURL(endpoint)]
+            if let status = JellyfinHTTPStatus.code(for: error) {
+                details["httpStatus"] = String(status)
+                if status == 401 {
+                    details["stage"] = "mediaLookup"
+                    details["deviceIDPrefix"] = String(client.configuration.deviceID.prefix(8))
+                }
+            }
             DiagnosticLogStore.shared.record(.warning, categoryKey: "diagnostics.category.media",
                 messageKey: "diagnostics.files.jellyfin_original_lookup",
-                details: ["result": "mediaLookupFailed",
-                          "errorDomain": nsError.domain, "errorCode": String(nsError.code),
-                          "target": DiagnosticLogStore.redactedURL(endpoint)])
+                details: details)
             return nil
         }
         let items = lookup.items
@@ -2242,7 +2276,7 @@ enum JellyfinMatchedFileStream {
             let observed = PlaybackRecentThroughputStore.shared.estimate(
                 traceID: sourceTraceID, now: ProcessInfo.processInfo.systemUptime)
             let freshProbe = Date().timeIntervalSince(match.measuredAt) < 30 ? match.measuredCapacity : nil
-            let capacity = [observed, freshProbe].compactMap { $0 }.filter { $0 > 0 }.min()
+            let capacity = PlaybackRouteDecisionPolicy.fallbackCapacity(live: observed, route: freshProbe)
             guard let sourceBitrate, let bitrate = PlaybackAdaptiveBitratePolicy.target(
                 currentCeiling: sourceBitrate, capacity: capacity, networkKey: networkKey) else { return nil }
             let request: MediaPlaybackRequest?
@@ -2549,7 +2583,7 @@ enum JellyfinMatchedFileStream {
                 let observed = PlaybackRecentThroughputStore.shared.estimate(
                     traceID: traceID, now: ProcessInfo.processInfo.systemUptime)
                 let freshProbe = Date().timeIntervalSince(match.measuredAt) < 30 ? match.measuredCapacity : nil
-                let capacity = [observed, freshProbe].compactMap { $0 }.filter { $0 > 0 }.min()
+                let capacity = PlaybackRouteDecisionPolicy.fallbackCapacity(live: observed, route: freshProbe)
                 guard let lower = PlaybackAdaptiveBitratePolicy.target(
                     currentCeiling: bitrate, capacity: capacity,
                     networkKey: networkKey) else { return nil }
@@ -2884,6 +2918,23 @@ enum MediaRangePolicy {
         return false
     }
 
+    /// Resolve the full client interval when a versioned Reader already
+    /// knows the length. The serving transport applies finite upstream windows
+    /// independently of the client-facing interval.
+    static func readerRange(_ value: String?, totalLength: Int64) -> ContentRange? {
+        guard totalLength > 0 else { return nil }
+        let end = totalLength - 1
+        guard let value else { return .init(start: 0, end: end, totalLength: totalLength) }
+        switch requestedRange(value) {
+        case .offset(let start, let requestedEnd) where start < totalLength:
+            return .init(start: start, end: min(end, requestedEnd ?? end), totalLength: totalLength)
+        case .suffix(let count):
+            return .init(start: totalLength - min(totalLength, count), end: end, totalLength: totalLength)
+        default:
+            return nil
+        }
+    }
+
     static func requestedRangeStart(from value: String?) -> Int64? {
         guard let value else { return nil }
         let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -3085,17 +3136,38 @@ private final class DebugMediaDeliveryThrottle: @unchecked Sendable {
 /// The presentation keeps the capability alive across dismissal for PiP.
 final class PlaybackProxyRouteLease {
     let url: URL
+    private let release: () -> Void
 
-    init(url: URL) { self.url = url }
+    convenience init(url: URL) {
+        self.init(url: url) { AuthenticatedMediaStreamProxy.shared.unregister(url) }
+    }
+    init(url: URL, release: @escaping () -> Void) {
+        self.url = url
+        self.release = release
+    }
 
-    deinit { AuthenticatedMediaStreamProxy.shared.unregister(url) }
+    deinit { release() }
 }
 
 final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
     static let shared = AuthenticatedMediaStreamProxy()
 
+    private enum Upstream: Sendable {
+        case http(URL)
+        case networkReader(any NetworkMediaByteReader, origin: URL, byteCount: Int64)
+
+        var url: URL {
+            switch self {
+            case .http(let url): return url
+            case .networkReader(_, let origin, _): return origin
+            }
+        }
+        var isHTTP: Bool { if case .http = self { return true }; return false }
+    }
+
     private struct Route {
-        let upstreamURL: URL
+        let upstream: Upstream
+        var upstreamURL: URL { upstream.url }
         let allowsSelfSignedCertificates: Bool
         let filename: String
         let isPlaylist: Bool
@@ -3110,6 +3182,7 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         let children = PlaybackPlaylistChildren()
         let requestDiagnostics = PlaybackProxyRequestDiagnostics()
         var startupPrimer: PlaybackHLSStartupPrimer?
+        var originalReadStarted = false
     }
 
     private let queue = DispatchQueue(label: "com.nastart.authenticated-media-stream-proxy")
@@ -3118,8 +3191,25 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
     private var routes: [String: Route] = [:]
     private let vodPlaylistCache = PlaybackVODPlaylistCache()
     private var transfers: [UUID: AuthenticatedMediaProxyTransfer] = [:]
+    private var readerTransfers: [UUID: NetworkMediaProxyTransfer] = [:]
     private var manifestPreparations: [UUID: (permit: PlaybackStartupPrimerPermit, route: String, port: NWEndpoint.Port)] = [:]
     private var listenerWaiters: [(Result<NWEndpoint.Port, Error>) -> Void] = []
+    private var originalPrefixPreparation: (
+        route: String, id: UUID, task: Task<PlaybackOriginalStartupPrefix?, Error>
+    )?
+    private var originalStartupPrefix: (route: String, id: UUID, prefix: PlaybackOriginalStartupPrefix)?
+    private var preparedOriginal: (route: String, transferID: UUID, deadline: DispatchTime)?
+#if DEBUG
+    private struct CandidateSegmentLease {
+        let id: UUID
+        let route: String
+        let port: NWEndpoint.Port
+        let segments: Set<URL>
+        var used = false
+        var transfer: PlaybackCandidateSegmentRetry?
+    }
+    private var candidateSegmentLease: CandidateSegmentLease?
+#endif
 
     private init() {}
 
@@ -3146,6 +3236,11 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
             guard let route = self.routes[token], url.port == Int(route.localPort.rawValue) else { return }
             route.startupPrimer?.cancel()
             route.pinnedTransport?.invalidate()
+            self.discardOriginalPrefix(for: token)
+            self.discardPreparedOriginal(for: token)
+#if DEBUG
+            if self.candidateSegmentLease?.route == token { self.cancelCandidateSegmentRetry() }
+#endif
             self.routes[token] = nil
             self.vodPlaylistCache.remove(route: token)
             // Removing the URL must also release already accepted readers.
@@ -3154,6 +3249,7 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
             for transfer in self.transfers.values {
                 transfer.cancelIfOwned(byRoute: token, port: route.localPort)
             }
+            self.cancelReaderTransfers(for: token, reason: "routeRevoked")
         }
     }
 
@@ -3183,6 +3279,43 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         }
     }
 
+#if DEBUG
+    /// Only the warmup of a complete, simple TS candidate can arm this probe.
+    /// The first matching decoder GET owns the single global bounded slot.
+    func beginCandidateSegmentRetry(_ url: URL) -> UUID? {
+        guard url.scheme == "http", url.host == "127.0.0.1", url.query == nil,
+              url.fragment == nil, url.user == nil, url.password == nil else { return nil }
+        let parts = url.path.split(separator: "/")
+        guard parts.count == 3, parts[0] == "media" else { return nil }
+        let token = String(parts[1])
+        return queue.sync {
+            guard candidateSegmentLease == nil, let route = routes[token], route.isPlaylist,
+                  port == route.localPort, url.port == Int(route.localPort.rawValue),
+                  url.path == "/media/\(token)/\(route.filename)",
+                  !route.allowsSelfSignedCertificates || route.upstreamURL.scheme == "http",
+                  let (body, mediaURL) = vodPlaylistCache.candidateMedia(route: token, root: route.upstreamURL),
+                  let segments = PlaybackCandidateSegmentRetry.segmentURLs(body, mediaURL: mediaURL,
+                      root: route.upstreamURL) else { return nil }
+            let id = UUID()
+            candidateSegmentLease = CandidateSegmentLease(id: id, route: token, port: route.localPort,
+                segments: segments)
+            return id
+        }
+    }
+
+    func endCandidateSegmentRetry(_ id: UUID) {
+        queue.sync {
+            if candidateSegmentLease?.id == id { cancelCandidateSegmentRetry() }
+        }
+    }
+
+    private func cancelCandidateSegmentRetry() {
+        let transfer = candidateSegmentLease?.transfer
+        candidateSegmentLease = nil
+        transfer?.cancel()
+    }
+#endif
+
     /// Both media-library and file-browser originals use the same response
     /// semantics, regardless of initial launch, quality switch, or TLS policy.
     func registerOriginalStream(
@@ -3198,6 +3331,123 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
             prefersFiniteRangeResponse: usesGreenfieldPlayback,
             playbackTraceID: playbackTraceID,
             upstreamIsNetworkLibraryBridge: upstreamIsNetworkLibraryBridge)
+    }
+
+    func registerNetworkReader(_ reader: any NetworkMediaByteReader, originURL: URL,
+                               playbackTraceID: String? = nil) async throws -> URL {
+        let byteCount = reader.byteCount
+        guard byteCount > 0 else { throw URLError(.badURL) }
+        let ext = (reader.fileName as NSString).pathExtension.lowercased()
+        let safeExtension = ext.utf8.count <= 12 && ext.utf8.allSatisfy {
+            (97...122).contains($0) || (48...57).contains($0)
+        } && !ext.isEmpty ? ext : "bin"
+        return try await register(upstream: .networkReader(reader, origin: originURL, byteCount: byteCount),
+            filename: "video." + safeExtension, allowsSelfSignedCertificates: false,
+            prefersFiniteRangeResponse: true, playbackTraceID: playbackTraceID,
+            jellyfinMediaPath: nil, upstreamIsNetworkLibraryBridge: false)
+    }
+
+    /// Starts the same bounded upstream GET that an unconditional renderer
+    /// read from byte zero would start. The caller does not wait for a reply.
+    func prepareOriginalResponse(_ url: URL) -> Bool {
+        let parts = url.path.split(separator: "/")
+        guard url.scheme == "http", url.host == "127.0.0.1", url.query == nil,
+              parts.count == 3, parts[0] == "media", !Task.isCancelled else { return false }
+        let token = String(parts[1])
+        return queue.sync {
+            guard let route = routes[token], port == route.localPort,
+                  url.port == Int(route.localPort.rawValue),
+                  url.path == "/media/\(token)/\(route.filename)",
+                  route.upstream.isHTTP, route.prefersFiniteRangeResponse, !route.isPlaylist,
+                  !route.originalReadStarted,
+                  !route.upstreamIsNetworkLibraryBridge, !route.allowsSelfSignedCertificates,
+                  ["http", "https"].contains(route.upstreamURL.scheme?.lowercased() ?? ""),
+                  preparedOriginal == nil, originalPrefixPreparation == nil,
+                  originalStartupPrefix == nil else { return false }
+            let id = UUID()
+            let transfer = makeTransfer(id: id, route: route, token: token,
+                connection: nil, upstreamURL: route.upstreamURL, method: "GET",
+                headers: ["range": "bytes=0-"])
+            let deadline = DispatchTime.now() + .seconds(2)
+            preparedOriginal = (token, id, deadline)
+            transfer.startOriginalPreparation(on: queue)
+            queue.asyncAfter(deadline: deadline) {
+                guard self.preparedOriginal?.transferID == id else { return }
+                self.discardPreparedOriginal(for: token)
+            }
+            return true
+        }
+    }
+
+    // Accessed on the proxy queue, which also serializes the prepared transfer.
+    private func discardPreparedOriginal(for token: String) {
+        guard let slot = preparedOriginal, slot.route == token else { return }
+        preparedOriginal = nil
+        transfers[slot.transferID]?.abandonOriginalPreparation()
+    }
+
+    /// Explicit preparation for the first open-ended original GET. This stage
+    /// is opt-in and is independent of the coordinator's observation-only I/O.
+    func prepareOriginalStartupPrefix(_ url: URL, byteCount: Int) async throws -> Int {
+        let parts = url.path.split(separator: "/")
+        guard url.host == "127.0.0.1", url.query == nil, parts.count == 3,
+              parts[0] == "media", (1...PlaybackOriginalStartupPrefix.maximumBytes).contains(byteCount) else {
+            return 0
+        }
+        try Task.checkCancellation()
+        let token = String(parts[1])
+        let id = UUID()
+        let task = queue.sync { () -> Task<PlaybackOriginalStartupPrefix?, Error>? in
+            guard let route = routes[token], url.port == Int(route.localPort.rawValue),
+                  url.path == "/media/\(token)/\(route.filename)",
+                  route.upstream.isHTTP, route.prefersFiniteRangeResponse, !route.isPlaylist,
+                  !route.upstreamIsNetworkLibraryBridge, !route.allowsSelfSignedCertificates,
+                  preparedOriginal == nil, originalPrefixPreparation == nil,
+                  originalStartupPrefix == nil else { return nil }
+            let task = Task { try await PlaybackOriginalStartupPrefix.fetch(route.upstreamURL, count: byteCount) }
+            originalPrefixPreparation = (token, id, task)
+            return task
+        }
+        guard let task else { return 0 }
+        defer {
+            queue.sync {
+                if originalPrefixPreparation?.id == id { originalPrefixPreparation = nil }
+            }
+        }
+        return try await withTaskCancellationHandler {
+            let prefix = try await task.value
+            try Task.checkCancellation()
+            return queue.sync {
+                guard !Task.isCancelled, originalPrefixPreparation?.id == id, let prefix else { return 0 }
+                originalStartupPrefix = (token, id, prefix)
+                queue.asyncAfter(deadline: .now() + .seconds(2)) {
+                    if self.originalStartupPrefix?.id == id { self.originalStartupPrefix = nil }
+                }
+                DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.media.proxy_transfer_finished", details: [
+                        "stage": "originalPrefixPrepared", "bytes": String(prefix.data.count),
+                        "playbackTraceID": routes[token]?.playbackTraceID ?? "-",
+                        "measurementBoundary": "sourceReadForPreload"
+                    ])
+                return prefix.data.count
+            }
+        } onCancel: {
+            task.cancel()
+            self.queue.async {
+                if self.originalPrefixPreparation?.id == id || self.originalStartupPrefix?.id == id {
+                    self.discardOriginalPrefix(for: token)
+                }
+            }
+        }
+    }
+
+    // Accessed only on the proxy queue.
+    private func discardOriginalPrefix(for token: String) {
+        if originalPrefixPreparation?.route == token {
+            originalPrefixPreparation?.task.cancel()
+            originalPrefixPreparation = nil
+        }
+        if originalStartupPrefix?.route == token { originalStartupPrefix = nil }
     }
 
     func register(
@@ -3216,25 +3466,48 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
                 throw URLError(.badURL)
             }
         }
+        return try await register(upstream: .http(upstreamURL), filename: filename,
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+            prefersFiniteRangeResponse: prefersFiniteRangeResponse, playbackTraceID: playbackTraceID,
+            jellyfinMediaPath: jellyfinMediaPath, upstreamIsNetworkLibraryBridge: upstreamIsNetworkLibraryBridge)
+    }
+
+    private func register(upstream: Upstream, filename: String, allowsSelfSignedCertificates: Bool,
+                          prefersFiniteRangeResponse: Bool, playbackTraceID: String?, jellyfinMediaPath: String?,
+                          upstreamIsNetworkLibraryBridge: Bool) async throws -> URL {
         let port = try await healthyListenerPort()
+        try Task.checkCancellation()
         let token = UUID().uuidString.lowercased()
         let safeFilename = filename
             .replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: "\\", with: "_")
-        await withCheckedContinuation { continuation in
+        var components = URLComponents()
+        components.scheme = "http"
+        components.host = "127.0.0.1"
+        components.port = Int(port.rawValue)
+        components.path = "/media/\(token)/\(safeFilename)"
+        guard let url = components.url else { throw URLError(.badURL) }
+        let registered = await withCheckedContinuation { continuation in
             queue.async {
+                guard self.port == port else { continuation.resume(returning: false); return }
                 let cutoff = Date().addingTimeInterval(-6 * 60 * 60)
                 for (expired, route) in self.routes where route.createdAt <= cutoff {
                     route.startupPrimer?.cancel()
                     route.pinnedTransport?.invalidate()
+                    self.discardOriginalPrefix(for: expired)
+                    self.discardPreparedOriginal(for: expired)
+#if DEBUG
+                    if self.candidateSegmentLease?.route == expired { self.cancelCandidateSegmentRetry() }
+#endif
+                    self.cancelReaderTransfers(for: expired, reason: "routeExpired")
                     self.vodPlaylistCache.remove(route: expired)
                 }
                 self.routes = self.routes.filter { $0.value.createdAt > cutoff }
                 self.routes[token] = Route(
-                    upstreamURL: upstreamURL,
+                    upstream: upstream,
                     allowsSelfSignedCertificates: allowsSelfSignedCertificates,
                     filename: safeFilename,
-                    isPlaylist: !upstreamIsNetworkLibraryBridge && upstreamURL.pathExtension.lowercased() == "m3u8",
+                    isPlaylist: upstream.isHTTP && !upstreamIsNetworkLibraryBridge && upstream.url.pathExtension.lowercased() == "m3u8",
                     prefersFiniteRangeResponse: prefersFiniteRangeResponse,
                     upstreamIsNetworkLibraryBridge: upstreamIsNetworkLibraryBridge,
                     playbackTraceID: playbackTraceID?.isEmpty == false ? playbackTraceID : nil,
@@ -3242,18 +3515,30 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
                     localPort: port,
                     createdAt: Date(),
                     pinnedTransport: allowsSelfSignedCertificates
-                        ? PlaybackPinnedRouteTransport(upstreamURL: upstreamURL) : nil
+                        ? PlaybackPinnedRouteTransport(upstreamURL: upstream.url) : nil
                 )
-                continuation.resume()
+                continuation.resume(returning: true)
             }
         }
-        var components = URLComponents()
-        components.scheme = "http"
-        components.host = "127.0.0.1"
-        components.port = Int(port.rawValue)
-        components.path = "/media/\(token)/\(safeFilename)"
-        guard let url = components.url else { throw URLError(.badURL) }
+        guard registered else { throw URLError(.cannotConnectToHost) }
+        if Task.isCancelled {
+            unregister(url)
+            throw CancellationError()
+        }
         return url
+    }
+
+    private func cancelReaderTransfers(for token: String, reason: String) {
+        for transfer in readerTransfers.values where transfer.routeToken == token { transfer.cancel(reason) }
+    }
+
+    private func revokeReaderRoutes(on port: NWEndpoint.Port?) {
+        guard let port else { return }
+        let tokens = routes.compactMap { token, route in !route.upstream.isHTTP && route.localPort == port ? token : nil }
+        for token in tokens {
+            routes[token] = nil
+            cancelReaderTransfers(for: token, reason: "listenerInvalidated")
+        }
     }
 
     /// Slow cellular manifests can exceed AVFoundation's initial resource wait.
@@ -3368,11 +3653,12 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
                   upstream.scheme == route.upstreamURL.scheme, upstream.host == route.upstreamURL.host,
                   upstream.port == route.upstreamURL.port,
                   PlaybackHLSRequestDiagnostics.segmentOrdinal(upstream) == 0 else { return }
+            let localPort = route.localPort
             let primer = PlaybackHLSStartupPrimer(url: local, traceID: route.playbackTraceID) { [weak self] in
                 self?.queue.async { [weak self] in
                     guard let self else { return }
                     for transfer in self.transfers.values {
-                        transfer.cancelStartupPrimerIfOwned(byRoute: token, port: route.localPort)
+                        transfer.cancelStartupPrimerIfOwned(byRoute: token, port: localPort)
                     }
                 }
             }
@@ -3441,6 +3727,11 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         await withCheckedContinuation { continuation in
             queue.async {
                 if self.port?.rawValue == stalePort.rawValue {
+                    if let slot = self.preparedOriginal { self.discardPreparedOriginal(for: slot.route) }
+#if DEBUG
+                    if self.candidateSegmentLease?.port == stalePort { self.cancelCandidateSegmentRetry() }
+#endif
+                    self.revokeReaderRoutes(on: stalePort)
                     self.listener?.cancel()
                     self.listener = nil
                     self.port = nil
@@ -3501,6 +3792,11 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
     }
 
     private func failListener(_ error: Error) {
+        if let slot = preparedOriginal { discardPreparedOriginal(for: slot.route) }
+#if DEBUG
+        cancelCandidateSegmentRetry()
+#endif
+        revokeReaderRoutes(on: port)
         listener?.cancel()
         listener = nil
         port = nil
@@ -3568,6 +3864,61 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
             sendError(404, on: connection)
             return
         }
+        var headers: [String: String] = [:]
+        var repeatedReaderHeader = false
+#if DEBUG
+        var repeatedCandidateSessionHeader = false
+#endif
+        for line in header.components(separatedBy: "\r\n").dropFirst() {
+            if line.isEmpty { break }
+            guard let separator = line.firstIndex(of: ":") else { continue }
+            let key = line[..<separator].trimmingCharacters(in: .whitespaces).lowercased()
+            let value = line[line.index(after: separator)...].trimmingCharacters(in: .whitespaces)
+            if headers.updateValue(value, forKey: key) != nil {
+                if ["range", "if-range", "content-length", "transfer-encoding"].contains(key) {
+                    repeatedReaderHeader = true
+                }
+#if DEBUG
+                if key == "x-playback-session-id" { repeatedCandidateSessionHeader = true }
+#endif
+            }
+        }
+        if case let .networkReader(reader, origin, byteCount) = route.upstream {
+            guard let requestComponents, requestTarget.hasPrefix("/"), requestComponents.query == nil,
+                  requestComponents.fragment == nil, path == "/media/\(token)/\(route.filename)" else {
+                sendError(404, on: connection); return
+            }
+            guard initialReadError == nil, data.count <= 16 * 1024,
+                  !repeatedReaderHeader, headers["transfer-encoding"] == nil,
+                  ["HTTP/1.0", "HTTP/1.1"].contains(requestParts[2]),
+                  headers["content-length"].map({ $0 == "0" }) ?? true,
+                  data.range(of: Data([13, 10, 13, 10]))?.upperBound == data.endIndex else {
+                sendError(400, on: connection); return
+            }
+            // This local capability does not advertise a validator. An
+            // If-Range supplied by the decoder therefore cannot match it.
+            let range = headers["if-range"] == nil ? headers["range"] : nil
+            guard let interval = MediaRangePolicy.readerRange(range, totalLength: byteCount) else {
+                sendError(416, on: connection, extraHeaders: "Content-Range: bytes */\(byteCount)\r\n")
+                return
+            }
+            guard readerTransfers.values.lazy.filter({ $0.routeToken == token }).prefix(4).count < 4 else {
+                sendError(503, on: connection, extraHeaders: "Retry-After: 1\r\n")
+                return
+            }
+            let id = UUID()
+            if let localURL = URL(string: "http://127.0.0.1:\(route.localPort.rawValue)\(requestTarget)") {
+                route.requestDiagnostics.record(localURL: localURL, upstreamURL: origin, transferID: id, childID: nil)
+            }
+            let transfer = NetworkMediaProxyTransfer(queue: queue, connection: connection,
+                routeToken: token, reader: reader, interval: interval, partial: range != nil,
+                head: requestParts[0] == "HEAD", traceID: route.playbackTraceID, id: id) { [weak self] in
+                    self?.readerTransfers[id] = nil
+                }
+            readerTransfers[id] = transfer
+            transfer.start(watchClient: !initialReadComplete)
+            return
+        }
         let requestedUpstreamURL: URL
         if route.upstreamIsNetworkLibraryBridge {
             guard path == "/media/\(token)/\(route.filename)", requestComponents?.percentEncodedQuery == nil else {
@@ -3590,14 +3941,6 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         } else {
             requestedUpstreamURL = route.upstreamURL
         }
-        var headers: [String: String] = [:]
-        for line in header.components(separatedBy: "\r\n").dropFirst() {
-            guard let separator = line.firstIndex(of: ":") else { continue }
-            let key = line[..<separator].trimmingCharacters(in: .whitespaces).lowercased()
-            let value = line[line.index(after: separator)...].trimmingCharacters(in: .whitespaces)
-            headers[key] = value
-        }
-
         var manifestPermit: PlaybackStartupPrimerPermit?
         if let identity = headers["x-nastart-manifest-preparation"] {
             guard requestParts[0] == "GET", requestedUpstreamURL.pathExtension.lowercased() == "m3u8",
@@ -3615,40 +3958,104 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         if isStartupPrimer && (route.startupPrimer?.isActive != true || (route.playlistStartSeconds ?? 0) > 0) {
             sendError(410, on: connection); return
         }
-        let transferID = UUID()
         let childID = pathParts.count == 4 && pathParts[2] == "child" ? String(pathParts[3]) : nil
+#if DEBUG
+        let clientSession = headers["x-playback-session-id"]
+        let validClientSession = !repeatedCandidateSessionHeader && (clientSession.map {
+            !$0.isEmpty && $0.utf8.count <= 128 && $0.utf8.allSatisfy { byte in
+                (48...57).contains(byte) || (65...90).contains(byte) || (97...122).contains(byte)
+                    || byte == 45 || byte == 95
+            }
+        } ?? true)
+        let hasOtherPrivateHeader = headers.keys.contains { key in
+            key.hasPrefix("if-") || (key.hasPrefix("x-") && key != "x-playback-session-id")
+                || ["authorization", "cookie", "range", "transfer-encoding"].contains(key)
+        }
+        if let lease = candidateSegmentLease, lease.route == token, lease.port == route.localPort,
+           lease.segments.contains(requestedUpstreamURL),
+           let childID, path == "/media/\(token)/child/\(childID)", requestTarget == path,
+           requestParts[0] == "GET", ["HTTP/1.0", "HTTP/1.1"].contains(requestParts[2]),
+           initialReadError == nil, data.count <= 16 * 1024, !repeatedReaderHeader, headers["content-length"] == nil,
+           data.range(of: Data([13, 10, 13, 10]))?.upperBound == data.endIndex,
+           validClientSession, !hasOtherPrivateHeader {
+            let fallback: () -> Void = { [weak self] in
+                self?.handleRequest(data, on: connection,
+                    initialReadComplete: initialReadComplete, initialReadError: initialReadError)
+            }
+            if let transfer = lease.transfer,
+               transfer.join(connection, url: requestedUpstreamURL, clientSession: clientSession,
+                   fallback: fallback) { return }
+            if !lease.used {
+                let transfer = PlaybackCandidateSegmentRetry(url: requestedUpstreamURL,
+                    clientSession: clientSession, queue: queue, trace: route.playbackTraceID) { [weak self] in
+                        if self?.candidateSegmentLease?.id == lease.id {
+                            self?.candidateSegmentLease?.transfer = nil
+                        }
+                    }
+                candidateSegmentLease?.used = true
+                candidateSegmentLease?.transfer = transfer
+                if transfer.join(connection, url: requestedUpstreamURL, clientSession: clientSession, fallback: fallback) {
+                    transfer.start()
+                    return
+                }
+            }
+        } else if let lease = candidateSegmentLease, lease.route == token, !lease.used,
+                  childID != nil, requestedUpstreamURL.pathExtension.lowercased() == "ts" {
+            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.proxy_transfer_started", details: [
+                    "stage": "candidateSegmentProbeBypassed",
+                    "playbackTraceID": PlaybackProxyRequestDiagnostics.safeTrace(route.playbackTraceID),
+                    "manifestMember": String(lease.segments.contains(requestedUpstreamURL)),
+                    "clientSessionValid": String(validClientSession),
+                    "clientSessionPresent": String(clientSession != nil),
+                    "otherPrivateHeader": String(hasOtherPrivateHeader),
+                    "rangePresent": String(headers["range"] != nil),
+                    "contentLengthPresent": String(headers["content-length"] != nil),
+                    "requestIsExact": String(requestTarget == path),
+                    "requestFramingComplete": String(data.range(of: Data([13, 10, 13, 10]))?.upperBound == data.endIndex)
+                ])
+        }
+#endif
+        let originalRootGET = route.prefersFiniteRangeResponse && !route.isPlaylist && requestParts[0] == "GET"
+            && path == "/media/\(token)/\(route.filename)"
+        let originalGET = originalRootGET && requestComponents?.percentEncodedQuery == nil
+        let requestedRange = MediaRangePolicy.requestedRange(headers["range"] ?? "bytes=0-")
+        if originalRootGET, requestedRange != nil {
+            routes[token]?.originalReadStarted = true
+        }
+        let canAdoptOriginal = requestedRange == .offset(start: 0, end: nil)
+            && !headers.keys.contains { $0.hasPrefix("if-") || $0.hasPrefix("x-nastart-")
+                || ["authorization", "cookie", "x-emby-token"].contains($0) }
+        if originalRootGET, let slot = preparedOriginal, slot.route == token {
+            if originalGET, canAdoptOriginal, DispatchTime.now() < slot.deadline,
+               let transfer = transfers[slot.transferID],
+               transfer.adoptOriginalPreparation(connection, initialReadComplete: initialReadComplete,
+                                                 initialReadError: initialReadError) {
+                preparedOriginal = nil
+                if let localURL = URL(string: "http://127.0.0.1:\(route.localPort.rawValue)\(requestTarget)") {
+                    route.requestDiagnostics.record(localURL: localURL, upstreamURL: requestedUpstreamURL,
+                        transferID: slot.transferID, childID: nil)
+                }
+                return
+            }
+            if requestedRange != nil { discardPreparedOriginal(for: token) }
+        }
+        let transferID = UUID()
         if let localURL = URL(string: "http://127.0.0.1:\(route.localPort.rawValue)\(requestTarget)") {
             route.requestDiagnostics.record(localURL: localURL, upstreamURL: requestedUpstreamURL,
                 transferID: transferID, childID: childID)
         }
-        let transfer = AuthenticatedMediaProxyTransfer(
-            connection: connection,
-            upstreamURL: requestedUpstreamURL,
-            method: requestParts[0],
-            requestHeaders: headers,
-            diagnosticTransferID: transferID,
-            isStartupPrimer: isStartupPrimer,
-            allowsSelfSignedCertificates: route.allowsSelfSignedCertificates,
-            pinnedTransport: route.pinnedTransport,
-            prefersFiniteRangeResponse: route.prefersFiniteRangeResponse,
-            upstreamIsNetworkLibraryBridge: route.upstreamIsNetworkLibraryBridge,
-            isPlaylist: route.isPlaylist
-                && requestedUpstreamURL.pathExtension.lowercased() == "m3u8",
-            isHLSChildRequest: route.isPlaylist
-                && requestedUpstreamURL.pathExtension.lowercased() != "m3u8",
-            playbackTraceID: route.playbackTraceID,
-            jellyfinMediaPath: route.jellyfinMediaPath,
-            playlistToken: token,
-            playlistFilename: route.filename,
-            playlistPort: route.localPort,
-            playlistStartSeconds: route.playlistStartSeconds,
-            playlistChildren: route.children,
-            vodPlaylistCache: vodPlaylistCache,
-            playlistChildID: childID
-        ) { [weak self] in
-            self?.queue.async { self?.transfers[transferID] = nil }
+        var originalPrefix: PlaybackOriginalStartupPrefix?
+        if originalGET, requestedRange == .offset(start: 0, end: nil) {
+            if originalStartupPrefix?.route == token,
+               !headers.keys.contains(where: { $0.hasPrefix("if-") || $0 == "authorization" || $0 == "cookie" }) {
+                originalPrefix = originalStartupPrefix?.prefix
+            }
+            discardOriginalPrefix(for: token)
         }
-        transfers[transferID] = transfer
+        let transfer = makeTransfer(id: transferID, route: route, token: token,
+            connection: connection, upstreamURL: requestedUpstreamURL, method: requestParts[0],
+            headers: headers, childID: childID, isStartupPrimer: isStartupPrimer, originalPrefix: originalPrefix)
         if let manifestPermit, !manifestPermit.registerCancellation({ [weak self, weak transfer] in
             self?.queue.async { transfer?.cancelManifestPreparation() }
         }) {
@@ -3659,12 +4066,560 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         transfer.start(initialReadComplete: initialReadComplete, initialReadError: initialReadError)
     }
 
-    private func sendError(_ statusCode: Int, on connection: NWConnection) {
+    private func makeTransfer(id: UUID, route: Route, token: String, connection: NWConnection?,
+                              upstreamURL: URL, method: String, headers: [String: String],
+                              childID: String? = nil, isStartupPrimer: Bool = false,
+                              originalPrefix: PlaybackOriginalStartupPrefix? = nil) -> AuthenticatedMediaProxyTransfer {
+        let transfer = AuthenticatedMediaProxyTransfer(
+            connection: connection, upstreamURL: upstreamURL, method: method, requestHeaders: headers,
+            diagnosticTransferID: id, isStartupPrimer: isStartupPrimer, originalPrefix: originalPrefix,
+            allowsSelfSignedCertificates: route.allowsSelfSignedCertificates,
+            pinnedTransport: route.pinnedTransport,
+            prefersFiniteRangeResponse: route.prefersFiniteRangeResponse,
+            upstreamIsNetworkLibraryBridge: route.upstreamIsNetworkLibraryBridge,
+            isPlaylist: route.isPlaylist
+                && upstreamURL.pathExtension.lowercased() == "m3u8",
+            isHLSChildRequest: route.isPlaylist
+                && upstreamURL.pathExtension.lowercased() != "m3u8",
+            playbackTraceID: route.playbackTraceID,
+            jellyfinMediaPath: route.jellyfinMediaPath,
+            playlistToken: token,
+            playlistFilename: route.filename,
+            playlistPort: route.localPort,
+            playlistStartSeconds: route.playlistStartSeconds,
+            playlistChildren: route.children,
+            vodPlaylistCache: vodPlaylistCache,
+            playlistChildID: childID
+        ) { [weak self] in
+            self?.queue.async {
+                self?.transfers[id] = nil
+                if self?.preparedOriginal?.transferID == id { self?.preparedOriginal = nil }
+            }
+        }
+        transfers[id] = transfer
+        return transfer
+    }
+
+    private func sendError(_ statusCode: Int, on connection: NWConnection, extraHeaders: String = "") {
         let reason = HTTPURLResponse.localizedString(forStatusCode: statusCode).capitalized
-        let response = "HTTP/1.1 \(statusCode) \(reason)\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+        let response = "HTTP/1.1 \(statusCode) \(reason)\r\n\(extraHeaders)Content-Length: 0\r\nConnection: close\r\n\r\n"
         connection.send(content: Data(response.utf8), isComplete: true, completion: .contentProcessed { _ in
             connection.cancel()
         })
+    }
+}
+
+/// Low-frequency timing for one Reader-backed local Range response. Each
+/// delivered chunk splits its interval into waiting for the Reader to return
+/// the chunk and waiting for the local player socket to accept it. Times use
+/// monotonic system uptime. This is local delivery evidence only: it carries
+/// no URL, account, path or payload and is not an upstream throughput sample.
+struct NetworkMediaProxyTransferTimeline: Equatable, Sendable {
+    enum Phase: String, Sendable { case reader, consumer }
+
+    struct Summary: Equatable, Sendable {
+        var startedAt: TimeInterval
+        var endedAt: TimeInterval
+        var chunks = 0
+        var bytes: Int64 = 0
+        var firstOffset: Int64?
+        var endOffset: Int64?
+        var readerWait: TimeInterval = 0
+        var consumerWait: TimeInterval = 0
+        var maxReaderWait: TimeInterval = 0
+        var maxConsumerWait: TimeInterval = 0
+        var pending: Phase?
+        var pendingWait: TimeInterval = 0
+        // Inside the Reader wait, for a Reader that reports it: how long its
+        // reads queued behind an earlier read on the same connection, and how
+        // long they spent on that connection. The rest of the Reader wait is
+        // scheduling between the two.
+        var readerReads = 0
+        var readerQueueWait: TimeInterval = 0
+        var readerReadTime: TimeInterval = 0
+        var maxReaderQueueWait: TimeInterval = 0
+        var maxReaderReadTime: TimeInterval = 0
+
+        var wall: TimeInterval { max(0, endedAt - startedAt) }
+
+        /// The side that held this window. A side must cover at least half
+        /// the window and twice the other side's wait to be named alone.
+        var dominantWait: String {
+            let wall = max(self.wall, 0.001)
+            if readerWait + consumerWait < wall * 0.5 { return "unattributed" }
+            if readerWait >= wall * 0.5, readerWait >= consumerWait * 2 { return "reader" }
+            if consumerWait >= wall * 0.5, consumerWait >= readerWait * 2 { return "consumer" }
+            return "mixed"
+        }
+
+        func fields() -> [String: String] {
+            func ms(_ value: TimeInterval) -> String { String(Int((value * 1000).rounded())) }
+            var fields = [
+                "windowStartUptimeMs": ms(startedAt), "windowEndUptimeMs": ms(endedAt),
+                "windowMs": ms(wall), "chunks": "\(chunks)", "windowBytes": "\(bytes)",
+                "readerWaitMs": ms(readerWait), "consumerWaitMs": ms(consumerWait),
+                "maxReaderWaitMs": ms(maxReaderWait), "maxConsumerWaitMs": ms(maxConsumerWait),
+                "dominantWait": dominantWait,
+                "deliveredOffsets": firstOffset.flatMap { start in
+                    endOffset.map { "\(start)-\($0 - 1)" }
+                } ?? "none"
+            ]
+            if let pending {
+                fields["pendingWait"] = pending.rawValue
+                fields["pendingWaitMs"] = ms(pendingWait)
+            }
+            if readerReads > 0 {
+                fields["readerReads"] = "\(readerReads)"
+                fields["readerQueueWaitMs"] = ms(readerQueueWait)
+                fields["readerReadMs"] = ms(readerReadTime)
+                fields["maxReaderQueueWaitMs"] = ms(maxReaderQueueWait)
+                fields["maxReaderReadMs"] = ms(maxReaderReadTime)
+            }
+            return fields
+        }
+
+        mutating func add(_ timing: NetworkMediaReadTimingRecorder.Summary?) {
+            guard let timing, timing.reads > 0 else { return }
+            readerReads += timing.reads
+            readerQueueWait += timing.queueWait
+            readerReadTime += timing.readTime
+            maxReaderQueueWait = max(maxReaderQueueWait, timing.maxQueueWait)
+            maxReaderReadTime = max(maxReaderReadTime, timing.maxReadTime)
+        }
+
+        mutating func add(offset: Int64, bytes count: Int, readerWait: TimeInterval,
+                          consumerWait: TimeInterval, now: TimeInterval) {
+            chunks += 1
+            bytes += Int64(count)
+            if firstOffset == nil { firstOffset = offset }
+            endOffset = offset + Int64(count)
+            self.readerWait += readerWait
+            self.consumerWait += consumerWait
+            maxReaderWait = max(maxReaderWait, readerWait)
+            maxConsumerWait = max(maxConsumerWait, consumerWait)
+            endedAt = now
+        }
+
+        mutating func close(pending phase: Phase?, wait: TimeInterval, now: TimeInterval) {
+            if let phase, wait > 0 {
+                pending = phase
+                pendingWait = wait
+                switch phase {
+                case .reader:
+                    readerWait += wait; maxReaderWait = max(maxReaderWait, wait)
+                case .consumer:
+                    consumerWait += wait; maxConsumerWait = max(maxConsumerWait, wait)
+                }
+            }
+            endedAt = max(endedAt, now)
+        }
+    }
+
+    let reportInterval: TimeInterval
+    private(set) var window: Summary
+    private(set) var total: Summary
+
+    init(startedAt: TimeInterval, reportInterval: TimeInterval = 1) {
+        self.reportInterval = reportInterval
+        window = Summary(startedAt: startedAt, endedAt: startedAt)
+        total = Summary(startedAt: startedAt, endedAt: startedAt)
+    }
+
+    /// Adds one delivered chunk and returns the closed window once it spans
+    /// the report interval. A long single wait closes in one window.
+    /// `readTiming` is what the Reader reported for the reads behind this chunk.
+    mutating func record(offset: Int64, bytes: Int, readerWait: TimeInterval,
+                         consumerWait: TimeInterval, now: TimeInterval,
+                         readTiming: NetworkMediaReadTimingRecorder.Summary? = nil) -> Summary? {
+        window.add(offset: offset, bytes: bytes, readerWait: readerWait,
+                   consumerWait: consumerWait, now: now)
+        total.add(offset: offset, bytes: bytes, readerWait: readerWait,
+                  consumerWait: consumerWait, now: now)
+        window.add(readTiming)
+        total.add(readTiming)
+        guard now - window.startedAt >= reportInterval else { return nil }
+        let closed = window
+        window = Summary(startedAt: now, endedAt: now)
+        return closed
+    }
+
+    /// Closes the open window and the transfer total. An unfinished wait at
+    /// termination is charged to the phase that was still waiting.
+    /// `readTiming` is a read the Reader finished without delivering a chunk:
+    /// one that failed, or one the transfer no longer wanted.
+    mutating func finish(pending phase: Phase?, wait: TimeInterval, now: TimeInterval,
+                         readTiming: NetworkMediaReadTimingRecorder.Summary? = nil)
+        -> (window: Summary?, total: Summary) {
+        window.close(pending: phase, wait: wait, now: now)
+        total.close(pending: phase, wait: wait, now: now)
+        window.add(readTiming)
+        total.add(readTiming)
+        let open = window.chunks > 0 || window.pending != nil || window.readerReads > 0 ? window : nil
+        window = Summary(startedAt: now, endedAt: now)
+        return (open, total)
+    }
+}
+
+/// Reader credentials and version validation stay in NetworkMedia. The local
+/// transport sends one chunk at a time; a slow client naturally delays reads.
+/// Lifecycle, socket operations and the pending send live on the proxy queue.
+private final class NetworkMediaProxyTransfer: @unchecked Sendable {
+    let routeToken: String
+    private let queue: DispatchQueue
+    private let connection: NWConnection
+    private let reader: any NetworkMediaByteReader
+    private let interval: MediaRangePolicy.ContentRange
+    private let partial: Bool
+    private let head: Bool
+    private let traceID: String?
+    private let id: UUID
+    private let onFinish: () -> Void
+    private var task: Task<Void, Never>?
+    private var idle: DispatchWorkItem?
+    private var pendingSend: (UUID, CheckedContinuation<Void, Error>)?
+    private var cancellation: String?
+
+    init(queue: DispatchQueue, connection: NWConnection, routeToken: String,
+         reader: any NetworkMediaByteReader, interval: MediaRangePolicy.ContentRange,
+         partial: Bool, head: Bool, traceID: String?, id: UUID, onFinish: @escaping () -> Void) {
+        self.queue = queue; self.connection = connection; self.routeToken = routeToken
+        self.reader = reader; self.interval = interval; self.partial = partial; self.head = head
+        self.traceID = traceID; self.id = id; self.onFinish = onFinish
+    }
+
+    func start(watchClient: Bool) {
+        connection.stateUpdateHandler = { [weak self] state in
+            switch state {
+            case .failed, .cancelled: self?.cancel("clientDisconnected")
+            default: break
+            }
+        }
+        if watchClient {
+            connection.receive(minimumIncompleteLength: 1, maximumLength: 1) { [weak self] data, _, _, error in
+                // A client may half-close its write direction and still
+                // consume the entire response. Only errors or a second
+                // request (unsupported on this socket) stop the transfer.
+                if error != nil || data?.isEmpty == false { self?.cancel("clientDisconnected") }
+            }
+        }
+        touch()
+        task = Task { [self] in await run() }
+    }
+
+    func cancel(_ reason: String) {
+        guard cancellation == nil else { return }
+        cancellation = reason
+        task?.cancel()
+        closeSocket()
+    }
+
+    private func closeSocket() {
+        idle?.cancel()
+        idle = nil
+        if let pendingSend {
+            self.pendingSend = nil
+            pendingSend.1.resume(throwing: CancellationError())
+        }
+        connection.stateUpdateHandler = nil
+        connection.cancel()
+    }
+
+    private func touch() {
+        idle?.cancel()
+        let timeout = DispatchWorkItem { [weak self] in self?.cancel("readerIdleTimeout") }
+        idle = timeout
+        queue.asyncAfter(deadline: .now() + 30, execute: timeout)
+    }
+
+    private func send(_ data: Data?, final: Bool = false) async throws {
+        try Task.checkCancellation()
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            queue.async {
+                guard self.cancellation == nil else { continuation.resume(throwing: CancellationError()); return }
+                let token = UUID()
+                self.pendingSend = (token, continuation)
+                self.touch()
+                self.connection.send(content: data, contentContext: final ? .finalMessage : .defaultMessage,
+                    isComplete: true, completion: .contentProcessed { error in
+                        guard let pending = self.pendingSend, pending.0 == token else { return }
+                        self.pendingSend = nil
+                        if let error { pending.1.resume(throwing: error) } else { pending.1.resume() }
+                    })
+            }
+        }
+    }
+
+    private func run() async {
+        let started = ProcessInfo.processInfo.systemUptime
+        let status = partial ? 206 : 200
+        let length = interval.bodyLength
+        var headers = "HTTP/1.1 \(partial ? "206 Partial Content" : "200 OK")\r\nContent-Length: \(length)\r\nAccept-Ranges: bytes\r\nContent-Type: application/octet-stream\r\nConnection: close\r\n"
+        if partial {
+            headers += "Content-Range: bytes \(interval.start)-\(interval.end)/\(interval.totalLength)\r\n"
+        }
+        let header = Data((headers + "\r\n").utf8)
+        var sentHeaders = false
+        var delivered: Int64 = 0
+        var outcome = "complete"
+        var errorKind: String?
+        var responseStatus = status
+        // The proxy waits on exactly one side at a time: the Reader for the
+        // next chunk, or the local player socket for the chunk just read.
+        var timeline = NetworkMediaProxyTransferTimeline(startedAt: started)
+        var phase = NetworkMediaProxyTransferTimeline.Phase.reader
+        var phaseStartedAt = started
+        let timingBase = timingFields()
+        // A Reader that can tell queueing from time on its connection reports
+        // each read here; the chunk that read produced takes it on arrival.
+        let readTiming = NetworkMediaReadTimingRecorder()
+        do {
+            if head {
+                try await send(header, final: true)
+            } else {
+                while delivered < length {
+                    let offset = interval.start + delivered
+                    let count = min(MediaRangePolicy.upstreamWindowBytes, length - delivered)
+                    let windowEnd = delivered + count
+                    try await reader.stream(offset: offset, count: count, timing: readTiming) { data in
+                        try Task.checkCancellation()
+                        let arrived = ProcessInfo.processInfo.systemUptime
+                        let readerWait = arrived - phaseStartedAt
+                        let chunkReadTiming = readTiming.take()
+                        phase = .consumer
+                        phaseStartedAt = arrived
+                        guard !data.isEmpty, Int64(data.count) <= windowEnd - delivered else {
+                            outcome = "invalidReaderChunk"
+                            throw NetworkMediaPlaybackError.invalidRangeResponse
+                        }
+                        do {
+                            if !sentHeaders {
+                                sentHeaders = true
+                                try await send(header)
+                            }
+                            try await send(data)
+                        } catch {
+                            outcome = "clientSendError"
+                            throw error
+                        }
+                        let accepted = ProcessInfo.processInfo.systemUptime
+                        phase = .reader
+                        phaseStartedAt = accepted
+                        if let closed = timeline.record(offset: interval.start + delivered, bytes: data.count,
+                                                        readerWait: readerWait, consumerWait: accepted - arrived,
+                                                        now: accepted, readTiming: chunkReadTiming) {
+                            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                                messageKey: "diagnostics.media.proxy_transfer_progress",
+                                details: timingBase.merging(closed.fields()) { _, new in new }
+                                    .merging(["stage": "readerTimingWindow"]) { _, new in new })
+                        }
+                        if delivered == 0 {
+                            var firstChunk = [
+                                "stage": "readerFirstChunkDelivered", "transportScope": "networkReader",
+                                "measurementBoundary": "readerDelivery",
+                                "playbackTraceID": PlaybackProxyRequestDiagnostics.safeTrace(traceID),
+                                "transferID": id.uuidString, "bytes": "\(data.count)",
+                                "readerToDeliveryMs": "\(Int((ProcessInfo.processInfo.systemUptime - started) * 1000))"
+                            ]
+                            // How much of a request's first-chunk delay was
+                            // spent behind an earlier read, and how much reading.
+                            if chunkReadTiming.reads > 0 {
+                                firstChunk["firstReadQueueWaitMs"] = "\(Int((chunkReadTiming.queueWait * 1000).rounded()))"
+                                firstChunk["firstReadMs"] = "\(Int((chunkReadTiming.readTime * 1000).rounded()))"
+                            }
+                            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                                messageKey: "diagnostics.media.proxy_transfer_started", details: firstChunk)
+                        }
+                        delivered += Int64(data.count)
+                        PlaybackDownloadMeter.shared.receive(bytes: data.count, traceID: traceID)
+                    }
+                    guard delivered == windowEnd else {
+                        outcome = "shortReaderWindow"
+                        throw NetworkMediaPlaybackError.invalidRangeResponse
+                    }
+                }
+                do { try await send(nil, final: true) } catch {
+                    outcome = "clientSendError"
+                    throw error
+                }
+            }
+        } catch {
+            if Task.isCancelled || error is CancellationError {
+                outcome = "cancelled"
+            } else if outcome == "complete" {
+                // Not raised by the chunk checks or the socket send above.
+                outcome = "readerError"
+            }
+            if outcome == "readerError" || outcome == "clientSendError" {
+                errorKind = Self.safeErrorKind(error)
+            }
+            if !sentHeaders, !head, !Task.isCancelled {
+                responseStatus = 502
+                let errorHeader = Data("HTTP/1.1 502 Bad Gateway\r\nContent-Length: 0\r\nConnection: close\r\n\r\n".utf8)
+                try? await send(errorHeader, final: true)
+            }
+        }
+        let finishedAt = ProcessInfo.processInfo.systemUptime
+        let unfinished = outcome != "complete"
+        let closing = timeline.finish(pending: unfinished ? phase : nil,
+                                      wait: unfinished ? finishedAt - phaseStartedAt : 0, now: finishedAt,
+                                      readTiming: readTiming.take())
+        let result = (delivered, outcome, responseStatus)
+        queue.async { [self] in
+            if !head, let open = closing.window {
+                DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.media.proxy_transfer_progress",
+                    details: timingBase.merging(open.fields()) { _, new in new }
+                        .merging(["stage": "readerTimingWindow", "windowClosedBy": "transferEnd"]) { _, new in new })
+            }
+            var details = [
+                "stage": "readerTransferFinished", "transportScope": "networkReader",
+                "measurementBoundary": "readerDelivery", "adaptiveMeasurementBoundary": "ineligibleReaderDelivery",
+                "playbackTraceID": PlaybackProxyRequestDiagnostics.safeTrace(traceID),
+                "transferID": id.uuidString, "method": head ? "HEAD" : "GET",
+                "range": "bytes=\(interval.start)-\(interval.end)", "status": "\(result.2)",
+                "deliveredBytes": "\(result.0)", "expectedBytes": head ? "0" : "\(length)",
+                "result": cancellation ?? result.1,
+                // Distinguishes a finite Range that ended normally, a player
+                // that closed or replaced its request, and a real read error.
+                "terminalKind": Self.terminalKind(outcome: result.1, cancellation: cancellation),
+                "finishedUptimeMs": "\(Int((finishedAt * 1000).rounded()))"
+            ]
+            if let errorKind { details["errorKind"] = errorKind }
+            if !head {
+                for (key, value) in closing.total.fields() where key != "dominantWait" {
+                    details["total" + key.prefix(1).uppercased() + key.dropFirst()] = value
+                }
+                details["totalDominantWait"] = closing.total.dominantWait
+            }
+            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.proxy_transfer_finished", details: details)
+            closeSocket()
+            task = nil
+            onFinish()
+        }
+    }
+
+    private func timingFields() -> [String: String] {
+        [
+            "transportScope": "networkReader", "measurementBoundary": "readerDelivery",
+            "adaptiveMeasurementBoundary": "ineligibleReaderDelivery",
+            "playbackTraceID": PlaybackProxyRequestDiagnostics.safeTrace(traceID),
+            "transferID": id.uuidString, "method": head ? "HEAD" : "GET",
+            "range": "bytes=\(interval.start)-\(interval.end)"
+        ]
+    }
+
+    static func terminalKind(outcome: String, cancellation: String?) -> String {
+        switch cancellation {
+        case "clientDisconnected": return "playerClosedRequest"
+        case "readerIdleTimeout": return "idleTimeout"
+        case let reason?: return "cancelled:" + reason
+        case nil: break
+        }
+        switch outcome {
+        case "complete": return "rangeComplete"
+        case "cancelled": return "cancelled"
+        case "clientSendError": return "playerSocketError"
+        default: return "readerFailure"
+        }
+    }
+
+    /// Error identity without messages, which could include paths or hosts.
+    static func safeErrorKind(_ error: Error) -> String {
+        if let error = error as? NetworkMediaPlaybackError { return "networkMedia.\(error)" }
+        if let error = error as? URLError { return "url.\(error.code.rawValue)" }
+        let ns = error as NSError
+        let domain = ns.domain.utf8.count <= 64 && ns.domain.allSatisfy {
+            $0.isASCII && ($0.isLetter || $0.isNumber || $0 == "." || $0 == "_")
+        } ? ns.domain : "other"
+        return "\(domain).\(ns.code)"
+    }
+}
+
+private struct PlaybackOriginalStartupPrefix: Sendable {
+    static let maximumBytes = 256 * 1024
+    let data: Data
+    let totalLength: Int64
+    let etag: String
+
+    private final class RejectRedirects: NSObject, URLSessionTaskDelegate, Sendable {
+        func urlSession(_ session: URLSession, task: URLSessionTask,
+                        willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest,
+                        completionHandler: @escaping (URLRequest?) -> Void) {
+            completionHandler(nil)
+        }
+    }
+
+    static func fetch(_ url: URL, count: Int) async throws -> Self? {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 2
+        configuration.timeoutIntervalForResource = 2
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        configuration.httpCookieStorage = nil
+        configuration.urlCredentialStorage = nil
+        let session = URLSession(configuration: configuration)
+        defer { session.invalidateAndCancel() }
+        var request = URLRequest(url: url)
+        request.setValue("bytes=0-\(count - 1)", forHTTPHeaderField: "Range")
+        request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
+        if let token = AuthenticatedMediaProxyTransfer.authenticationToken(from: url) {
+            request.setValue(token, forHTTPHeaderField: "X-Emby-Token")
+        }
+        let (bytes, response) = try await session.bytes(for: request, delegate: RejectRedirects())
+        guard let response = response as? HTTPURLResponse, response.url == url,
+              let range = MediaRangePolicy.validatedPartialResponse(statusCode: response.statusCode,
+                  contentRange: response.value(forHTTPHeaderField: "Content-Range"), expectedStart: 0),
+              range.bodyLength == Int64(count), range.totalLength > range.bodyLength,
+              response.expectedContentLength == range.bodyLength, acceptsRepresentation(response),
+              let etag = strongETag(response.value(forHTTPHeaderField: "ETag")) else {
+            return nil
+        }
+        var data = Data()
+        data.reserveCapacity(count)
+        for try await byte in bytes {
+            guard data.count < count else { return nil }
+            data.append(byte)
+        }
+        guard data.count == count else { return nil }
+        return Self(data: data, totalLength: range.totalLength, etag: etag)
+    }
+
+    static func strongETag(_ value: String?) -> String? {
+        guard let value, value.count >= 2, value.first == "\"", value.last == "\"",
+              value.utf8.dropFirst().dropLast().allSatisfy({
+                  $0 == 0x21 || (0x23...0x7e).contains($0) || $0 >= 0x80
+              }) else { return nil }
+        return value
+    }
+
+    static func validatorEvidence(_ response: HTTPURLResponse, upstreamURL: URL,
+                                  usesPinnedTrust: Bool, isBridge: Bool) -> [String: String] {
+        let etag = response.value(forHTTPHeaderField: "ETag")
+        let tagKind: String
+        if strongETag(etag) != nil {
+            tagKind = "strong"
+        } else if let etag {
+            tagKind = etag.hasPrefix("W/") && strongETag(String(etag.dropFirst(2))) != nil ? "weak" : "invalid"
+        } else {
+            tagKind = "missing"
+        }
+        return [
+            "originalETagKind": tagKind,
+            "originalLastModifiedPresent": String(response.value(forHTTPHeaderField: "Last-Modified") != nil),
+            "originalURLUnchanged": String(response.url == upstreamURL),
+            "originalPrefixCompatibleHeaders": String(acceptsRepresentation(response)),
+            "originalPrefixTransportSupported": String(!usesPinnedTrust && !isBridge)
+        ]
+    }
+
+    static func acceptsRepresentation(_ response: HTTPURLResponse) -> Bool {
+        let cacheControl = response.value(forHTTPHeaderField: "Cache-Control") ?? ""
+        let vary = response.value(forHTTPHeaderField: "Vary")?.lowercased() ?? ""
+        return (response.value(forHTTPHeaderField: "Content-Encoding").map { $0.lowercased() == "identity" } ?? true)
+            && !cacheControl.lowercased().split(separator: ",").contains {
+                $0.trimmingCharacters(in: .whitespaces) == "no-store"
+            }
+            && (vary.isEmpty || vary == "accept-encoding")
     }
 }
 
@@ -3805,6 +4760,212 @@ private final class PlaybackPlaylistContext {
     }
 }
 
+#if DEBUG
+/// The experimental candidate owns at most one ordinary full TS response.
+/// URLSession callbacks, peer attachment and route revocation share the proxy queue.
+private final class PlaybackCandidateSegmentRetry: NSObject, URLSessionDataDelegate, @unchecked Sendable {
+    private struct Peer {
+        let connection: NWConnection
+        let fallback: () -> Void
+    }
+    private static let maximumBytes = 4 * 1024 * 1024
+    private let url: URL
+    private let clientSession: String?
+    private let queue: DispatchQueue
+    private let trace: String?
+    private let finished: () -> Void
+    private var peers: [ObjectIdentifier: Peer] = [:]
+    private var acceptedPeers = 0
+    private var session: URLSession?
+    private var expectedBytes: Int?
+    private var body = Data()
+    private var accepting = true
+    private var ended = false
+
+    init(url: URL, clientSession: String?, queue: DispatchQueue, trace: String?, finished: @escaping () -> Void) {
+        self.url = url
+        self.clientSession = clientSession
+        self.queue = queue
+        self.trace = trace
+        self.finished = finished
+    }
+
+    static func segmentURLs(_ data: Data, mediaURL: URL, root: URL) -> Set<URL>? {
+        func sameOrigin(_ url: URL) -> Bool {
+            url.scheme == root.scheme && url.host == root.host && url.port == root.port
+                && url.user == nil && url.password == nil && url.fragment == nil
+        }
+        guard sameOrigin(mediaURL), let text = String(data: data, encoding: .utf8) else { return nil }
+        let lines = text.components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
+        guard lines.first == "#EXTM3U", lines.last == "#EXT-X-ENDLIST" else { return nil }
+        let context = PlaybackPlaylistContext(mediaURL)
+        var urls = Set<URL>()
+        var pendingSegment = false
+        for line in lines.dropFirst().dropLast() {
+            if line.hasPrefix("#EXTINF:") {
+                guard !pendingSegment,
+                      let seconds = Double(line.dropFirst(8).prefix { $0 != "," }),
+                      seconds.isFinite, seconds > 0 else { return nil }
+                pendingSegment = true
+            } else if line.hasPrefix("#") {
+                guard !pendingSegment,
+                      line == "#EXT-X-INDEPENDENT-SEGMENTS" || line == "#EXT-X-PLAYLIST-TYPE:VOD"
+                        || ["#EXT-X-VERSION:", "#EXT-X-TARGETDURATION:", "#EXT-X-MEDIA-SEQUENCE:"]
+                            .contains(where: { line.hasPrefix($0) }) else { return nil }
+            } else {
+                guard pendingSegment, urls.count < 8192, let url = context.resolve(line),
+                      sameOrigin(url), url.pathExtension.lowercased() == "ts" else { return nil }
+                pendingSegment = false
+                urls.insert(url)
+            }
+        }
+        return !pendingSegment && !urls.isEmpty ? urls : nil
+    }
+
+    func join(_ connection: NWConnection, url: URL, clientSession: String?,
+              fallback: @escaping () -> Void) -> Bool {
+        guard self.url == url, self.clientSession == clientSession, accepting, acceptedPeers < 4 else { return false }
+        let id = ObjectIdentifier(connection)
+        acceptedPeers += 1
+        peers[id] = Peer(connection: connection, fallback: fallback)
+        connection.stateUpdateHandler = { [weak self] state in
+            switch state {
+            case .failed, .cancelled: self?.removePeer(id)
+            default: break
+            }
+        }
+        record(acceptedPeers == 1 ? "candidateSegmentProbeStarted" : "candidateSegmentProbeJoined")
+        return true
+    }
+
+    func start() {
+        let delegateQueue = OperationQueue()
+        delegateQueue.maxConcurrentOperationCount = 1
+        delegateQueue.underlyingQueue = queue
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.httpCookieStorage = nil
+        configuration.httpShouldSetCookies = false
+        configuration.urlCredentialStorage = nil
+        configuration.urlCache = nil
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        let session = URLSession(configuration: configuration, delegate: self, delegateQueue: delegateQueue)
+        self.session = session
+        var request = URLRequest(url: url)
+        request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
+        if let token = AuthenticatedMediaProxyTransfer.authenticationToken(from: url) {
+            request.setValue(token, forHTTPHeaderField: "X-Emby-Token")
+        }
+        session.dataTask(with: request).resume()
+        queue.asyncAfter(deadline: .now() + .seconds(6)) { [weak self] in
+            guard let self, !self.ended else { return }
+            if self.accepting { self.fallback() }
+            else { self.cancel() }
+        }
+    }
+
+    func urlSession(_ session: URLSession, task: URLSessionTask,
+                    willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest,
+                    completionHandler: @escaping (URLRequest?) -> Void) {
+        completionHandler(nil)
+    }
+
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse,
+                    completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+        guard accepting, let response = response as? HTTPURLResponse,
+              response.url == url, response.statusCode == 200,
+              response.value(forHTTPHeaderField: "Content-Range") == nil,
+              (response.value(forHTTPHeaderField: "Content-Encoding")?.lowercased() ?? "identity") == "identity",
+              response.value(forHTTPHeaderField: "Vary") == nil,
+              response.value(forHTTPHeaderField: "Set-Cookie") == nil,
+              ["video/mp2t", "application/octet-stream"].contains(response.mimeType?.lowercased() ?? ""),
+              (1...Int64(Self.maximumBytes)).contains(response.expectedContentLength) else {
+            completionHandler(.cancel)
+            if accepting { fallback() }
+            return
+        }
+        expectedBytes = Int(response.expectedContentLength)
+        completionHandler(.allow)
+    }
+
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        guard accepting else { return }
+        guard let expectedBytes, data.count <= expectedBytes - body.count else { fallback(); return }
+        body.append(data)
+    }
+
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        guard accepting else { return }
+        guard error == nil, let expectedBytes, body.count == expectedBytes else { fallback(); return }
+        accepting = false
+        session.finishTasksAndInvalidate()
+        self.session = nil
+        record("candidateSegmentProbeReady")
+        let header = Data(("HTTP/1.1 200 OK\r\nContent-Type: video/mp2t\r\n"
+            + "Content-Length: \(body.count)\r\nCache-Control: no-store\r\nConnection: close\r\n\r\n").utf8)
+        let response = body
+        body = Data()
+        for (id, peer) in peers {
+            peer.connection.batch {
+                peer.connection.send(content: header, completion: .idempotent)
+                peer.connection.send(content: response, isComplete: true, completion: .contentProcessed { [weak self] error in
+                    if error == nil { self?.record("candidateSegmentProbeDelivered", bytes: response.count) }
+                    self?.removePeer(id)
+                })
+            }
+        }
+        if peers.isEmpty { end() }
+    }
+
+    private func record(_ stage: String, bytes: Int? = nil) {
+        DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.proxy_transfer_finished", details: [
+                "stage": stage, "playbackTraceID": PlaybackProxyRequestDiagnostics.safeTrace(trace),
+                "acceptedReaders": String(acceptedPeers), "bytes": String(bytes ?? body.count)
+            ])
+    }
+
+    private func removePeer(_ id: ObjectIdentifier) {
+        guard let peer = peers.removeValue(forKey: id) else { return }
+        peer.connection.stateUpdateHandler = nil
+        peer.connection.cancel()
+        if !accepting, peers.isEmpty { end() }
+    }
+
+    private func fallback() {
+        record("candidateSegmentProbeFallback")
+        let remaining = peers.values
+        peers.removeAll()
+        end()
+        for peer in remaining {
+            peer.connection.stateUpdateHandler = nil
+            peer.fallback()
+        }
+    }
+
+    func cancel() {
+        record("candidateSegmentProbeCancelled")
+        let remaining = peers.values
+        peers.removeAll()
+        end()
+        for peer in remaining {
+            peer.connection.stateUpdateHandler = nil
+            peer.connection.cancel()
+        }
+    }
+
+    private func end() {
+        guard !ended else { return }
+        ended = true
+        accepting = false
+        body = Data()
+        session?.invalidateAndCancel()
+        session = nil
+        finished()
+    }
+}
+#endif
+
 private final class PlaybackPlaylistChildren {
     private struct Child {
         let uri: String
@@ -3916,7 +5077,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     // Metrics can arrive after finish() releases session. Preserve the selected
     // transport instead of comparing optional session identities at callback time.
     private var selectedTransportScope = "unselected"
-    private let connection: NWConnection
+    private var connection: NWConnection?
     private let upstreamURL: URL
     private let method: String
     private let requestHeaders: [String: String]
@@ -3958,6 +5119,14 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private var resolvingSuffixLength = false
     private var suffixTotalLength: Int64?
     private var suffixValidator: String?
+    private var originalPrefix: PlaybackOriginalStartupPrefix?
+    private var originalPrefixValidator: (etag: String, totalLength: Int64)?
+    private var pendingOriginalPrefixBytes = 0
+    private let preparesOriginalResponse: Bool
+    private var heldOriginalHeader: Data?
+    private var heldOriginalCompletion = false
+    private var preparedOriginalIdentity: (url: URL?, total: Int64, etag: String?)?
+    private var preparedOriginalTaskID: Int?
     private var lastStatusCode: Int?
     private let isStartupPrimer: Bool
     private let startedAt = Date()
@@ -3995,6 +5164,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private let sendChunkSize = 512 * 1024
     private let highWaterMark = 4 * 1024 * 1024
     private let lowWaterMark = 1 * 1024 * 1024
+    private let preparedHighWaterMark = 64 * 1024
+    private let preparedMaximumBytes = 256 * 1024
     private let maximumConsecutiveRetryFailures = 5
     private let maximumMediaSegmentBytes = MediaRangePolicy.upstreamWindowBytes
 
@@ -4066,12 +5237,13 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     }
 
     init(
-        connection: NWConnection,
+        connection: NWConnection?,
         upstreamURL: URL,
         method: String,
         requestHeaders: [String: String],
         diagnosticTransferID: UUID = UUID(),
         isStartupPrimer: Bool = false,
+        originalPrefix: PlaybackOriginalStartupPrefix? = nil,
         allowsSelfSignedCertificates: Bool,
         pinnedTransport: PlaybackPinnedRouteTransport?,
         prefersFiniteRangeResponse: Bool,
@@ -4090,10 +5262,12 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         completion: @escaping () -> Void
     ) {
         self.connection = connection
+        self.preparesOriginalResponse = connection == nil
         self.upstreamURL = upstreamURL
         self.method = method
         self.requestHeaders = requestHeaders
         self.isStartupPrimer = isStartupPrimer
+        self.originalPrefix = originalPrefix
         self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
         self.pinnedTransport = pinnedTransport
         self.prefersFiniteRangeResponse = prefersFiniteRangeResponse
@@ -4142,7 +5316,74 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         }
     }
 
+    // This optional transfer uses the proxy queue for both the upstream
+    // delegate and client attachment. Neither side can race the handoff.
+    func startOriginalPreparation(on queue: DispatchQueue) {
+        configureIsolatedSession(underlyingQueue: queue)
+        selectedTransportScope = "preparedOriginal"
+        startUpstreamTask()
+    }
+
+    func abandonOriginalPreparation() {
+        guard connection == nil else { return }
+        finish(with: URLError(.cancelled), source: "originalPreparationAbandoned")
+    }
+
+    func adoptOriginalPreparation(_ connection: NWConnection, initialReadComplete: Bool,
+                                  initialReadError: NWError?) -> Bool {
+        guard self.connection == nil, !isFinished, initialReadError == nil else { return false }
+        self.connection = connection
+        observeClient(connection, initialReadComplete: initialReadComplete, initialReadError: nil)
+        pendingOriginalPrefixBytes = pendingBodyBytes
+        DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.proxy_transfer_started", details: diagnosticDetails([
+                "stage": "originalResponseAdopted",
+                "preparedBytes": String(pendingOriginalPrefixBytes),
+                "headersReady": String(heldOriginalHeader != nil)
+            ]))
+        if pendingOriginalPrefixBytes > 0 {
+            PlaybackDownloadMeter.shared.receive(bytes: pendingOriginalPrefixBytes, traceID: playbackTraceID)
+        }
+        if let header = heldOriginalHeader {
+            heldOriginalHeader = nil
+            sendResponseHeader(header, on: connection)
+        }
+        drainBufferedBody()
+        if heldOriginalCompletion { completeMediaBody(after: nil) }
+        return true
+    }
+
     func start(initialReadComplete: Bool, initialReadError: NWError?) {
+        guard let connection else { return }
+        observeClient(connection, initialReadComplete: initialReadComplete, initialReadError: initialReadError)
+        if isPlaylist, method == "GET", requestHeaders["range"] == nil,
+           let token = playlistToken,
+           let cached = vodPlaylistCache.data(route: token, url: upstreamURL) {
+            playlistBody = cached
+            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.proxy_transfer_started",
+                details: diagnosticDetails(["stage": "vodPlaylistCacheHit", "bytes": String(cached.count)]))
+            sendPlaylist()
+            return
+        }
+        let firstRange = originalPrefix.map {
+            "bytes=\($0.data.count)-\(min(maximumMediaSegmentBytes, $0.totalLength) - 1)"
+        }
+        if !allowsSelfSignedCertificates {
+            usesSharedTransport = true
+            selectedTransportScope = "systemShared"
+            session = Self.transportSession
+        } else if let pinnedTransport, pinnedTransport.accepts(upstreamURL) {
+            usesSharedTransport = true
+            selectedTransportScope = "pinnedRoute"
+            session = pinnedTransport.session
+        } else {
+            configureIsolatedSession()
+        }
+        startUpstreamTask(rangeOverride: firstRange)
+    }
+
+    private func observeClient(_ connection: NWConnection, initialReadComplete: Bool, initialReadError: NWError?) {
         connection.stateUpdateHandler = { [weak self] state in
             switch state {
             case .cancelled:
@@ -4159,51 +5400,34 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         } else {
             observeClientReadEnd()
         }
-        if isPlaylist, method == "GET", requestHeaders["range"] == nil,
-           let token = playlistToken,
-           let cached = vodPlaylistCache.data(route: token, url: upstreamURL) {
-            playlistBody = cached
-            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
-                messageKey: "diagnostics.media.proxy_transfer_started",
-                details: diagnosticDetails(["stage": "vodPlaylistCacheHit", "bytes": String(cached.count)]))
-            sendPlaylist()
-            return
-        }
-        if !allowsSelfSignedCertificates {
-            usesSharedTransport = true
-            selectedTransportScope = "systemShared"
-            session = Self.transportSession
-            startUpstreamTask()
-            return
-        }
-        if let pinnedTransport, pinnedTransport.accepts(upstreamURL) {
-            usesSharedTransport = true
-            selectedTransportScope = "pinnedRoute"
-            session = pinnedTransport.session
-            startUpstreamTask()
-            return
-        }
+    }
+
+    private func configureIsolatedSession(underlyingQueue: DispatchQueue? = nil) {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.timeoutIntervalForRequest = 30
         configuration.timeoutIntervalForResource = 24 * 60 * 60
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         configuration.httpMaximumConnectionsPerHost = 4
+        if underlyingQueue != nil {
+            configuration.httpCookieStorage = nil
+            configuration.urlCredentialStorage = nil
+        }
         configuration.allowsCellularAccess = true
         configuration.allowsExpensiveNetworkAccess = true
         configuration.waitsForConnectivity = true
         let delegateQueue = OperationQueue()
         delegateQueue.maxConcurrentOperationCount = 1
+        delegateQueue.underlyingQueue = underlyingQueue
         let session = URLSession(configuration: configuration, delegate: self, delegateQueue: delegateQueue)
         selectedTransportScope = "isolated"
         self.session = session
-        startUpstreamTask()
     }
 
     // TCP receive completion describes the peer's write direction. A valid
     // GET may send FIN and still read our entire response. Observe EOF/errors
     // without cancelling upstream or changing the existing send/state rules.
     private func observeClientReadEnd() {
-        guard !isFinished else { return }
+        guard let connection, !isFinished else { return }
         connection.receive(minimumIncompleteLength: 1, maximumLength: 32 * 1024) {
             [weak self] data, _, isComplete, error in
             guard let self else { return }
@@ -4308,7 +5532,10 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         if let activeRange {
             request.setValue(activeRange, forHTTPHeaderField: "Range")
         }
-        if let suffixValidator { request.setValue(suffixValidator, forHTTPHeaderField: "If-Range") }
+        if let validator = originalPrefix?.etag ?? originalPrefixValidator?.etag
+            ?? preparedOriginalIdentity?.etag ?? suffixValidator {
+            request.setValue(validator, forHTTPHeaderField: "If-Range")
+        }
         guard let session else {
             finish(with: URLError(.cancelled))
             return
@@ -4316,6 +5543,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         let task = session.dataTask(with: request)
         if usesSharedTransport { task.delegate = self }
         self.task = task
+        if preparesOriginalResponse && upstreamTaskIndex == 1 { preparedOriginalTaskID = task.taskIdentifier }
         taskDiagnostics.issued(taskID: task.taskIdentifier, now: ProcessInfo.processInfo.systemUptime)
         if method == "GET" {
             DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
@@ -4335,7 +5563,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                     willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest,
                     completionHandler: @escaping (URLRequest?) -> Void) {
         // Optional work must never follow another endpoint with inherited auth.
-        completionHandler(isStartupPrimer ? nil : request)
+        completionHandler(connection == nil || isStartupPrimer || originalPrefix != nil
+            || originalPrefixValidator != nil ? nil : request)
     }
 
     func urlSession(
@@ -4401,6 +5630,25 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         }
         let contentRange = response.value(forHTTPHeaderField: "Content-Range")
         let parsedRange = MediaRangePolicy.contentRange(from: contentRange)
+        if let identity = preparedOriginalIdentity,
+           response.url != identity.url || parsedRange?.totalLength != identity.total
+            || (identity.etag != nil && response.value(forHTTPHeaderField: "ETag") != identity.etag) {
+            completionHandler(.cancel)
+            rejectUpstreamResponse()
+            return
+        }
+        if let prefix = originalPrefix, !matchesOriginalPrefix(response, range: parsedRange,
+                                                               etag: prefix.etag, totalLength: prefix.totalLength) {
+            completionHandler(.cancel)
+            restartOriginalWithoutPrefix()
+            return
+        }
+        if let validator = originalPrefixValidator, !matchesOriginalPrefix(response, range: parsedRange,
+                                            etag: validator.etag, totalLength: validator.totalLength) {
+            completionHandler(.cancel)
+            rejectUpstreamResponse()
+            return
+        }
         if !isHLSChildRequest, !didSendResponseHeaders, response.statusCode == 416 {
             completionHandler(.cancel)
             let total = contentRange.flatMap { value -> Int64? in
@@ -4502,11 +5750,16 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         }
 
         didSendResponseHeaders = true
-        responseStartOffset = parsedRange?.start ?? 0
+        responseStartOffset = originalPrefix == nil ? parsedRange?.start ?? 0 : 0
         responseEndOffset = parsedRange?.end
         if let contentLength = response.value(forHTTPHeaderField: "Content-Length"),
            let parsedLength = Int64(contentLength), parsedLength >= 0 {
             expectedBodyBytes = parsedLength
+        }
+        if preparesOriginalResponse, let parsedRange {
+            preparedOriginalIdentity = (response.url, parsedRange.totalLength,
+                PlaybackOriginalStartupPrefix.strongETag(response.value(forHTTPHeaderField: "ETag")))
+            expectedBodyBytes = parsedRange.bodyLength
         }
         let shouldExposeContinuousRange = clientUsesContinuousRangeResponse && parsedRange != nil
         DiagnosticLogStore.shared.record(
@@ -4522,7 +5775,12 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 "clientResponse": shouldExposeContinuousRange
                     ? "continuousRange"
                     : (clientUsesChunkedMediaResponse ? "chunkedRange" : "finiteRange")
-            ])
+            ].merging(
+                !isHLSChildRequest && method == "GET" && response.statusCode == 206
+                    ? PlaybackOriginalStartupPrefix.validatorEvidence(response, upstreamURL: upstreamURL,
+                        usesPinnedTrust: allowsSelfSignedCertificates, isBridge: upstreamIsNetworkLibraryBridge)
+                    : [:]
+            ) { _, new in new })
         )
         let reason = HTTPURLResponse.localizedString(forStatusCode: response.statusCode).capitalized
         var lines = ["HTTP/1.1 \(response.statusCode) \(reason)"]
@@ -4539,7 +5797,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             }
         }
         if shouldExposeContinuousRange,
-           let start = parsedRange?.start,
+           let start = responseStartOffset,
            let total = responseTotalLength,
            total > start {
             lines.append("Content-Length: \(total - start)")
@@ -4553,32 +5811,92 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         }
         lines.append("Cache-Control: no-store")
         lines.append("Connection: close")
-        let header = lines.joined(separator: "\r\n") + "\r\n\r\n"
-        connection.send(content: Data(header.utf8), completion: .contentProcessed { [weak self] error in
+        let header = Data((lines.joined(separator: "\r\n") + "\r\n\r\n").utf8)
+        if let connection {
+            sendResponseHeader(header, on: connection)
+        } else {
+            heldOriginalHeader = header
+        }
+        if let prefix = originalPrefix {
+            originalPrefix = nil
+            originalPrefixValidator = (prefix.etag, prefix.totalLength)
+            deliveredBodyBytes = Int64(prefix.data.count)
+            bodyBytesAtTaskStart = deliveredBodyBytes
+            bufferLock.lock()
+            pendingBodyChunks.append(prefix.data)
+            pendingBodyBytes += prefix.data.count
+            pendingOriginalPrefixBytes = prefix.data.count
+            bufferLock.unlock()
+            drainBufferedBody()
+        }
+        completionHandler(.allow)
+    }
+
+    private func sendResponseHeader(_ header: Data, on connection: NWConnection) {
+        connection.send(content: header, completion: .contentProcessed { [weak self] error in
             if let error { self?.finish(with: error, source: "clientHeaderSend") }
         })
-        completionHandler(.allow)
+    }
+
+    private func matchesOriginalPrefix(_ response: HTTPURLResponse, range: MediaRangePolicy.ContentRange?,
+                                       etag: String, totalLength: Int64) -> Bool {
+        guard response.statusCode == 206, response.url == upstreamURL, let range,
+              range.start == activeRequestedRangeStart, range.totalLength == totalLength,
+              let activeRequestedRange,
+              case let .offset(_, end?) = MediaRangePolicy.requestedRange(activeRequestedRange),
+              range.end <= end, response.expectedContentLength == range.bodyLength,
+              response.value(forHTTPHeaderField: "ETag") == etag else { return false }
+        return PlaybackOriginalStartupPrefix.acceptsRepresentation(response)
+    }
+
+    private func restartOriginalWithoutPrefix() {
+        originalPrefix = nil
+        DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.proxy_transfer_started",
+            details: diagnosticDetails(["stage": "originalPrefixRejected"]))
+        startUpstreamTask()
     }
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         guard !isFinished, task === dataTask else { return }
+        if preparesOriginalResponse, let expectedBodyBytes,
+           Int64(data.count) > expectedBodyBytes - (deliveredBodyBytes - bodyBytesAtTaskStart) {
+            finish(with: URLError(.cannotParseResponse), source: "preparedOriginalInvalidBodyLength")
+            return
+        }
         taskDiagnostics.receivedBody(taskID: dataTask.taskIdentifier, bytes: Int64(data.count),
             now: ProcessInfo.processInfo.systemUptime)
         if isPlaylist {
             playlistBody.append(data)
             return
         }
-        deliveredBodyBytes += Int64(data.count)
         bufferLock.lock()
+        let waitingForOriginalClient = connection == nil
+        if waitingForOriginalClient && data.count > preparedMaximumBytes - pendingBodyBytes {
+            bufferLock.unlock()
+            finish(with: URLError(.dataLengthExceedsMaximum), source: "originalPreparationOverflow")
+            return
+        }
+        deliveredBodyBytes += Int64(data.count)
         pendingBodyChunks.append(Data(data))
         pendingBodyBytes += data.count
-        if pendingBodyBytes >= highWaterMark, suspendedDataTask == nil {
+        var pausedPreparationBytes: Int?
+        if pendingBodyBytes >= (waitingForOriginalClient ? preparedHighWaterMark : highWaterMark),
+           suspendedDataTask == nil {
             suspendedDataTask = dataTask
             suspendedSinceUptime = ProcessInfo.processInfo.systemUptime
             upstreamSuspendCount += 1
             dataTask.suspend()
+            if waitingForOriginalClient { pausedPreparationBytes = pendingBodyBytes }
         }
         bufferLock.unlock()
+        if let pausedPreparationBytes {
+            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.proxy_transfer_finished", details: diagnosticDetails([
+                    "stage": "originalResponsePreparationPaused", "preparedBytes": String(pausedPreparationBytes)
+                ]))
+        }
+        guard !waitingForOriginalClient else { return }
         recordBodyProgress(bytes: data.count)
         drainBufferedBody()
     }
@@ -4599,6 +5917,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         guard let window = bodyWindowSampler.receive(bytes: bytes, now: now,
             totalBackpressure: pressure, queuedBytes: queued,
             eligible: !upstreamIsNetworkLibraryBridge && !isHLSChildRequest
+                && !(preparesOriginalResponse && upstreamTaskIndex == 1)
                 && lastStatusCode == 206 && activeRequestedRange != nil) else { return }
         let capacity = window.capacity
         if let capacity {
@@ -4649,14 +5968,17 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             responseStart: transaction.responseStartDate,
             responseEnd: transaction.responseEndDate
         )
-        if !upstreamIsNetworkLibraryBridge, !isStartupPrimer, !observation.clientFinished, !isFinished, task === self.task,
+        let preparedWindow = task.taskIdentifier == preparedOriginalTaskID
+        if !upstreamIsNetworkLibraryBridge, !isStartupPrimer, !preparedWindow,
+           !observation.clientFinished, !isFinished, task === self.task,
            !isPlaylist, (!isHLSChildRequest || isHLSSegment), let measurementSeconds {
             PlaybackRecentThroughputStore.shared.record(
                 traceID: playbackTraceID,
                 bytes: task.countOfBytesReceived,
                 seconds: measurementSeconds,
                 backpressureSeconds: backpressureSeconds,
-                now: ProcessInfo.processInfo.systemUptime
+                now: ProcessInfo.processInfo.systemUptime,
+                isServerRendition: isHLSSegment
             )
         }
         func milliseconds(_ start: Date?, _ end: Date?) -> String {
@@ -4692,8 +6014,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 "redirectCount": String(metrics.redirectCount),
                 "taskIntervalMs": String(Int(metrics.taskInterval.duration * 1_000)),
                 "adaptiveMeasurementBoundary": upstreamIsNetworkLibraryBridge ? "ineligibleBridgeDelivery"
-                    : isHLSSegment ? "fetchToResponseEnd" : "responseBody",
-                "adaptiveTransferMs": upstreamIsNetworkLibraryBridge ? "unknown"
+                    : preparedWindow ? "ineligiblePreparedResponse" : isHLSSegment ? "fetchToResponseEnd" : "responseBody",
+                "adaptiveTransferMs": upstreamIsNetworkLibraryBridge || preparedWindow ? "unknown"
                     : measurementSeconds.map { String(Int($0 * 1_000)) } ?? "unknown",
                 "target": DiagnosticLogStore.redactedURL(upstreamURL),
                 "dnsMs": milliseconds(
@@ -4735,27 +6057,47 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         guard let observation = taskDiagnostics.callback(taskID: task.taskIdentifier, completed: true) else { return }
+        // Built key by key: the .merging() dictionary literal times out the type checker.
+        // Plain assignment overwrites duplicate keys, same as merging with { _, new in new }.
+        var mergedFields = observation.fields(at: ProcessInfo.processInfo.systemUptime)
+        mergedFields["stage"] = "upstreamTaskCompleted"
+        mergedFields["range"] = activeRequestedRange ?? "-"
+        mergedFields["taskReceivedBytes"] = String(observation.receivedBodyBytes)
+        mergedFields["cumulativeReceivedBytes"] = String(isPlaylist ? Int64(playlistBody.count) : deliveredBodyBytes)
+        mergedFields["expectedBytes"] = (isPlaylist ? playlistExpectedBodyBytes : expectedBodyBytes).map(String.init) ?? "-"
+        mergedFields["errorDomain"] = error.map { ($0 as NSError).domain } ?? "-"
+        mergedFields["errorCode"] = error.map { String(($0 as NSError).code) } ?? "-" 
         DiagnosticLogStore.shared.record(
             error == nil ? .info : .warning,
             categoryKey: "diagnostics.category.media",
             messageKey: "diagnostics.media.proxy_transfer_finished",
-            details: diagnosticDetails(observation.fields(at: ProcessInfo.processInfo.systemUptime).merging([
-                "stage": "upstreamTaskCompleted",
-                "range": activeRequestedRange ?? "-",
-                "taskReceivedBytes": String(observation.receivedBodyBytes),
-                "cumulativeReceivedBytes": String(isPlaylist ? Int64(playlistBody.count) : deliveredBodyBytes),
-                "expectedBytes": (isPlaylist ? playlistExpectedBodyBytes : expectedBodyBytes).map(String.init) ?? "-",
-                "errorDomain": error.map { ($0 as NSError).domain } ?? "-",
-                "errorCode": error.map { String(($0 as NSError).code) } ?? "-"
-            ]) { _, new in new })
+            details: diagnosticDetails(mergedFields)
         )
         // A late completion is evidence only; never resume a closed client.
         guard !isFinished, task === self.task else { return }
+        if originalPrefix != nil {
+            restartOriginalWithoutPrefix()
+            return
+        }
         if isPlaylist {
             guard error == nil else { finish(with: error); return }
             sendPlaylist()
             return
         }
+        if connection == nil {
+            // A complete first window can wait for its client. Starting a
+            // continuation here would consume media without a reader.
+            if error == nil, let expectedBodyBytes, deliveredBodyBytes == expectedBodyBytes {
+                heldOriginalCompletion = true
+            } else {
+                finish(with: error ?? URLError(.cannotParseResponse), source: "originalPreparationIncomplete")
+            }
+            return
+        }
+        completeMediaBody(after: error)
+    }
+
+    private func completeMediaBody(after error: Error?) {
         if retryInterruptedTransfer(after: error) {
             return
         }
@@ -4776,7 +6118,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     }
 
     private func sendPlaylist() {
-        guard !isFinished else { return }
+        guard let connection, !isFinished else { return }
         if playlistStatusCode == 200, activeRequestedRange == nil, let token = playlistToken {
             vodPlaylistCache.store(playlistBody, route: token, url: upstreamURL)
             if let text = String(data: playlistBody, encoding: .utf8),
@@ -4819,7 +6161,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                     "stage": "playlistClientHeaderSendCompleted",
                     "callbackAfterClientFinish": String(self.isFinished)
                 ]) { _, new in new }))
-            self.connection.send(content: body, isComplete: true, completion: .contentProcessed { [weak self] error in
+            connection.send(content: body, isComplete: true, completion: .contentProcessed { [weak self] error in
                 guard let self else { return }
                 if let error { self.finish(with: error) } else {
                     self.bufferLock.lock()
@@ -4838,7 +6180,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         })
     }
 
-    private static func authenticationToken(from url: URL) -> String? {
+    fileprivate static func authenticationToken(from url: URL) -> String? {
         guard let queryItems = URLComponents(
             url: url,
             resolvingAgainstBaseURL: false
@@ -4919,7 +6261,9 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     }
 
     private func drainBufferedBody() {
+        guard let connection else { return }
         var chunk: Data?
+        var originalPrefixBytes = 0
         var taskToResume: URLSessionDataTask?
         var shouldClose = false
 
@@ -4937,6 +6281,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                     pendingBodyBytes -= count
                 }
             }
+            originalPrefixBytes = min(chunk?.count ?? 0, pendingOriginalPrefixBytes)
+            pendingOriginalPrefixBytes -= originalPrefixBytes
             isSendingBody = true
         }
         if pendingBodyBytes <= lowWaterMark, let suspendedDataTask {
@@ -4958,6 +6304,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
 
         taskToResume?.resume()
         if let chunk {
+            let cachedBytes = originalPrefixBytes
             let wireChunk: Data
             if clientUsesChunkedMediaResponse {
                 wireChunk = Data("\(String(chunk.count, radix: 16))\r\n".utf8)
@@ -4985,11 +6332,20 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             let send = { [weak self] in
                 guard let self else { return }
                 guard !self.isFinished else { return }
-                self.connection.send(content: wireChunk, completion: .contentProcessed { [weak self] error in
+                connection.send(content: wireChunk, completion: .contentProcessed { [weak self] error in
                     guard let self else { return }
                     if let error {
                         self.finish(with: error, source: "clientBodySend")
                         return
+                    }
+                    if cachedBytes > 0 {
+                        DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                            messageKey: "diagnostics.media.proxy_transfer_finished", details: self.diagnosticDetails([
+                                "stage": self.preparesOriginalResponse ? "originalResponsePreparedBytesDelivered"
+                                    : "originalPrefixDelivered",
+                                "bytes": String(cachedBytes),
+                                "measurementBoundary": "clientDeliveryFromPreload"
+                            ]))
                     }
 #if DEBUG
                     var shapedWindow: (bytes: Int64, seconds: TimeInterval)?
@@ -5124,6 +6480,10 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     }
 
     private func rejectClientRange(totalLength: Int64? = nil) {
+        guard let connection else {
+            finish(with: URLError(.badURL), source: "originalPreparationInvalidRange")
+            return
+        }
         lastStatusCode = 416
         let lengthHeader = totalLength.map { "Content-Range: bytes */\($0)\r\n" } ?? ""
         let response = "HTTP/1.1 416 Range Not Satisfiable\r\n\(lengthHeader)Content-Length: 0\r\nConnection: close\r\n\r\n"
@@ -5134,6 +6494,10 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     }
 
     private func rejectUpstreamResponse() {
+        guard let connection else {
+            finish(with: URLError(.cannotParseResponse), source: "originalPreparationRejected")
+            return
+        }
         guard !didSendResponseHeaders else {
             finish(with: URLError(.cannotParseResponse), source: "invalidContinuationResponse")
             return
@@ -5249,8 +6613,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             messageKey: "diagnostics.media.proxy_transfer_finished",
             details: diagnosticDetails(terminalWithTransport)
         )
-        connection.stateUpdateHandler = nil
-        connection.cancel()
+        connection?.stateUpdateHandler = nil
+        connection?.cancel()
         if let task, task.state != .completed {
             taskDiagnostics.cancellationRequested(now: ProcessInfo.processInfo.systemUptime)
             DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",

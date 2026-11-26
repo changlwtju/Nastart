@@ -1,0 +1,79 @@
+{
+  "date": "2026-11-09",
+  "head": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+  "inheritedDirtyInputsPreserved": true,
+  "touchedSwiftFileSHA256": {
+    "ios/Nastart/Nastart/Features/Devices/DevicesView.swift": "8d31ed9846ab9edca8d75aa12172e54ee2669178874da0b9d82b39592747d16b",
+    "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift": "c5bcaad84e6c49f153321965417c636001191cb85036b5b0b3e387b4aa9b78f0"
+  },
+  "build": {
+    "configuration": "unsigned Debug iOS simulator",
+    "xcode": "27.2",
+    "runtime": "iOS 27.0",
+    "debugDylibSHA256": "5e23a9a66b7d7c3ccdf273347912c9c009c8b6dd7600dad5eb246bc13eeac359"
+  },
+  "test": {
+    "initialPassed": 7,
+    "finalPassed": 9,
+    "finalFailures": 0,
+    "passedTests": [
+      "testKSPlayerConsumesPreparedOriginalPrefixAndDecodesPreview",
+      "testNetworkLibraryBridgeThroughSharedProxyPreservesRangeAndRevokesLease",
+      "testObservationOnlyStartupReportsZeroActualPreload",
+      "testOriginalProxyProvidesContinuousLengthAcrossWindowsAndBackwardSeek",
+      "testOriginalProxyResolvesSuffixWithFiniteProbeAndRejectsInvalidRangesLocally",
+      "testOriginalReplacementDecodesPausedPreviewBeforeHandoff",
+      "testOriginalStartupPrefixFeedsContinuousRangeWithoutRefetchingHead",
+      "testOriginalStartupPrefixRevalidatesBeforeAnyOldBytesAreSent",
+      "testRevokedOriginalPrefixPreparationDoesNotPublishLateBytes"
+    ],
+    "blankSimulatorDeleted": true,
+    "origin": "local synthetic HTTP"
+  },
+  "prefix": {
+    "maximumBytes": 262144,
+    "originRequestResourceTimeoutSeconds": 2,
+    "readyRetentionSeconds": 2,
+    "maxPreparedSlots": 1,
+    "defaultAppCallerConnected": false,
+    "strongETagRequired": true
+  },
+  "http": {
+    "continuousStatus": 206,
+    "responseBytes": 33554448,
+    "identicalBody": true,
+    "originRanges": [
+      "0-3",
+      "4-33554431",
+      "33554432-33554447"
+    ],
+    "conditionalContinuations": 2,
+    "duplicatePrefixReads": 0,
+    "rejectedFirstContinuationCases": [
+      "changedETag",
+      "changedTotalLength",
+      "ignoredRange200"
+    ],
+    "revokedPreparationCannotPublish": true
+  },
+  "renderer": {
+    "name": "KSPlayer",
+    "generatedCodec": "H.264",
+    "preparedBytes": 512,
+    "deliveredBytes": 512,
+    "upstreamResumedAtOffset": 512,
+    "previewAligned": true,
+    "displayFirstFrameTimed": false
+  },
+  "defaultCoordinatorPreloadBytes": 0,
+  "limitations": {
+    "bridgeCoveredByPreload": false,
+    "selfSignedCoveredByPreload": false,
+    "hlsCoveredByPreload": false,
+    "speedGainEstablished": false,
+    "physicalDevicesOperated": 0,
+    "nasRequests": 0,
+    "signedDeviceBuilds": 0,
+    "addedMatrixPasses": 0
+  }
+}

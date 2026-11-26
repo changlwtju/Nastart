@@ -13,7 +13,7 @@
 | 真机诊断与采样 | `download_device_diagnostics.py`、`device_graphics_probe.py`、`device_packet_budget.py`、`ui_scroll_probe.py`、`tidevice_private.py` |
 | 播放链路与对照报告 | `playback_trace_report.py`、`playback_phase_report.py`、`playback_server_log_report.py`、`playback_handoff_alignment_report.py`、`playback_compare_entries.py`、`playback_compare_runs.py` |
 | 受控夹具与资源 | `playback_lab.py`、`playback_policy_simulator.py`、`generate_playback_fixture.swift`、`generate_audio_test_sample.py`、`match_video_reference.py` |
-| NAS Agent | `agent_smoke_test.py`、`install_agent_via_ssh.sh` |
+| NAS Agent | `publish_agent_image.sh`、`install_agent_via_ssh.sh`、`upgrade_agent_via_ssh.sh`、`agent_smoke_test.py` |
 | 调试保活 | `with_awake_mac.sh`；随任务生命周期持有临时断言，不改系统电源设置 |
 
 `test_*.py` 为相应工具的回归测试。旧安装/恢复工具只按[播放调试规范](../docs/handoffs/PLAYBACK-DEBUG-RUNBOOK.md)选用，不替代逐台最新包核验。
@@ -23,6 +23,8 @@
 `playback_server_log_report.py`以每次操作选中的首分片请求为5秒关联窗起点；存在唯一seek派发时先按实际派发/trace筛选，派发前旧流或其他trace的请求及其失败仍单列保留，多个派发保持歧义。没有派发标记时显式使用actionStart边界。保留HTTP失败、显式无响应/零正文、未知和候选失败阶段；时间/序号关联不证明服务端会话身份，不将清单等待、分片等待与实际解码/呈现合并为首帧。
 
 `playback_phase_report.py` 的 `startupSegmentAttempts` 保留每次首片请求及失败，按本地trace/child区分重请求，匿名导出等头、正文、读EOF、发送失败和取消。区间可能重叠，不相加；EOF不是取消证据，缺child时关联保持未知，不证明服务端任务归属。报告只重放私有快照，不发网络请求。
+
+`firstObservedSegmentAttempts` 按 trace 输出观察窗内播放器最早可见的分段请求，包含实际分段序号及同一 child 的重试。排除标记为预取的请求及首帧之后新发的请求，保留此前请求的迟到结果。旧 `startupSegmentAttempts` 继续按 0 号段报告。
 
 `playback_reserve_report.py` 的 `seekCapacityPhases` 按trace/plan/请求generation/track local epoch隔离，使用样本自身单调时钟拆请求→实际codec flush→转换后首回调→首接受→首次观测playable；时间基准、目标或首回调矛盾时派生耗时为未知。等待与就绪样本之间的空档不是轮询周期或可省时间；满视频队列也不证明packet+frame储备门槛已满足。`playback_seek_phase_report.py` 另列已归属的暂停预览输出及继续后的时钟恢复，明确主动暂停可能包含于恢复耗时；缺预览不证明当时正在播放。两者均为离线报告，不发媒体/设备请求，不替代屏幕与听音。
 

@@ -464,7 +464,14 @@ private struct NetworkMediaLibraryView: View {
             CreditReadDiagnostics.record("context", ["available": String(model.credits != nil)])
             await model.refresh()
         }
+        #if os(tvOS)
+        .navigationDestination(isPresented: $managing) {
+            NetworkConnectionsView(model: model, nas: nas, services: services, destinations: destinations)
+                .environment(\.networkAppearance, appearance)
+        }
+        #else
         .sheet(isPresented: $managing) { NetworkConnectionsView(model: model, nas: nas, services: services, destinations: destinations) }
+        #endif
         .sheet(isPresented: $adding) { NetworkSourceAddView(model: model) }
         .sheet(item: $reusing) { NetworkExistingConnectionView(model: model, library: $0.library, connection: $0.connection) }
         // Pushing a library hides this page too. The shared model owns scans
@@ -749,47 +756,62 @@ private struct NetworkConnectionsView: View {
     @State private var editingFolder: NetworkLibrary?
     @State private var managingConnection: NetworkStorageConnection?
     var body: some View {
-        let savedConnections = model.savedWebDAVConnections
+        presentation
+            .sheet(isPresented: $adding, onDismiss: { if addedFromSheet { dismiss() } }) {
+                NetworkSourceAddView(model: model, showsSavedConnections: false, onAdded: { addedFromSheet = true })
+            }
+            .sheet(item: $reusing, onDismiss: { if addedFromSheet { dismiss() } }) {
+                NetworkExistingConnectionView(model: model, library: $0.library, connection: $0.connection, onAdded: { addedFromSheet = true })
+            }
+            .sheet(item: $managingConnection) { NetworkConnectionDetails(model: model, connection: $0) }
+            .sheet(item: $editingFolder) { library in
+                NetworkLibraryFolderEditor(library: library, model: model) {}
+            }
+    }
+    @ViewBuilder private var presentation: some View {
+        #if os(tvOS)
+        connectionsPage
+            .accessibilityIdentifier("network.connections.page")
+        #else
         NavigationStack {
-            NetworkConnectionsPage(hasStorage: nas != nil || !savedConnections.isEmpty,
-                hasFolders: !model.libraries.isEmpty, hasServices: destinations != nil || services != nil,
-                add: { adding = true }) {
-                    if let nas { Label(nas.name + networkL(" · 当前 NAS 登录配置"), systemImage: "externaldrive.fill") }
-                    ForEach(savedConnections) { library in
-                        Button { if let connection = library.connection { managingConnection = connection } else { reusing = library } } label: {
-                            NetworkStoredConnectionLabel(name: library.name, managesSettings: library.connection != nil, kind: networkStorageKind(library.connection?.address ?? library.library?.address ?? ""))
-                        }.accessibilityIdentifier("network.connection.reuse")
-                    }
-            } folders: {
-                ForEach(model.libraries) { library in
-                    Button { editingFolder = library } label: {
-                        NetworkMediaFolderLabel(name: library.name, path: library.folderPath, source: sourceName(library))
-                    }.accessibilityIdentifier("network.connection.editFolder")
+            connectionsPage.toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button("完成") { dismiss() } }
+            }
+        }
+        #endif
+    }
+
+    private var connectionsPage: some View {
+        let savedConnections = model.savedWebDAVConnections
+        return NetworkConnectionsPage(hasStorage: nas != nil || !savedConnections.isEmpty,
+            hasFolders: !model.libraries.isEmpty, hasServices: destinations != nil || services != nil, usesNativeBack: true,
+            add: { adding = true }) {
+                if let nas { Label(nas.name + networkL(" · 当前 NAS 登录配置"), systemImage: "externaldrive.fill") }
+                ForEach(savedConnections) { library in
+                    Button { if let connection = library.connection { managingConnection = connection } else { reusing = library } } label: {
+                        NetworkStoredConnectionLabel(name: library.name, managesSettings: library.connection != nil, kind: networkStorageKind(library.connection?.address ?? library.library?.address ?? ""))
+                    }.accessibilityIdentifier("network.connection.reuse")
                 }
-            } services: {
-                    if let destinations, services?.candidates.contains(where: \.hasSavedLogin) != true {
-                        NavigationLink { destinations.media } label: { NetworkActionLabel(title: "连接 Jellyfin", symbol: "play.rectangle", semanticText: true) }
-                            .accessibilityIdentifier("network.connection.media")
-                    }
-                    if let services {
-                        NavigationLink {
-                            NetworkContentPage(title: "媒体服务") { NetworkMediaServicesSection(context: services) }
-                        } label: { NetworkActionLabel(title: "发现与管理媒体服务", symbol: "network", subtitle: "Jellyfin、Emby、Plex 与音乐服务", semanticText: true) }
-                            .accessibilityIdentifier("network.services.manage")
-                    }
-            }.toolbar { ToolbarItem(placement: .cancellationAction) { Button("完成") { dismiss() } } }
-        }
-        .sheet(isPresented: $adding, onDismiss: { if addedFromSheet { dismiss() } }) {
-            NetworkSourceAddView(model: model, showsSavedConnections: false, onAdded: { addedFromSheet = true })
-        }
-        .sheet(item: $reusing, onDismiss: { if addedFromSheet { dismiss() } }) {
-            NetworkExistingConnectionView(model: model, library: $0.library, connection: $0.connection, onAdded: { addedFromSheet = true })
-        }
-        .sheet(item: $managingConnection) { NetworkConnectionDetails(model: model, connection: $0) }
-        .sheet(item: $editingFolder) { library in
-            NetworkLibraryFolderEditor(library: library, model: model) {}
+        } folders: {
+            ForEach(model.libraries) { library in
+                Button { editingFolder = library } label: {
+                    NetworkMediaFolderLabel(name: library.name, path: library.folderPath, source: sourceName(library))
+                }.accessibilityIdentifier("network.connection.editFolder")
+            }
+        } services: {
+            if let destinations, services?.candidates.contains(where: \.hasSavedLogin) != true {
+                NavigationLink { destinations.media } label: { NetworkActionLabel(title: "连接 Jellyfin", symbol: "play.rectangle", semanticText: true) }
+                    .accessibilityIdentifier("network.connection.media")
+            }
+            if let services {
+                NavigationLink {
+                    NetworkContentPage(title: "媒体服务") { NetworkMediaServicesSection(context: services) }
+                } label: { NetworkActionLabel(title: "发现与管理媒体服务", symbol: "network", subtitle: "Jellyfin、Emby、Plex 与音乐服务", semanticText: true) }
+                    .accessibilityIdentifier("network.services.manage")
+            }
         }
     }
+
     private func sourceName(_ library: NetworkLibrary) -> String {
         if let connection = model.connections.first(where: { $0.id == library.connectionID }) {
             return connection.name + " · " + networkStorageKind(connection.address)
@@ -835,12 +857,13 @@ private struct NetworkConnectionsPage<Storage: View, Folders: View, Services: Vi
     let hasFolders: Bool
     let hasServices: Bool
     var note: String?
+    var usesNativeBack = false
     let add: () -> Void
     @ViewBuilder let storage: Storage
     @ViewBuilder let folders: Folders
     @ViewBuilder let services: Services
     var body: some View {
-        NetworkContentPage(title: "连接管理") {
+        NetworkContentPage(title: "连接管理", usesNativeBack: usesNativeBack) {
             NetworkContentSection(title: "存储连接") {
                 if !hasStorage {
                     Text("还没有可管理的存储连接，添加后可选择媒体文件夹。")

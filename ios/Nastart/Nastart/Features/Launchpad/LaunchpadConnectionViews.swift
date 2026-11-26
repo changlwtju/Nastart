@@ -1120,8 +1120,13 @@ struct AgentSetupGuideView: View {
         .nastartReadableWidth().nastartPageTheme()
         .navigationTitle("connect.agent.guide")
         .task {
-            guard agentAddress.isEmpty, let host = connectionStore.dsmSession?.baseURL.host else { return }
-            agentAddress = "http://\(host):8787"
+            guard agentAddress.isEmpty else { return }
+            if let connection = connectionStore.agentConnection {
+                agentAddress = connection.baseURLString
+                allowsSelfSignedCertificates = connection.allowsSelfSignedCertificates
+            } else if let host = connectionStore.dsmSession?.baseURL.host {
+                agentAddress = "http://\(host):8787"
+            }
         }
         .alert("connect.agent.copy_hint", isPresented: $showCopyHint) {
             Button("action.ok", role: .cancel) {}
@@ -1159,7 +1164,13 @@ struct AgentSetupGuideView: View {
                 }
             } catch {
                 await MainActor.run {
-                    errorMessage = error.localizedDescription
+                    if let error = error as? AgentClientError {
+                        errorMessage = error.localizedDescription
+                    } else if error is URLError {
+                        errorMessage = NSLocalizedString("agent.health.unreachable", comment: "")
+                    } else {
+                        errorMessage = NSLocalizedString("agent.health.unknown", comment: "")
+                    }
                     isPairing = false
                 }
             }

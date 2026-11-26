@@ -35,9 +35,13 @@ struct AgentHealthSnapshot: Codable, Equatable {
     let failureReasonKey: String?
 
     var state: AgentHealthState {
+        state(at: Date())
+    }
+
+    func state(at date: Date) -> AgentHealthState {
         if failureReasonKey != nil { return .failed }
         guard let lastSeenAt else { return .stale }
-        return Date().timeIntervalSince(lastSeenAt) >= Self.staleInterval ? .stale : .connected
+        return date.timeIntervalSince(lastSeenAt) >= Self.staleInterval ? .stale : .connected
     }
 
     var isExpired: Bool {
@@ -148,7 +152,9 @@ enum AgentClientError: LocalizedError {
 
     var healthReasonKey: String {
         switch self {
-        case .unauthorized, .pairingRejected:
+        case .unauthorized:
+            return "agent.health.identity_changed"
+        case .pairingRejected:
             return "agent.health.auth_failed"
         case .unsupportedAPIVersion:
             return "agent.health.unsupported"
@@ -165,7 +171,7 @@ enum AgentClientError: LocalizedError {
         case .insecureAddress: return NSLocalizedString("agent.error.insecure_address", comment: "")
         case .invalidResponse: return NSLocalizedString("agent.error.invalid_response", comment: "")
         case .pairingRejected: return NSLocalizedString("agent.error.pairing_rejected", comment: "")
-        case .unauthorized: return NSLocalizedString("agent.error.unauthorized", comment: "")
+        case .unauthorized: return NSLocalizedString(healthReasonKey, comment: "")
         case .unsupportedAPIVersion: return NSLocalizedString("agent.error.unsupported_version", comment: "")
         }
     }
@@ -252,8 +258,11 @@ final class AgentClient {
     func snapshot(connection: StoredAgentConnection) async throws -> AgentSnapshot {
         let data = try await authenticatedData(path: "/v1/snapshot", connection: connection)
         let snapshot = try JSONDecoder().decode(AgentSnapshot.self, from: data)
-        guard snapshot.apiVersion == 1, snapshot.agentId == connection.agentID else {
+        guard snapshot.apiVersion == 1 else {
             throw AgentClientError.unsupportedAPIVersion
+        }
+        guard snapshot.agentId == connection.agentID else {
+            throw AgentClientError.unauthorized
         }
         return snapshot
     }

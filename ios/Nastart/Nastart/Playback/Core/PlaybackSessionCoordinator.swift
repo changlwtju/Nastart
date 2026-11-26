@@ -31,7 +31,8 @@ actor PlaybackSessionCoordinator {
 
     func prepare(
         _ intent: PlaybackIntent,
-        engine: (any PlaybackEngine)? = nil
+        engine: (any PlaybackEngine)? = nil,
+        onPrimaryRouteSelected: (@Sendable (PlaybackPlan) -> Void)? = nil
     ) async throws -> PlaybackSessionStartupResult {
         let requestedAt = Date()
         await diagnostics.record(
@@ -55,6 +56,7 @@ actor PlaybackSessionCoordinator {
                 PlaybackMetricKeys.routeKind: plan.primaryRoute.routeKind.rawValue,
                 PlaybackMetricKeys.playMethod: plan.primaryRoute.playMethod.rawValue,
                 PlaybackMetricKeys.decodeEngine: plan.enginePolicy.rawValue,
+                "plannedStartSeconds": String(plan.timeline.startTime),
                 PlaybackMetricKeys.connectionAddressKind: plan.intent.connectionContext.addressKind.rawValue,
                 PlaybackMetricKeys.connectionScheme: plan.intent.connectionContext.scheme ?? "-",
                 PlaybackMetricKeys.connectionPort: plan.intent.connectionContext.port.map(String.init) ?? "-",
@@ -66,6 +68,7 @@ actor PlaybackSessionCoordinator {
                 PlaybackMetricKeys.ksPlayerLinked: String(PlaybackEngineAvailability.ksPlayerLinked)
             ]
         )
+        if !Task.isCancelled { onPrimaryRouteSelected?(plan) }
 
         let ioOpenStartedAt = Date()
         let ioContext = ioContextFactory(plan.primaryRoute)

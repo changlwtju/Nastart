@@ -1,0 +1,611 @@
+{
+  "device": "iPhone14,5 / iOS16.3.1 / USB",
+  "package": {
+    "mainSHA256": "64cf996e192fa3cfff2386c0369893f2bb45499dd8ba188956ca543a72af8f44",
+    "dylibSHA256": "542e9d2f8b419df3de7b6cdcefead301e473c8ff82c6553bdc117212ad2c8e0f",
+    "builtAt": "2026-11-09T07:29:40.140859+08:00",
+    "configuration": "signed normal Debug",
+    "sourceHEAD": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "profileExpires": "2026-11-15T00:30:17Z"
+  },
+  "appLaunchEnvironment": {
+    "NASTART_TEST_MEDIA_CAP_BPS": "45000000",
+    "NASTART_TEST_MEDIA_DELAY_SECONDS": "5",
+    "NASTART_TEST_MEDIA_DURATION_SECONDS": "75"
+  },
+  "sampleBytes": 128795641934,
+  "bothStartAtBeginning": true,
+  "bothAC3SubtitlesOff": true,
+  "differentAppPIDs": true,
+  "naturalUnshapedNetwork": false,
+  "nasCacheControlled": false,
+  "realScreenFirstFrameMeasured": false,
+  "postHandoffScreenshotsDark": true,
+  "ownedClientCleanupVerified": true,
+  "windows": [
+    {
+      "measurements": {
+        "manifestMs": 13739,
+        "decodeAfterManifestMs": 5822,
+        "decodeToAlignmentMs": 5037,
+        "totalAlignmentMs": 24598,
+        "candidateAheadAtDecodeSeconds": 5.133,
+        "commitPlayheadSeconds": 33.417,
+        "triggerDeliveryEstimateMbps": 25.81,
+        "triggerFromIntentSeconds": 19.248
+      },
+      "sampleSizeConfirmed": true,
+      "telemetrySamples": 63,
+      "maxMediaSeconds": 55.001,
+      "maxStallCount": 1,
+      "cappedClientDeliveryMbpsMedian": 26.03,
+      "ordinaryExit": true,
+      "events": [
+        {
+          "at": "2026-11-09T08:44:38.725744+08:00",
+          "event": "network_condition_changed",
+          "metrics": {
+            "networkClass": "wifi"
+          }
+        },
+        {
+          "at": "2026-11-09T08:44:38.726556+08:00",
+          "event": "intent_created",
+          "metrics": {}
+        },
+        {
+          "at": "2026-11-09T08:44:38.727337+08:00",
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "at": "2026-11-09T08:44:38.728419+08:00",
+          "event": "preload_cancelled",
+          "metrics": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "at": "2026-11-09T08:44:39.302359+08:00",
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "2"
+          }
+        },
+        {
+          "at": "2026-11-09T08:44:39.590360+08:00",
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "0.073",
+            "tapToFirstFrameMs": "968"
+          }
+        },
+        {
+          "at": "2026-11-09T08:44:43.785910+08:00",
+          "event": "proxy_transfer_started",
+          "metrics": {
+            "capBps": "45000000",
+            "elapsedSeconds": "5",
+            "stage": "debugThrottleStarted"
+          }
+        },
+        {
+          "at": "2026-11-09T08:44:46.366893+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "26631709",
+            "elapsedMs": "2581",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:44:48.877115+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "26830033",
+            "elapsedMs": "2510",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:44:51.677165+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "23972542",
+            "elapsedMs": "2799",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:44:54.276645+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "25807683",
+            "elapsedMs": "2601",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:44:56.698487+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "27790038",
+            "elapsedMs": "2421",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:44:57.974911+08:00",
+          "event": "automatic_downshift_requested",
+          "metrics": {
+            "deliveryCapacity": "25807683",
+            "deliveryCapacitySource": "completedTransfer",
+            "engine": "KSPlayer",
+            "reason": "deliveryBelowSourceBitrate",
+            "runtimeDemand": "71217515"
+          }
+        },
+        {
+          "at": "2026-11-09T08:44:58.753781+08:00",
+          "event": "playback_downshifted",
+          "metrics": {
+            "fromBitrate": "20000000",
+            "mode": "serverNegotiatedHLS",
+            "toBitrate": "12000000"
+          }
+        },
+        {
+          "at": "2026-11-09T08:44:58.756085+08:00",
+          "event": "network_condition_changed",
+          "metrics": {
+            "networkClass": "wifi"
+          }
+        },
+        {
+          "at": "2026-11-09T08:44:58.757650+08:00",
+          "event": "intent_created",
+          "metrics": {}
+        },
+        {
+          "at": "2026-11-09T08:44:58.759944+08:00",
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localHLS"
+          }
+        },
+        {
+          "at": "2026-11-09T08:44:58.765750+08:00",
+          "event": "replacement_warmup_started",
+          "metrics": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "at": "2026-11-09T08:44:59.405073+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "24924122",
+            "elapsedMs": "2694",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:45:02.008618+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "26137079",
+            "elapsedMs": "2568",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:45:04.562446+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "25921489",
+            "elapsedMs": "2589",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:45:06.831315+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "29497936",
+            "elapsedMs": "2280",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:45:09.540086+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "24803159",
+            "elapsedMs": "2706",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:45:12.543258+08:00",
+          "event": "replacement_candidate_manifest_prepared",
+          "metrics": {
+            "elapsedMs": "13738",
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "at": "2026-11-09T08:45:18.328072+08:00",
+          "event": "replacement_candidate_decoded",
+          "metrics": {
+            "availableReserveSeconds": "14.707",
+            "candidateSeconds": "33.515",
+            "elapsedMs": "19561",
+            "engine": "KSPlayer",
+            "framePTS": "33.49177777777778",
+            "liveSeconds": "28.382",
+            "manifestPrepareMs": "13739",
+            "preparationLeadSeconds": "11.0",
+            "prepareMs": "19561",
+            "rendererPrepareMs": "5822",
+            "target": "33.516"
+          }
+        },
+        {
+          "at": "2026-11-09T08:45:23.565816+08:00",
+          "event": "replacement_candidate_aligned",
+          "metrics": {
+            "availableReserveSeconds": "14.707",
+            "candidateSeconds": "33.515",
+            "elapsedMs": "24598",
+            "engine": "KSPlayer",
+            "framePTS": "33.49177777777778",
+            "liveSeconds": "33.417",
+            "manifestPrepareMs": "13739",
+            "preparationLeadSeconds": "11.0",
+            "rendererPrepareMs": "10859",
+            "target": "33.516"
+          }
+        },
+        {
+          "at": "2026-11-09T08:45:23.566402+08:00",
+          "event": "replacement_warmup_completed",
+          "metrics": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "at": "2026-11-09T08:45:23.566645+08:00",
+          "event": "replacement_committed",
+          "metrics": {
+            "candidateSeconds": "33.515",
+            "engine": "KSPlayer",
+            "seconds": "33.417"
+          }
+        },
+        {
+          "at": "2026-11-09T08:45:24.215550+08:00",
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "34.000",
+            "tapToFirstFrameMs": "25458"
+          }
+        },
+        {
+          "at": "2026-11-09T08:45:25.262709+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "12641412",
+            "elapsedMs": "3440",
+            "stage": "debugThrottleMeasured"
+          }
+        }
+      ]
+    },
+    {
+      "measurements": {
+        "manifestMs": 12155,
+        "decodeAfterManifestMs": 3522,
+        "decodeToAlignmentMs": 7375,
+        "totalAlignmentMs": 23052,
+        "candidateAheadAtDecodeSeconds": 7.479,
+        "commitPlayheadSeconds": 33.012,
+        "triggerDeliveryEstimateMbps": 26.3,
+        "triggerFromIntentSeconds": 18.4
+      },
+      "sampleSizeConfirmed": true,
+      "telemetrySamples": 62,
+      "maxMediaSeconds": 57.0,
+      "maxStallCount": 1,
+      "cappedClientDeliveryMbpsMedian": 25.46,
+      "ordinaryExit": true,
+      "events": [
+        {
+          "at": "2026-11-09T08:48:12.488834+08:00",
+          "event": "network_condition_changed",
+          "metrics": {
+            "networkClass": "wifi"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:12.489701+08:00",
+          "event": "intent_created",
+          "metrics": {}
+        },
+        {
+          "at": "2026-11-09T08:48:12.490454+08:00",
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localRangeProxy"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:12.491778+08:00",
+          "event": "preload_cancelled",
+          "metrics": {
+            "preloadedBytes": "0",
+            "reason": "bytesNotMaterialized"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:13.059195+08:00",
+          "event": "audio_track_changed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "engineTrackID": "2"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:13.385598+08:00",
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "0.052",
+            "tapToFirstFrameMs": "1019"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:17.747835+08:00",
+          "event": "proxy_transfer_started",
+          "metrics": {
+            "capBps": "45000000",
+            "elapsedSeconds": "5",
+            "stage": "debugThrottleStarted"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:20.043565+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "30170250",
+            "elapsedMs": "2294",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:21.694223+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "41577134",
+            "elapsedMs": "1650",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:23.333255+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "41246444",
+            "elapsedMs": "1637",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:26.063332+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "24836971",
+            "elapsedMs": "2721",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:28.606513+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "26301567",
+            "elapsedMs": "2552",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:30.889829+08:00",
+          "event": "automatic_downshift_requested",
+          "metrics": {
+            "deliveryCapacity": "26301567",
+            "deliveryCapacitySource": "completedTransfer",
+            "engine": "KSPlayer",
+            "reason": "deliveryBelowSourceBitrate",
+            "runtimeDemand": "63358410"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:31.449192+08:00",
+          "event": "playback_downshifted",
+          "metrics": {
+            "fromBitrate": "20000000",
+            "mode": "serverNegotiatedHLS",
+            "toBitrate": "12000000"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:31.452096+08:00",
+          "event": "network_condition_changed",
+          "metrics": {
+            "networkClass": "wifi"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:31.453474+08:00",
+          "event": "intent_created",
+          "metrics": {}
+        },
+        {
+          "at": "2026-11-09T08:48:31.454814+08:00",
+          "event": "route_selected",
+          "metrics": {
+            "routeKind": "localHLS"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:31.458759+08:00",
+          "event": "replacement_warmup_started",
+          "metrics": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:31.843706+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "20719733",
+            "elapsedMs": "3239",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:34.732892+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "23497881",
+            "elapsedMs": "2863",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:37.372487+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "25446014",
+            "elapsedMs": "2641",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:39.983664+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "25476438",
+            "elapsedMs": "2635",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:42.716138+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "24615430",
+            "elapsedMs": "2732",
+            "measurementBoundary": "cappedClientDelivery",
+            "stage": "debugThrottleWindow"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:43.636811+08:00",
+          "event": "replacement_candidate_manifest_prepared",
+          "metrics": {
+            "elapsedMs": "12155",
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:47.137923+08:00",
+          "event": "replacement_candidate_decoded",
+          "metrics": {
+            "availableReserveSeconds": "15.18716666666667",
+            "candidateSeconds": "33.17333333333333",
+            "elapsedMs": "15677",
+            "engine": "KSPlayer",
+            "framePTS": "33.15811111111111",
+            "liveSeconds": "25.694",
+            "manifestPrepareMs": "12155",
+            "preparationLeadSeconds": "11.0",
+            "prepareMs": "15677",
+            "rendererPrepareMs": "3522",
+            "target": "33.174"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:54.661631+08:00",
+          "event": "replacement_candidate_aligned",
+          "metrics": {
+            "availableReserveSeconds": "15.18716666666667",
+            "candidateSeconds": "33.17333333333333",
+            "elapsedMs": "23052",
+            "engine": "KSPlayer",
+            "framePTS": "33.15811111111111",
+            "liveSeconds": "33.076",
+            "manifestPrepareMs": "12155",
+            "preparationLeadSeconds": "11.0",
+            "rendererPrepareMs": "10896",
+            "target": "33.174"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:54.662150+08:00",
+          "event": "replacement_warmup_completed",
+          "metrics": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:54.662390+08:00",
+          "event": "replacement_committed",
+          "metrics": {
+            "candidateSeconds": "33.17333333333333",
+            "engine": "KSPlayer",
+            "seconds": "33.012"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:55.160092+08:00",
+          "event": "first_frame",
+          "metrics": {
+            "firstFramePositionSeconds": "33.500",
+            "tapToFirstFrameMs": "23709"
+          }
+        },
+        {
+          "at": "2026-11-09T08:48:55.459686+08:00",
+          "event": "proxy_transfer_finished",
+          "metrics": {
+            "effectiveBps": "13385602",
+            "elapsedMs": "3249",
+            "stage": "debugThrottleMeasured"
+          }
+        }
+      ]
+    }
+  ]
+}

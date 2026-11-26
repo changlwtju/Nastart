@@ -496,6 +496,8 @@ final class PlaybackTelemetrySampler {
             "sampleReason": reason,
             "sampleIndex": String(sampleIndex),
             "elapsedMs": String(Int((now.timeIntervalSince(startedAt) * 1000).rounded())),
+            // Same monotonic clock as local Reader delivery windows.
+            "uptimeMs": String(Int((ProcessInfo.processInfo.systemUptime * 1000).rounded())),
             "engine": engineName,
             "routeKind": plan.primaryRoute.routeKind.rawValue,
             "playMethod": plan.primaryRoute.playMethod.rawValue,

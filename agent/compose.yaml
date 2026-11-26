@@ -1,6 +1,8 @@
 services:
   nastart-agent:
     build: .
+    image: &agent-image ${NASTART_DOCKERHUB_NAMESPACE:?set NASTART_DOCKERHUB_NAMESPACE}/nastart-agent:${NASTART_AGENT_VERSION:?run sh ./compose.sh to derive the image tag}
+    pull_policy: missing
     container_name: nastart-agent
     restart: unless-stopped
     read_only: true
@@ -8,16 +10,41 @@ services:
       - no-new-privileges:true
     cap_drop:
       - ALL
+    depends_on:
+      - nastart-agent-proxy
     environment:
       NASTART_PAIRING_CODE: ${NASTART_PAIRING_CODE:?set NASTART_PAIRING_CODE}
       NASTART_PROVIDER_HINT: ${NASTART_PROVIDER_HINT:-generic-linux}
+      NASTART_DOCKER_SOCKET: /run/nastart-proxy/docker.sock
     ports:
       - "8787:8787"
+    healthcheck:
+      test: ["CMD", "python3", "-c", "from nastart_agent import loopback_healthcheck; raise SystemExit(not loopback_healthcheck())"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
     volumes:
       - nastart-agent-data:/data
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - nastart-agent-proxy-sock:/run/nastart-proxy:ro
     tmpfs:
       - /tmp:size=16m,mode=1777
 
+  nastart-agent-proxy:
+    image: *agent-image
+    pull_policy: missing
+    entrypoint: ["python3", "/app/docker_socket_proxy.py"]
+    user: root
+    restart: unless-stopped
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - nastart-agent-proxy-sock:/run/nastart-proxy
+
 volumes:
   nastart-agent-data:
+  nastart-agent-proxy-sock:

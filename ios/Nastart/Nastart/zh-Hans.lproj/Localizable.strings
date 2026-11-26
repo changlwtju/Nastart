@@ -608,11 +608,14 @@
 "mine.sync.status.disabled" = "已关闭";
 "mine.sync.status.checking" = "正在检查 iCloud";
 "mine.sync.status.available" = "已是最新";
+"mine.sync.status.ready" = "可同步";
 "mine.sync.status.syncing" = "正在同步";
 "mine.sync.status.no_account" = "请登录 iCloud";
 "mine.sync.status.restricted" = "访问受限";
 "mine.sync.status.failed" = "同步失败";
 "mine.sync.last_success" = "上次成功同步";
+"mine.sync.pending" = "待同步";
+"mine.sync.pending_detail" = "有未同步的更改";
 "mine.sync.now" = "立即同步";
 "mine.sync.scope_detail" = "通过你的 iCloud 私有数据库同步启动台卡片、安全的端点元数据、显示状态、提醒、主题和布局。密码、DSM 会话、Agent 令牌、私钥、Cookie 和 URL 查询参数不会离开本机。";
 "mine.sync.applied" = "已应用 iCloud 变更";
@@ -631,6 +634,7 @@
 "mine.sync.error.conflict_retry_limit" = "其他设备持续修改了 iCloud 数据，请稍后重新同步。";
 "mine.sync.error.incompatible_remote_snapshot" = "iCloud 数据由更新版本的 Nastart 创建，请先升级应用后再同步。";
 "mine.sync.error.local_changes_during_sync" = "同步期间本机仍有新修改，请完成编辑后重新同步。";
+"mine.sync.error.generic" = "同步失败，请稍后重试。";
 "mine.privacy.security" = "安全";
 "mine.privacy.keychain" = "钥匙串";
 "mine.privacy.keychain_desc" = "DSM 登录凭据保存在此设备的系统钥匙串中，不包含在数据导出里。这里仅显示本机凭据状态，不代表 NAS 当前已连接。";
@@ -711,7 +715,6 @@
 "agent.error.insecure_address" = "明文 HTTP 仅允许用于局域网；远程访问 Agent 请使用 HTTPS。";
 "agent.error.invalid_response" = "Agent 返回了无效响应。";
 "agent.error.pairing_rejected" = "Agent 拒绝了此配对码。";
-"agent.error.unauthorized" = "Agent 令牌已失效，请重新配对。";
 "agent.error.unsupported_version" = "当前不支持此 Agent API 版本。";
 "agent.ssh.connection.section" = "SSH 连接";
 "agent.ssh.connection.footer" = "SSH 密码仅在本次安装期间保存在内存中，结束后会立即清空。";
@@ -745,6 +748,9 @@
 "diagnostics.agent.refresh_succeeded" = "Agent 清单刷新成功";
 "diagnostics.agent.refresh_failed" = "Agent 清单刷新失败";
 "agent.health.auth_failed" = "Agent 认证失败。如果配对令牌已变化，请重新配对。";
+"agent.health.connected" = "Agent 已连接";
+"agent.health.identity_changed" = "Agent 已更换或配对已失效，请重新配对。";
+"agent.health.unknown" = "无法连接 Agent，请检查设置后重试。";
 "agent.health.unsupported" = "当前 App 不支持此 Agent API 版本。";
 "agent.health.invalid_address" = "已保存的 Agent 地址无效或不安全。";
 "agent.health.unreachable" = "Agent 没有响应，请检查地址、服务和网络。";
@@ -949,6 +955,7 @@
 "diagnostics.media.proxy_transfer_started" = "媒体兼容传输已开始";
 "diagnostics.media.proxy_transfer_retry" = "媒体兼容传输已续传";
 "diagnostics.media.proxy_transfer_finished" = "媒体兼容传输已结束";
+"diagnostics.media.proxy_transfer_progress" = "媒体兼容传输分段计时";
 "diagnostics.media.proxy_listener_ready" = "播放代理已就绪";
 "diagnostics.media.proxy_listener_failed" = "播放代理监听失败";
 "diagnostics.media.proxy_listener_restarting" = "播放代理正在重建";
@@ -991,6 +998,7 @@
 "jellyfin.login.password.show" = "显示密码";
 "jellyfin.login.password.hide" = "隐藏密码";
 "jellyfin.login.action" = "登录并载入资源库";
+"jellyfin.login.session_expired" = "登录已失效，请重新输入密码。";
 "jellyfin.login.required" = "请输入 Jellyfin 用户名。";
 "jellyfin.login.failed" = "Jellyfin 登录失败，请检查访问地址、账号、密码及反向代理设置。";
 "jellyfin.login.invalid_credentials" = "Jellyfin 拒绝了当前用户名或密码。";
@@ -1038,6 +1046,11 @@
 "diagnostics.jellyfin.library_route_requested" = "Jellyfin 资源库入口已请求";
 "diagnostics.jellyfin.library_loaded" = "Jellyfin 资源库载入完成";
 "diagnostics.jellyfin.library_failed" = "Jellyfin 资源库载入失败";
+"diagnostics.jellyfin.session_rejected" = "Jellyfin 已拒绝保存的登录";
+"diagnostics.jellyfin.session_unauthorized" = "Jellyfin 返回 HTTP 401";
+"diagnostics.jellyfin.session_silent_reauth_attempt" = "正在恢复 Jellyfin 登录";
+"diagnostics.jellyfin.session_silent_reauth_succeeded" = "已恢复 Jellyfin 登录";
+"diagnostics.jellyfin.session_silent_reauth_failed" = "无法恢复 Jellyfin 登录";
 "jellyfin.player.retry_hint" = "请关闭播放器后重试以获取新的 Jellyfin 播放流，也可以从详情页选择 Infuse、VidHub 或 VLC 直连播放。";
 "dsm.player.retry_hint" = "Nastart 无法继续读取这个 DSM 鉴权文件，请检查 NAS 连接后重试。";
 "jellyfin.player.prepare_failed" = "无法准备播放";

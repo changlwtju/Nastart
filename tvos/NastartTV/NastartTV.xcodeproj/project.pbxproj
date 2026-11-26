@@ -44,6 +44,14 @@
         "C02610260000000000000001" = { isa = XCLocalSwiftPackageReference; relativePath = "../../ios/Nastart/Packages/NetworkMedia"; };
         "C02610260000000000000002" = { isa = XCSwiftPackageProductDependency; package = "C02610260000000000000001"; productName = NetworkMedia; };
         "C02610260000000000000003" = { isa = PBXBuildFile; productRef = "C02610260000000000000002"; };
+        "C11222030000000000000004" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/NastartTests/ServiceVisibilityIdentityTests.swift"; sourceTree = SOURCE_ROOT; };
+        "B11222030000000000000004" = { isa = PBXBuildFile; fileRef = "C11222030000000000000004"; };
+        "C11222030000000000000003" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TVCloudSyncStore.swift"; sourceTree = "<group>"; };
+        "B11222030000000000000003" = { isa = PBXBuildFile; fileRef = "C11222030000000000000003"; };
+        "C11222030000000000000002" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Core/Stores/CloudSyncRecord.swift"; sourceTree = SOURCE_ROOT; };
+        "B11222030000000000000002" = { isa = PBXBuildFile; fileRef = "C11222030000000000000002"; };
+        "C11222030000000000000001" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Core/Models/LaunchpadServiceIdentity.swift"; sourceTree = SOURCE_ROOT; };
+        "B11222030000000000000001" = { isa = PBXBuildFile; fileRef = "C11222030000000000000001"; };
         "D3516ED3516ED3516ED3516E1" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Core/Design/AppTheme.swift"; sourceTree = SOURCE_ROOT; };
         "D3516ED3516ED3516ED3516E2" = { isa = PBXBuildFile; fileRef = "D3516ED3516ED3516ED3516E1"; };
         "A0A0A0A0A0A0A0A0A0A0A001" = { isa = XCLocalSwiftPackageReference; relativePath = "../../ios/Nastart/Packages/KSPlayer"; };
@@ -122,6 +130,9 @@
 
 				"5CB4CA877082BE838906D46F",
 				"58589B594EB5FBF9C72EE55B",
+				"C11222030000000000000003",
+				"C11222030000000000000002",
+				"C11222030000000000000001",
 
 				"502473C5BF8E3E6EB2714B1B",
 				"133B50A28D531BA9BBD66092",
@@ -143,6 +154,7 @@
 			"isa" = "PBXGroup";
 			"children" = (
 				"39B30539CB2886BD05253E1B",
+				"C11222030000000000000004",
 			);
 			"path" = "Tests";
 			"sourceTree" = "<group>";
@@ -220,6 +232,9 @@
 
 				"98BB0B3EA7206302396BF073",
 				"2151F6EEEB448FAFA182A83B",
+				"B11222030000000000000003",
+				"B11222030000000000000002",
+				"B11222030000000000000001",
 
 				"BCFD578F407E450EC74E0CCF",
 				"9772520E9C8B780A3BDF4BBE",
@@ -349,6 +364,7 @@
 			"buildActionMask" = 2147483647;
 			"files" = (
 				"A20D9E5838E45B9205F128CE",
+				"B11222030000000000000004",
 			);
 			"runOnlyForDeploymentPostprocessing" = 0;
 		};

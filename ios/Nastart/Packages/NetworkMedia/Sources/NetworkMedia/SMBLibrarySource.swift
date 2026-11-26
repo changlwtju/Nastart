@@ -95,16 +95,29 @@ public struct SMBMediaResource: NetworkMediaByteReader {
   }
 
   public func stream(offset: Int64, count: Int64, deliver: (Data) async throws -> Void) async throws {
+    try await stream(offset: offset, count: count, timing: nil, deliver: deliver)
+  }
+
+  /// Each delivered chunk is one read on the playback connection. `timing`
+  /// hears how long that read waited for the connection and how long it took.
+  public func stream(offset: Int64, count: Int64, timing: NetworkMediaReadTimingRecorder?,
+                     deliver: (Data) async throws -> Void) async throws {
     guard offset >= 0, count > 0, offset < byteCount, count <= byteCount - offset else {
       throw NetworkMediaPlaybackError.invalidRange
     }
     var position = offset
     let end = offset + count
     let (path, size, modified) = (path, byteCount, modified)
+    let observe: (@Sendable (TimeInterval, TimeInterval) -> Void)?
+    if let timing {
+      observe = { queueWait, work in timing.record(queueWait: queueWait, readTime: work) }
+    } else {
+      observe = nil
+    }
     while position < end {
       try Task.checkCancellation()
       let (start, wanted) = (position, Int(min(end - position, 1 << 20)))
-      let data = try await worker.run {
+      let data = try await worker.run(timing: observe) {
         try $0.read(path, size: size, modified: modified, offset: start, count: wanted)
       }
       try await deliver(data)

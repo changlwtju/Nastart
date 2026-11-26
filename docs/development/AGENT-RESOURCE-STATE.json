@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-08T18:02:20.496914+08:00",
+  "updatedAt": "2026-11-21T16:36:50.180733+08:00",
   "timezone": "Asia/Shanghai",
   "coordinator": "Codex",
   "statusIsAdvisoryNotAnOSLock": true,
@@ -39,21 +39,72 @@
   },
   "devices": {
     "iphone13": {
+      "singleDeviceDebugChain20261120": {
+        "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-20-IPHONE13-ONLY-DEBUG-CHAIN.md",
+        "freshNativeUSBIdentityMatchesPriorReceipt": true,
+        "nativeContainerBackupParsed": true,
+        "installedBuildReverified": false,
+        "candidateBuiltAt": "2026-11-20T16:36:24+08:00",
+        "candidateDebugDylibSHA256": "5c51e0fef8bd5766db1d859b4773e0feb8caf02f59b567556046ece05e98369b",
+        "candidateProfileCoversTarget": true,
+        "candidateSystemSignatureVerified": false,
+        "candidateInstallSent": false,
+        "sandboxUSBProbe": "EPERM; escalation automatically rejected",
+        "newTouchVerified": false,
+        "windowClosed": true
+      },
+      "nativeUSBAndWDARecovery20261120": {
+        "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-20-IPHONE13-USB-NATIVE-RECOVERY.md",
+        "nativeUSBIdentityMatchesInstallReceipt": true,
+        "nativeXcodeScreenshotVerified": true,
+        "installedBundleIdentifiersVisibleInXcode": true,
+        "freshInstalledProductBinaryVerified": false,
+        "sandboxElevationRejectedForUSBEnumeration": true,
+        "correctedPrivateXCTestDescriptorPrepared": true,
+        "freshWDAStarted": false
+      },
+      "lastPlaybackPreflight20261120": {
+        "checkedAt": "2026-11-20T10:20:21+08:00",
+        "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-20-IPHONE13-PLAYBACK-PREFLIGHT.md",
+        "result": "docs/testing/results/2026-11/CODEX-IPHONE13-PLAYBACK-PREFLIGHT-20261120.json",
+        "frozenSourceAndPackageHashesMatch": true,
+        "currentSessionUSBAccess": "usbmuxd EPERM",
+        "currentSessionSystemSignatureRecheck": "CSSMERR_TP_NOT_TRUSTED",
+        "freshDeviceAndInstalledIdentityVerified": false,
+        "deviceWindowAcquired": false,
+        "mediaRequestsDispatched": false
+      },
+      "usbAppAndRunnerUpdate20261120": "docs/archive/handoffs/2026-11/CODEX-2026-11-20-IPHONE13-USB-APP-WDA-INSTALL.md",
+      "appUpdateFocusReport20261120": "docs/archive/handoffs/2026-11/CODEX-2026-11-20-IPHONE13-APP-UPDATE-FOCUS.md",
+      "renewalFollowupReport20261119": "docs/archive/handoffs/2026-11/CODEX-2026-11-19-IPHONE13-IPHONE18-INSTALL-FOLLOWUP.md",
+      "renewalAndInstallReport20261119": "docs/archive/handoffs/2026-11/CODEX-2026-11-19-APP-WDA-SIGNING-AND-INSTALL.md",
       "coordinator": "Codex",
       "activeTestOwner": null,
-      "state": "Current main Debug retained install; S19 File Station Wi-Fi actual image, forward and 50 percent seek; rebuffer after deep seek; Jellyfin catalog 401",
-      "lastInstalledMainSHA256": "2f8e29cd25d5a8b59e99045c44b21079e796bed5d88cfb39214d9a7226c204a6",
+      "currentCodexWindow": "2026-11-20 iPhone 13-only native USB and container backup; closed",
+      "state": "2026-11-21 Jellyfin fixes pending signed package and retained-data installation. Current installed identity unverified. Earlier installation records are historical.",
+      "jellyfinOvernightSessionReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-14-JELLYFIN-OVERNIGHT-SESSION.md",
+      "jellyfinServer401Report": "docs/archive/handoffs/2026-11/CODEX-2026-11-14-JELLYFIN-SERVER-401.md",
+      "jellyfinOverlayBaselineReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-14-IPHONE13-JELLYFIN-OVERLAY-BASELINE.md",
+      "jellyfinOverlayVerifiedReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-14-IPHONE13-JELLYFIN-OVERLAY-VERIFIED.md",
+      "jellyfinPublic4GReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-14-IPHONE13-JELLYFIN-PUBLIC-4G.md",
+      "jellyfinPublicColdRestoreReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-14-IPHONE13-JELLYFIN-PUBLIC-COLD-RESTORE.md",
+      "jellyfinSessionISOExitReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-13-JELLYFIN-SESSION-ISO-EXIT.md",
+      "isoJellyfinComparisonReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-13-TRANSFORMERS-ISO-JELLYFIN-COMPARISON.md",
+      "latestJellyfinSignInReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-13-JELLYFIN-LAN-RELOGIN.md",
+      "newSampleValidationReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-13-ISO-MISSION-IMPOSSIBLE-SAMPLES.md",
+      "newSampleFollowupReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-13-ISO-JELLYFIN-MKV-RESUME.md",
+      "lastInstalledMainSHA256": "130f56265e98d719a185ce153881d934003241d21929f9558f47c981bf073604",
       "claudeAccessGranted": false,
-      "latestPackageForCurrentSourceVerified": true,
-      "debugDylibSHA256": "3ac443127f9ece12fafbc91f2e81077be843f0ee959f501bac5be912ab4f680f",
-      "installedAt": "2026-11-08T17:35:53.460913+08:00",
+      "latestPackageForCurrentSourceVerified": false,
+      "debugDylibSHA256": "3929988635e08cecf4a02d4224cee7149f7857f5ac7f0910f8222fed4bd52635",
+      "installedAt": "2026-11-20T07:33:21.409132+08:00",
       "normalAccountRootVerified": true,
       "originalAllPreferencesPreserved": true,
       "mobileInputsUnchangedAfterTVOnlyBatch2": true,
-      "reasonLatestIdentityNeedsRecheck": "Current app installed with preferences retained; a new device window still requires fresh identity and package gates",
-      "currentSourceInstallComplete": true,
+      "reasonLatestIdentityNeedsRecheck": "07:33 install receipt is for the build before DevicesView diagnostic changes. The 16:36 build has not been installed.",
+      "currentSourceInstallComplete": false,
       "installComplete": true,
-      "mainSHA256": "2f8e29cd25d5a8b59e99045c44b21079e796bed5d88cfb39214d9a7226c204a6",
+      "mainSHA256": "130f56265e98d719a185ce153881d934003241d21929f9558f47c981bf073604",
       "physicalRotationOrInteractionVerified": false,
       "currentUIReport": "docs/testing/results/2026-11/CODEX-NETWORK-SOURCES-SHARED-PROXY-PHASE1-20261108.json",
       "freshIdentityVerified": true,
@@ -65,15 +116,18 @@
       "staticScenesInspected": 2,
       "rotationOrSplitScreenVerified": false,
       "existingInteractiveRunnerReady": false,
+      "wdaReadyVerifiedOnInstall20261120": true,
       "validInteractiveRunnerSignatureAvailable": true,
-      "interactiveRunnerProfileExpirationUTC": "2026-11-11T00:42:31Z",
-      "interactionVerifiedThisBatch": true,
-      "lastCleanupConfirmedAt": "2026-11-08T18:02:20.496914+08:00",
+      "interactiveRunnerProfileExpirationUTC": "2026-11-26T23:27:12Z",
+      "currentRunnerInstallSHA256": "04be22094132981816ef4e25c6f5b0ca490f984c4c997a455075e5e4775d510a",
+      "currentRunnerInstalledAt": "2026-11-20T07:33:24.749058+08:00",
+      "interactionVerifiedThisBatch": false,
+      "lastCleanupConfirmedAt": "2026-11-20T12:10:51.189957+08:00",
       "ownedAppAndRunnerStoppedAtWindowEnd": true,
-      "currentInteractionBlock": "Ordinary close control hid before fresh interaction; no action sent",
-      "currentInstalledIdentityNotRecheckedThisReview": false,
-      "reportedCurrentDebugDylibPrefix": "3ac443127f9ece12",
-      "historicalInstallFieldsScope": "Old4November and Claude package reports are historical; current627c independently installed and started",
+      "currentInteractionBlock": "Command session cannot access usbmuxd; latest native XCTest attempt failed before start.",
+      "currentInstalledIdentityNotRecheckedThisReview": true,
+      "reportedCurrentDebugDylibPrefix": "3929988635e08ce",
+      "historicalInstallFieldsScope": "Historical playback and prior installs are preserved in their reports; current install is the 2026-11-20 signed package",
       "nextWindowOwnerProposal": "Codex afterfresh source/package/identity/signature andexclusive preflight",
       "ClaudeWindowClosedReported": true,
       "ClaudeClosureEvidence": "docs/archive/handoffs/2026-11/2026-11-08-0130-CLAUDE-TRANSITION-TO-CODEX.md",
@@ -85,56 +139,103 @@
         "currentUIReport": "docs/testing/results/2026-11/CODEX-FOLDER-PICKER-INTEGRATION-20261104.json",
         "lastCleanupConfirmedAt": "2026-11-04T09:23:41.386525+08:00"
       },
-      "currentInstalledIdentityNotRecheckedThisBatch": false,
-      "appProfileExpirationUTC": "2026-11-15T00:30:17Z",
-      "preferencesPreservationScope": "All preferences equal across final retain-data installation; final normal startup changed only diagnostics",
+      "currentInstalledIdentityNotRecheckedThisBatch": true,
+      "appProfileExpirationUTC": "2026-11-26T23:27:01Z",
+      "preferencesPreservationScope": "Full App preference plists equal around the retained-data update, including all 29 non-diagnostic values.",
       "currentWindowClosed": true,
       "model": "iPhone14,5",
       "system": "16.3.1",
       "transport": "USB",
       "originalNonDiagnosticPreferencesPreserved": true,
-      "finalPreferenceChanges": [
-        "diagnostics.entries.v1"
-      ],
+      "finalPreferenceChanges": {
+        "changedNonDiagnosticKeys": [
+          "playback.localResume.v1"
+        ],
+        "sortRestored": true
+      },
       "finalOtherPreferencesEqual": true,
       "finalAllPreferencesEqual": false,
-      "currentPlaybackVerified": true,
-      "baselinePlaybackPackageSHA256": "627c173d7d0cc43d39e91cc7a8dc43480c8aac33251012bad6a9668af349c190",
-      "currentPlaybackVerificationScope": "One real LAN FTP short play and +15s seek on97b3, local proxy verified; bb4d Jellyfin result separate",
-      "currentSampleReport": "docs/testing/results/2026-11/CODEX-S19-WIFI-DEVICE-FILES-20261108.json",
-      "currentSampleHandoff": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-LORD-OF-THE-RINGS-PLAYBACK.md"
+      "currentPlaybackVerified": false,
+      "baselinePlaybackPackageSHA256": "01a6ec564dbc666db22a32687792b94e8d09b38875de760eb9bc1d3cdd991175",
+      "currentPlaybackVerificationScope": "Current 39299886 tested for installation and foreground startup only; prior playback evidence belongs to earlier packages.",
+      "currentSampleReport": "docs/testing/results/2026-11/CODEX-IPHONE13-REAUTH-AND-SMB-TRACK-20261110.json",
+      "currentSampleHandoff": "docs/archive/handoffs/2026-11/CODEX-2026-11-10-IPHONE13-REAUTH-AND-SMB-TRACK.md",
+      "latestS19SeekReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-S19-DEEP-SEEK-AB.md",
+      "normalJellyfinCatalogLoadedAfterBaselineRestoration": true,
+      "latestPlaybackRegressionReport": "docs/testing/results/2026-11/CODEX-IPHONE13-REAUTH-AND-SMB-TRACK-20261110.json",
+      "latestS19Report": "docs/archive/handoffs/2026-11/CODEX-2026-11-10-IPHONE13-REAUTH-AND-SMB-TRACK.md",
+      "claudeWindow": {
+        "batch": "claudeRouteLowerBoundAnd401_20261110",
+        "startedAt": "2026-11-10T20:18:43.289649+08:00",
+        "scope": "retain-data install of new signed Debug (HLS lower-bound route capacity, 401 sign-in return); Wi-Fi launch check; one user-switched cellular resume x3 S19 test; user restores Wi-Fi"
+      },
+      "wdaRecoveryVerified20261120": {
+        "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-20-IPHONE13-WDA-RESTORED.md",
+        "result": "docs/testing/results/2026-11/CODEX-IPHONE13-WDA-RESTORED-20261120.json",
+        "readyAndSessionVerified": true,
+        "screenshotAndActualInputVerified": true,
+        "installedReceiptsAndSignaturesRechecked": true,
+        "allPreferencesEqual": true,
+        "runnerAndHostForwardStopped": true,
+        "preexistingAppProcessPreserved": true,
+        "windowClosedAt": "2026-11-20T11:30:54.310576+08:00"
+      },
+      "jellyfinDuplicateDeviceIDDiagnostic20261120": {
+        "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-20-JELLYFIN-DUPLICATE-DEVICE-ID.md",
+        "result": "docs/testing/results/2026-11/CODEX-JELLYFIN-DUPLICATE-DEVICE-ID-20261120.json",
+        "duplicateWithIPhone18PriorSnapshot": true,
+        "freshIPhone18Access": false,
+        "sourceFixDelivered": false
+      },
+      "jellyfinFix20261121": {
+        "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-21-JELLYFIN-PLAYBACK-AND-SESSION.md",
+        "checkedAt": "2026-11-21T12:54:09+08:00",
+        "installedThisBatch": false,
+        "freshDeviceIdentityVerified": false,
+        "status": "Current source compiled and linked. Signing and device access blocked in this managed session. Prior install records describe older builds."
+      }
     },
     "appletvLivingRoom": {
       "coordinator": "Codex",
       "activeTestOwner": null,
       "connectionRecoveryOwner": "Codex with user manual verification",
-      "state": "Apple TV runs tvOS 27.2 (24K122). At 16:18, two manual pairing attempts failed before authentication with DeviceKit 5000 and nested -1 errors. Earlier post-update attempts paired successfully and then failed to acquire a developer tunnel with RemotePairing 1005.",
+      "state": "tvOS 27.2 (24K122). The 22:45 PIN attempt authenticated and PairAction returned a Disconnected snapshot. Both CoreDevice and native discovery lacked a usable target on the follow-up checks.",
       "pairingUI": "/Applications/Xcode.app/Contents/Applications/DeviceHub.app",
       "latestPackageInstalled": false,
       "validSigningProfileAvailable": false,
       "claudeAccessGranted": false,
       "currentRuntimeBoundary": "TV discoverable, latest manual pairing control channel unavailable before authentication. Earlier pairing success remains recorded. No developer session, install or runtime operation dispatched.",
-      "pairingAuthenticatedThisBatch": false,
+      "pairingAuthenticatedThisBatch": true,
       "developerConnectionAvailable": false,
-      "currentConnectionReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-APPLE-TV-27-2-DEVICE-HUB-LOGS.md",
+      "currentConnectionReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-APPLE-TV-2245-PAIRING.md",
       "latestAppleTVDiagnostic": "Both 16:18 attempts and a 16:21 TCP recheck show the advertised manual pairing port 55747 refused IPv4 and IPv6. AirPlay port 7000 on the same host is reachable. Source of the refusal is unverified.",
       "ethernetUserReportedAndRechecked": true,
       "macVPNCausalityVerified": false,
-      "tunnelErrorCode": 1005
+      "tunnelErrorCode": 1005,
+      "pairingFollowup20261108_2245": {
+        "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-APPLE-TV-2245-PAIRING.md",
+        "coreDeviceLookupErrorCode": 1000,
+        "latestAttemptTunnelErrorCodeObserved": null,
+        "nativeDiscoveryMatchedTarget": false,
+        "hostPreferredTVOSDDIListed": true
+      }
     },
     "ipad": {
+      "devicePresenceLastChecked": "2026-11-20 iPad physically disconnected per user and shown under Disconnected in Xcode; no device operation",
+      "renewalAndInstallReport20261119": "docs/archive/handoffs/2026-11/CODEX-2026-11-19-APP-WDA-SIGNING-AND-INSTALL.md",
       "coordinator": "Codex",
-      "plannedDebugOwnerAfterHandoff": "Codex by default under user latest instruction; Claude only with explicit exclusive resource handoff",
+      "plannedDebugOwnerAfterHandoff": "Codex for T3 SMB; fresh exclusive window required.",
       "activeTestOwner": null,
-      "state": "A16 iPad fresh USB identity observed; existing app left in place, no current main install or S19 regression",
+      "currentCodexWindow": "2026-11-19 retained App and WDA installs completed; system developer trust awaiting user",
+      "state": "2026-11-21 Jellyfin fixes pending signed package and retained-data installation. Current installed identity unverified. Earlier installation records are historical.",
       "model": "iPad15,7",
       "system": "26.6",
       "transport": "wired",
       "freshIdentityVerified": true,
       "installComplete": true,
-      "installedAt": "2026-11-08T09:17:26.200071+08:00",
-      "mainSHA256": "384be2453843e34fa463b6f75f6aa8232c669f87abbf5b6dfdbf6cc40a65fdff",
-      "debugDylibSHA256": "bb4defd4dcd424acfe0b7e3c540da8f0869d0d8b52cabec510a2e01e242c7c39",
+      "installedAt": "2026-11-19T07:35:49.423398+08:00",
+      "mainSHA256": "796f65ba541ad13edd4397e27438d0fe9c1a8f3a5313aa9fa5df0ffc8f95decc",
+      "debugDylibSHA256": "e15ca935b8dc584eaeee1ce9b885a1029bb30af17a1de2000112aa8440ce3203",
       "originalNonDiagnosticPreferencesPreserved": true,
       "claudeAccessGranted": false,
       "reasonNotYetHandedOff": "No Claude device lease; Codex window closed",
@@ -149,25 +250,27 @@
       "physicalRotationOrInteractionVerified": false,
       "mobileInputsUnchangedAfterTVOnlyBatch2": true,
       "existingInteractiveRunnerReady": false,
-      "reasonLatestIdentityNeedsRecheck": "Reconnect/unlock A16 before fresh gate; phase1 signed97b3 available",
+      "reasonLatestIdentityNeedsRecheck": "Current signed package verified this window; repeat fresh identity and receipt check next window.",
       "currentUIReport": "docs/testing/results/2026-11/CODEX-RANGE-AND-DEVICE-BASELINE-20261108.json",
       "historicalCodexInstallFieldsNotCurrent": false,
       "latestInstallationReportedByClaude": "Historical08:30renewed56731c90 report; current finalbb4d installed byCodex",
       "plannedRegressionReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-RANGE-PREREQUISITE-AND-DEVICE-BASELINE.md",
       "plannedRegressionOwner": "Codex; fresh exclusive window and valid Runner required for input",
       "physicalOperationsThisBatch": true,
-      "lastInstalledMainSHA256": "384be2453843e34fa463b6f75f6aa8232c669f87abbf5b6dfdbf6cc40a65fdff",
+      "lastInstalledMainSHA256": "796f65ba541ad13edd4397e27438d0fe9c1a8f3a5313aa9fa5df0ffc8f95decc",
       "staticScenesInspected": 2,
       "rotationOrSplitScreenVerified": false,
       "validInteractiveRunnerSignatureAvailable": true,
-      "interactiveRunnerProfileExpirationUTC": "2026-11-11T00:39:52Z",
-      "interactionVerifiedThisBatch": false,
-      "lastCleanupConfirmedAt": "2026-11-08T09:19:38.016673+08:00",
+      "interactiveRunnerProfileExpirationUTC": "2026-11-25T23:31:23Z",
+      "currentRunnerInstallSHA256": "3dcfcf9669a30c4ae38e459bc2d7d2fe62a2de711124c7dff4c64eb3bd3f2f7c",
+      "currentRunnerInstalledAt": "2026-11-19T07:35:53.419132+08:00",
+      "interactionVerifiedThisBatch": true,
+      "lastCleanupConfirmedAt": "2026-11-12T03:50:43.454898+08:00",
       "ownedAppAndRunnerStoppedAtWindowEnd": true,
       "currentInstalledIdentityNotRecheckedThisReview": false,
-      "reportedCurrentDebugDylibPrefix": "bb4defd4dcd424ac",
+      "reportedCurrentDebugDylibPrefix": "01a6ec564dbc666d",
       "historicalInstallFieldsScope": "Old4November and Claude package reports are historical; current627c independently installed and started",
-      "nextWindowOwnerProposal": "Codex afterfresh source/package/identity/signature andexclusive preflight",
+      "nextWindowOwnerProposal": "Claude after fresh source/package/identity/signature and exclusive device assignment.",
       "ClaudeWindowClosedReported": true,
       "ClaudeClosureEvidence": "docs/archive/handoffs/2026-11/2026-11-08-0130-CLAUDE-TRANSITION-TO-CODEX.md",
       "closureFreshlyVerifiedByCodexThisIntake": false,
@@ -179,50 +282,112 @@
         "lastCleanupConfirmedAt": "2026-11-04T09:16:43.547989+08:00"
       },
       "currentInstalledIdentityNotRecheckedThisBatch": true,
-      "appProfileExpirationUTC": "2026-11-15T00:30:17Z",
-      "preferencesPreservationScope": "All preferences equal across final retain-data installation; final normal startup changed only diagnostics",
+      "appProfileExpirationUTC": "2026-11-25T23:29:24Z",
+      "preferencesPreservationScope": "Full equality around in-place install; final playback window separately compared.",
       "currentWindowClosed": true,
-      "currentInteractionBlock": "Library source synthetic tap prohibited; manual entry request has no result, bounded window ended",
+      "currentInteractionBlock": "Untrusted Developer after renewing installation",
       "finalAllPreferencesEqual": false,
       "FTPIndexedFiles": 2292,
       "SMBIndexedFiles": 2292,
-      "finalPreferenceChanges": [
-        "diagnostics.entries.v1"
-      ],
+      "finalPreferenceChanges": {
+        "changedKeyCount": 2
+      },
       "finalOtherPreferencesEqual": true,
-      "currentPlaybackVerified": false,
-      "baselinePlaybackPackageSHA256": "627c173d7d0cc43d39e91cc7a8dc43480c8aac33251012bad6a9668af349c190"
+      "currentPlaybackVerified": true,
+      "baselinePlaybackPackageSHA256": "01a6ec564dbc666db22a32687792b94e8d09b38875de760eb9bc1d3cdd991175",
+      "currentSampleReport": "docs/testing/results/2026-11/CODEX-S19-SAME-BUILD-TRIAD-20261110.json",
+      "currentSampleHandoff": "docs/archive/handoffs/2026-11/CODEX-2026-11-10-S19-SAME-BUILD-TRIAD.md",
+      "latestS19SeekReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-IPAD-S19-FIXED-START.md",
+      "latestPlaybackRegressionReport": "docs/testing/results/2026-11/CODEX-S19-SAME-BUILD-TRIAD-20261110.json",
+      "currentPlaybackVerificationScope": "A16 iPad same signed Debug; limited S19 SMB diagnostic window, not a matched comparison.",
+      "latestS19Report": "docs/archive/handoffs/2026-11/CODEX-2026-11-10-S19-SAME-BUILD-TRIAD.md",
+      "claudeWindow": {
+        "batch": "claudeS19ProxyTiming20261110",
+        "startedAt": "2026-11-10T07:29:10.877390+08:00",
+        "scope": "retain-data install of current signed Debug, S19 resume/restart first frame, track switch and seek timing; iPhone13 also weak-cellular with Wi-Fi restore in finally",
+        "endedAt": "2026-11-10T08:11:43.430105+08:00"
+      },
+      "jellyfinFix20261121": {
+        "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-21-JELLYFIN-PLAYBACK-AND-SESSION.md",
+        "checkedAt": "2026-11-21T12:54:09+08:00",
+        "installedThisBatch": false,
+        "freshDeviceIdentityVerified": false,
+        "status": "Current source compiled and linked. Signing and device access blocked in this managed session. Prior install records describe older builds."
+      }
     },
     "iphone18": {
-      "state": "No control/install/launch byCodex this batch; Claude08:30 reports9a17 with renewed profile; not fresh verified;627c not installed",
+      "renewalAndInstallReport20261120": "docs/archive/handoffs/2026-11/CODEX-2026-11-20-IPHONE18-WIRELESS-APP-WDA-INSTALL.md",
+      "renewalFollowupReport20261119": "docs/archive/handoffs/2026-11/CODEX-2026-11-19-IPHONE13-IPHONE18-INSTALL-FOLLOWUP.md",
+      "renewalAndInstallReport20261119": "docs/archive/handoffs/2026-11/CODEX-2026-11-19-APP-WDA-SIGNING-AND-INSTALL.md",
+      "state": "2026-11-21 Jellyfin fixes pending signed package and retained-data installation. Current installed identity unverified. Earlier installation records are historical.",
       "activeTestOwner": null,
+      "currentCodexWindow": "2026-11-20 00:38 Wi-Fi install recheck and WDA startup verification closed",
       "claudeAccessGranted": false,
       "currentInstalledIdentityNotRecheckedThisBatch": true,
       "currentWirelessUpdateAuthorizedByUser": false,
       "currentWirelessUpdateScope": "Fresh wireless identity, verified latest package retained-data install, safe offline launch/visual check and cleanup; DSM saved domain+port/credentials retained",
       "latestPackageForCurrentSourceVerified": false,
       "currentSourceInstallComplete": false,
-      "mainSHA256": "2090db4219666643c062b899ab376d7d1cc1edfd2dc164ca6909f6f3d1919c6b",
-      "debugDylibSHA256": "8a1e979bb59c4a593068e8150a9b34bbd825a8a45ad7eec47cbbf33f2afe7605",
-      "installedAtUTC": "2026-11-03T15:48:01.365713+00:00",
-      "freshIdentityVerified": false,
+      "mainSHA256": "a3c56c563039b51434134f0d73a1131a41caeb505e982a47297612071e6de7e3",
+      "debugDylibSHA256": "aa04ad51466f47230e8859b7a2f416720a5d6ee730cdbcbaad98cb954ca7f6d3",
+      "installedAtUTC": "2026-11-19T16:21:09.506852+00:00",
+      "freshIdentityVerified": true,
       "model": "iPhone19,7",
       "system": "27.0",
-      "transport": "Wi-Fi TCP",
+      "transport": "Paired home Wi-Fi userspace RSD and installation_proxy",
       "originalAllPreferencesPreserved": true,
       "normalAccountRootVerified": false,
       "installComplete": true,
       "actualForegroundUIVerified": false,
-      "currentUIReport": "docs/testing/results/2026-11/CODEX-IPHONE18-UNLOCKED-STARTUP-20261104.json",
+      "currentUIReport": "docs/testing/results/2026-11/CODEX-S19-SAME-BUILD-TRIAD-20261110.json",
       "currentWirelessWindowReleased": true,
-      "foregroundVerificationBlock": "Native foreground activation unverified after two windows; no longer waiting for unlock",
-      "lastForegroundCheckAt": "2026-11-04T06:21:46.399406+08:00",
-      "reasonLatestIdentityNeedsRecheck": "No current device operation authorized under transition; Claude9a17 report remains separate from627c",
-      "currentInstalledIdentityNotRecheckedThisReview": true,
-      "reportedCurrentDebugDylibPrefix": "9a17067ae8bcc47f",
+      "foregroundVerificationBlock": "Ordinary launch returned DTXNsError; subsequent new-package process existed while another app was foreground. Actual DSM session and playback unverified.",
+      "lastForegroundCheckAt": "2026-11-10T06:43:25.045083+08:00",
+      "reasonLatestIdentityNeedsRecheck": "Verified in this installation window; repeat fresh identity and receipt check next window.",
+      "currentInstalledIdentityNotRecheckedThisReview": false,
+      "reportedCurrentDebugDylibPrefix": "aa04ad51466f4723",
       "historicalInstallFieldsScope": "Historical verified evidence only; current prefix recorded separately",
-      "nextWindowOwnerProposal": "Separate explicit device window",
-      "currentRuntimeBoundary": "Install only when explicitly requested; no launch/test under this transition intake"
+      "nextWindowOwnerProposal": "Codex retained-data fix installation authorized by current user request; Muse owns physical feature acceptance; fresh identity and valid signature required.",
+      "currentRuntimeBoundary": "The 2026-11-20 00:38 Wi-Fi WDA verification window is closed. WDA ready verified and Runner stopped without a touch session. Await user foreground confirmation for App home.",
+      "currentWirelessUpdate20261108": {
+        "model": "iPhone19,7",
+        "system": "27.0",
+        "freshWirelessIdentityVerified": true,
+        "sourcePackageDylibPrefix": "3ac44312",
+        "backupServiceDisconnected": true,
+        "installCommandSent": false,
+        "installComplete": false
+      },
+      "currentWirelessUpdate20261109": {
+        "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE18-UNLOCKED-WIFI-UPDATE.md",
+        "model": "iPhone19,7",
+        "system": "27.0",
+        "userConfirmedUnlocked": true,
+        "freshWirelessIdentityVerified": true,
+        "IPv6IdentityAlsoMatched": true,
+        "backupServiceDisconnected": true,
+        "installationProxyReadOnlyQueryDisconnected": true,
+        "installCommandSent": false,
+        "installComplete": false,
+        "sourcePackageDylibPrefix": "3ac44312"
+      },
+      "latestWirelessInstallAttemptReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-20-IPHONE18-WIRELESS-APP-WDA-INSTALL.md",
+      "currentUSBUpdateAuthorizedByUser": true,
+      "currentWindowClosed": true,
+      "installedAt": "2026-11-20T00:21:09.506852+08:00",
+      "latestUSBUpdateReport": "docs/archive/handoffs/2026-11/2026-11-10-0645-CODEX-TRANSITION-TO-CLAUDE.md",
+      "runnerRenewalAuthorizedByUser": true,
+      "runnerInstalledAt": "2026-11-20T00:21:12.867437+08:00",
+      "runnerProfileExpiresUTC": "2026-11-26T16:19:55Z",
+      "runnerWindowClosed": true,
+      "lastCleanupConfirmedAt": "2026-11-10T06:43:25.045083+08:00",
+      "jellyfinFix20261121": {
+        "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-21-JELLYFIN-PLAYBACK-AND-SESSION.md",
+        "checkedAt": "2026-11-21T12:54:09+08:00",
+        "installedThisBatch": false,
+        "freshDeviceIdentityVerified": false,
+        "status": "Current source compiled and linked. Signing and device access blocked in this managed session. Prior install records describe older builds."
+      }
     },
     "olderIpad": {
       "state": "unavailable cached device; not the connected A16 target",
@@ -253,7 +418,7 @@
       "latestContextReport": "docs/archive/handoffs/2026-11/2026-11-08-0130-CLAUDE-TRANSITION-TO-CODEX.md",
       "observedBusinessReadAccessByCodexThisBatch": true
     },
-    "mediaRequestsScope": "S19 iPhone 13 Wi-Fi File Station window released; no active media lease",
+    "mediaRequestsScope": "2026-11-20 iPhone13 serial Wi-Fi window closed; no active media requests; fresh exclusive window required",
     "FTPAndSMBUsageScope": "LAN only per user11-08; no loopback/entry-label inference",
     "NASSecurityClosure": "Open pertransition; user-owned separate work; no configuration/sourcefile changes throughApp task"
   },
@@ -269,18 +434,18 @@
     "sourcePackagesPath": "/Users/lagransun/Library/Caches/Nastart/Codex-SavedPassword-20261102/SourcePackages",
     "releaseRequiredBeforeCodexHeavyBuild": false,
     "activeSimulatorOwner": null,
-    "simulatorScope": "All owned Range test simulators deleted; other instances untouched",
-    "lastValidationReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-LORD-OF-THE-RINGS-PLAYBACK.md",
+    "simulatorScope": null,
+    "lastValidationReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-10-JELLYFIN-RECOVERY-HTTP-STATUS.md",
     "lastIntakeReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-TRANSITION-INTAKE.md",
     "activeHeavyBuildScope": null
   },
   "xcode": {
     "primary": {
       "developerDir": "/Applications/Xcode.app/Contents/Developer",
-      "version": "Xcode 27.0\nBuild version 27A266a"
+      "version": "Xcode 27.2\nBuild version 27B52"
     },
     "legacy": {
-      "developerDir": "/Users/lagransun/Downloads/Xcode.app/Contents/Developer",
+      "developerDir": "/Applications/Xcode-26.6.app/Contents/Developer",
       "version": "Xcode 26.6\nBuild version 17F113"
     }
   },
@@ -524,14 +689,19 @@
     "profileExpirationUTC": "2026-11-08T01:08:19Z",
     "deepAndIndividualSignatureVerificationPassed": true,
     "ipaArchiveAndCurrentInputsVerified": true,
-    "physicalDevicesInstalledThisBatch": 2,
+    "physicalDevicesInstalledThisBatch": [
+      "iPhone 18"
+    ],
     "normalRootLaunched": false,
-    "physicalDevicesInstalled": 2,
+    "physicalDevicesInstalled": [
+      "iPhone 13",
+      "iPad (A16)",
+      "iPhone 18"
+    ],
     "correspondsToCurrentMobileSource": false,
     "correspondsToCurrent447Source": false,
     "safeOfflineForegroundVerifiedDevices": [
-      "iphone13",
-      "ipad"
+      "iPhone 18"
     ],
     "normalAccountRootVerified": false,
     "verificationReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-04-FOLDER-PICKER-INTEGRATION.md",
@@ -1267,8 +1437,220 @@
     "allocationSupersededBy": "docs/archive/handoffs/2026-11/2026-11-08-0130-CLAUDE-TRANSITION-TO-CODEX.md",
     "currentImplementationOwner": "Codex"
   },
-  "currentDevelopmentOwner": "Codex",
-  "currentDevelopmentEntry": "docs/archive/handoffs/2026-11/2026-11-08-0130-CLAUDE-TRANSITION-TO-CODEX.md",
+  "currentDevelopmentOwner": "Codex (2026-11-12 user-assigned playback policy device verification)",
+  "currentDevelopmentEntry": "docs/archive/handoffs/2026-11/2026-11-11-1950-CLAUDE-DESIGN-TO-DEVICE-DEBUG.md",
+  "codexPlaybackPolicyT0_20261112": {
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T0.md",
+    "configuration": "normal signed iOS Debug, Xcode 27.2 (27B52)",
+    "head": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "initialShortStatusPaths": 122,
+    "sourceInputCount": 499,
+    "sourceManifestSHA256": "d08775b76e66360d1b7398a4bb0bfaa8a3ea964fd6234a2a8da3978642b94b36",
+    "mainSHA256": "f1849639f264e1defff99650b4e0837dfd7aedc60c13beaba23fa753269b7e8d",
+    "debugDylibSHA256": "8025285b9141bd85171c012bd083047af66a0c340c4fe4093f8a0d344897d1b0",
+    "profileExpirationUTC": "2026-11-15T00:30:17Z",
+    "evidencePointer": "/tmp/nastart-codex-playback-device-20261112-current",
+    "iphone13InstalledAt": "2026-11-12T03:30:53.493563+08:00",
+    "ipadInstalledAt": "2026-11-12T03:32:09.338166+08:00",
+    "bothNormalHomeVerified": true,
+    "bothPreferencesEqualAtInstall": true,
+    "bothWindowsClosed": true,
+    "playbackAttempted": false
+  },
+  "codexPlaybackPolicyT1_20261112": {
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T1.md",
+    "userAuthorizedRunnerRenewal": "Existing compatible iPad and iPhone 13 Runner copies; deploy as needed in their own windows",
+    "renewedAndDeployedThisWindow": "iPad",
+    "V1OriginalStarts": 3,
+    "V2FromBitrate": 20000000,
+    "V2ToBitrate": 12000000,
+    "V2ResumeCandidateCommitted": false,
+    "reportRows": 6,
+    "reportMismatches": 0,
+    "continuousPlaybackPassed": false,
+    "next": "T2 iPhone 13 cellular, both network changes by user"
+  },
+  "codexPlaybackPolicyT2Preflight_20261112": {
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T2-PREFLIGHT.md",
+    "runnerRenewedInstalledAndReady": true,
+    "originalWiFiVerifiedAfterPreparation": true,
+    "cellularWindowStarted": false,
+    "ownRunnerAndForwarderStopped": true,
+    "remainingNastartWasNotStartedByThisWindow": true
+  },
+  "codexPlaybackPolicyT2_20261112": {
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T2.md",
+    "userAuthorizedWDANetworkTransitions": true,
+    "confirmedCellularRadioLabel": "4G",
+    "allThreeAttemptWindowsRestoredOriginalWiFi": true,
+    "playbackAttempted": false,
+    "catalogWiFiHTTPStatus": 401,
+    "authorizedPriorJellyfinCredentialLocated": true,
+    "credentialEnteredOrSubmitted": false,
+    "latestBlock": "DVT connection terminated on USB and existing paired Wi-Fi before WDA was ready"
+  },
+  "codexIPhone13WDARecovery_20261112": {
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-12-IPHONE13-WDA-RECOVERY.md",
+    "deviceDeveloperService": "DTServiceHub",
+    "errno": "EMFILE (24)",
+    "sameProcessAndErrorAfterVerifiedDDIRemount": true,
+    "originalDDIMountedAfterRecovery": true,
+    "wdaReady": false,
+    "deviceRestartRequestedFromUser": true,
+    "deviceRestartAuthorizedByUser": true,
+    "deviceRestartDispatched": true,
+    "deviceRestartAt": "2026-11-12T04:33:18.871875+08:00",
+    "deviceUSBReconnectedAt": "2026-11-12T04:33:52.502188+08:00",
+    "awaitingUserFirstUnlock": false,
+    "firstUnlockConfirmedByUser": true,
+    "WDAReadyAfterRestart": true,
+    "actualWDAInteractionAndJellyfinWiFiLoginVerified": true,
+    "originalWiFiRestoredAfter5G": true,
+    "cellularPublicLibraryHTTPStatus": 401,
+    "cellularPlaybackAttempted": false
+  },
+  "codexPlaybackPolicyT2Resume_20261112": {
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T2-RESUME.md",
+    "nasRecoveredPerUser": true,
+    "publicCatalogLoaded": true,
+    "cellularStatusLabel": "5G",
+    "playbackPreparationHTTPStatus": 401,
+    "lastTrace": "F0D20BEC",
+    "recomputedRouteEvidenceRows": 1,
+    "recomputedRouteEvidenceMismatches": 0,
+    "hlsRenditionNegotiated": false,
+    "firstFrameObserved": false,
+    "originalWiFiVerified": true,
+    "windowClosedAt": "2026-11-12T07:10:22.699425+08:00"
+  },
+  "codexPlaybackPolicyT2Auth4G_20261112": {
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T2-4G-AUTH.md",
+    "cellularStatusLabel": "4G",
+    "publicLibraryHTTPStatus": 401,
+    "playbackDispatched": false,
+    "originalWiFiVerified": true,
+    "closedAt": "2026-11-12T09:05:14.677366+08:00"
+  },
+  "codexJellyfinPublicRelogin_20261112": {
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-12-JELLYFIN-PUBLIC-RELOGIN.md",
+    "cellularStatusLabel": "4G",
+    "initialPublicLibraryHTTPStatus": 401,
+    "userAuthorizedSingleInAppLogin": true,
+    "loginSucceeded": true,
+    "coldRelaunchPublicCatalogLoaded": true,
+    "playbackDispatched": false,
+    "originalWiFiVerified": true,
+    "closedAt": "2026-11-12T13:28:36.748116+08:00"
+  },
+  "codexPlaybackPolicyT2S19_20261112": {
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T2-4G-PLAY.md",
+    "routeRows": 4,
+    "routeMismatches": 0,
+    "restoredSamples": 16,
+    "automaticDownshiftFromToBps": [
+      12000000,
+      10000000
+    ],
+    "exploreSamples": 1,
+    "originalWiFiVerified": true,
+    "closedAt": "2026-11-12T13:43:42.763324+08:00"
+  },
+  "codexPlaybackPolicyT2V7V10_20261112": {
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T2-4G-V7-V10.md",
+    "mediumBitrateTrace": "69E7F11D",
+    "mediumSourceBps": 38059232,
+    "mediumVerdict": "fits",
+    "fileTrace": "BF2DFD97",
+    "fileTransport": "verifiedJellyfinHLS",
+    "fileHLSBps": 10000000,
+    "fileVisualPlaybackVerified": false,
+    "tuningChanged": false,
+    "originalWiFiVerified": true,
+    "closedAt": "2026-11-12T13:50:29.296173+08:00"
+  },
+  "codexIPhone18LatestInstall_20261112": {
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-12-IPHONE18-LATEST-INSTALL.md",
+    "userAuthorizedInstall": true,
+    "userConnectedUSBAndUnlocked": true,
+    "wirelessIdentityVerified": true,
+    "wirelessAppServicesBlockedBeforeInstall": true,
+    "usbInstallComplete": true,
+    "freshBundleReceipt": true,
+    "installedAt": "2026-11-12T06:38:22.793690+08:00",
+    "all28PreferencesEqual": true,
+    "normalLaunchRequested": false,
+    "nastartAbsentAfterInstall": true,
+    "nasPaused": true
+  },
+  "codexPlaybackPolicyT5_20261112": {
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T5.md",
+    "userConfirmedIgnoreOldItemTrackAndSeek": true,
+    "debugDylibSHA256": "6beee7cbe77e5b842112351366bdcf80de007527e6004e0ae32107b31a2c533e",
+    "sourceManifestSHA256": "6a742f231c662d4926a93c71c2a59af7bf67fc7dd241a95b6d3045e50ff7a",
+    "profileExpirationUTC": "2026-11-15T00:30:17Z",
+    "evidencePointer": "/tmp/nastart-codex-playback-t5-20261112-current",
+    "iphone18InstallReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-12-IPHONE18-T5-INSTALL.md",
+    "iphone18RetainedDataInstallComplete": true,
+    "iphone18PlaybackVerified": false,
+    "ipadWindowReleased": true,
+    "iphone13WindowReleased": true,
+    "iphone13UserLoginVerified": true,
+    "followupReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-13-PLAYBACK-POLICY-T5-READBACK.md",
+    "w10ExperienceFollowupReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-13-PLAYBACK-POLICY-T5-W10-FOLLOWUP.md",
+    "w10SubtitleOrderingReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-13-PLAYBACK-POLICY-T5-W10-SUBTITLE-SIM.md",
+    "w10SubtitleResetReproducedOnIsolatedSimulator": true,
+    "w10SubtitleFixReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-13-PLAYBACK-POLICY-T5-W10-SUBTITLE-FIX.md",
+    "w10SubtitleFixIPhone18InstallReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-13-IPHONE18-W10-SUBTITLE-INSTALL.md",
+    "iphone13NormalPlaybackReadbackVerified": true,
+    "verifiedDeviceBehavior": [
+      "W1 candidate commit",
+      "W2 latest track commit",
+      "W3 cancel",
+      "W4 merged server seek and track choice",
+      "W5 track choice after server seek",
+      "W6 duplicate next-episode request and old episode input guard",
+      "W7 paused server seek",
+      "W8 track retry after local seek",
+      "W9 picture-in-picture retains original",
+      "W10 track choice takes priority during downshift"
+    ],
+    "remainingPhysicalCoverage": [
+      "audible track output",
+      "W10 track-switch latency and subtitle retention on a subsequent downshift"
+    ]
+  },
+  "codexPlaybackPolicyT3_20261112": {
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T3.md",
+    "userAuthorizedOngoingWDAForIPadSavedSMBRow": true,
+    "smbTrace": "5B2DB9A5",
+    "readerWindows": 33,
+    "wireBitrate": 46378903,
+    "httpTrace": "A4A9AA15",
+    "httpUnpressuredWindowMedianBps": 68544470,
+    "httpVisualPlaybackVerified": false,
+    "temporarySampleIndexRemoved": true,
+    "preexistingIndexesPreserved": true,
+    "fileSortRestored": true,
+    "tuningChanged": false,
+    "resumeAndSeekPending": false,
+    "closedAt": "2026-11-12T08:04:29.204874+08:00"
+  },
+  "codexPlaybackPolicyT3Resume_20261112": {
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-12-PLAYBACK-POLICY-T3-RESUME.md",
+    "smbTraces": [
+      "8B4F0558",
+      "8DC91166"
+    ],
+    "resumeStartSeconds": 22.285,
+    "seekRecoveryMs": [
+      239,
+      1582
+    ],
+    "temporarySampleIndexRemoved": true,
+    "preexistingIndexesPreserved": true,
+    "tuningChanged": false,
+    "closedAt": "2026-11-12T08:56:41.804365+08:00"
+  },
   "codexTransition20261108": {
     "active": false,
     "stage": "Transition accepted; selected inputs and local signed artifact checked; implementation/integration/device validation queued",
@@ -1384,8 +1766,665 @@
       "ipad"
     ],
     "installedAndNormalRootVerifiedDevices": [
+      "ipad",
       "iphone13"
     ],
-    "verificationReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-LORD-OF-THE-RINGS-PLAYBACK.md"
+    "verificationReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-LORD-OF-THE-RINGS-PLAYBACK.md",
+    "ipadVerificationReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-S19-IPAD-LAN-COMPARISON.md"
+  },
+  "currentNetworkEnvironmentBatch": {
+    "owner": "Codex",
+    "productFiles": [
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadPlaybackCore.swift",
+      "ios/Nastart/Nastart/Playback/Core/PlaybackIntent.swift",
+      "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift"
+    ],
+    "testFiles": [
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+    ],
+    "status": "Network input implementation accepted, five tests passed, signed normal Debug retained on13/Pad; eight Pad playback windows across3entries; broader optimization pending",
+    "quota": "unknown",
+    "noParallelProductWriter": false,
+    "active": false,
+    "privateEvidencePointer": "/tmp/nastart-shared-network-current",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-SHARED-NETWORK-PLAYBACK.md"
+  },
+  "mainNormalPackage20261109": {
+    "mainSHA256": "540b18ae192bde74247a7d6d8f85022a265fc8f767e9a67bdede5dabe228036b",
+    "dylibSHA256": "892228fffe884f2ab268ce0dbdab688f1a70f7b5857588effee283ddf6e89581",
+    "configuration": "signed normal Debug",
+    "builtAt": "2026-11-09T04:24:13.067168+08:00",
+    "sourceHEAD": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "profileExpires": "2026-11-15T00:30:17Z",
+    "installedAndNormalRootVerifiedDevices": [
+      "iphone13",
+      "ipad"
+    ],
+    "iphone18InstallDispatched": false,
+    "deepStrictSignatureVerified": true,
+    "verificationReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-SHARED-NETWORK-PLAYBACK.md"
+  },
+  "codexJellyfin13Resume20261109": {
+    "active": false,
+    "owner": "Codex",
+    "userReportedReconnected": true,
+    "privateEvidencePointer": "/tmp/nastart-jellyfin13-current",
+    "productWrites": true,
+    "scope": "Latest normal Debug13 Jellyfin then same-source large-file diagnosis; serial NAS media",
+    "productFiles": [
+      "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift",
+      "ios/Nastart/Nastart/Core/Stores/KeychainStore.swift",
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadView.swift"
+    ],
+    "status": "iPhone 13 catalog recovery and cold-HLS comparison complete. Normal package restored and catalog verified; repeat 401 before reauthentication remains recorded. iPad prior original-route regression retained.",
+    "testFiles": [
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+    ],
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE13-JELLYFIN-RESUME.md",
+    "result": "docs/testing/results/2026-11/CODEX-IPHONE13-JELLYFIN-RESUME-20261109.json",
+    "latestAuthorizedReauthentication": {
+      "catalogLoadedAfterColdLaunch": true,
+      "at": "2026-11-09T08:19:35+08:00",
+      "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE13-JELLYFIN-RESUME.md"
+    },
+    "latestHLSRegression": {
+      "controlledReplacementVerified": true,
+      "naturalDownshiftTriggered": false,
+      "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE13-HLS-REPLACEMENT-REGRESSION.md",
+      "result": "docs/testing/results/2026-11/CODEX-IPHONE13-HLS-REPLACEMENT-20261109.json"
+    },
+    "latestColdHLSRepeats": {
+      "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE13-HLS-COLD-LEAD-REPEATS.md",
+      "result": "docs/testing/results/2026-11/CODEX-IPHONE13-HLS-COLD-LEAD-20261109.json",
+      "appLocalCap": true,
+      "successfulReplacements": 2
+    },
+    "coldLeadExperiment": {
+      "active": false,
+      "productFiles": [
+        "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift"
+      ],
+      "baseline": "542e9d2f",
+      "scope": "Completed on 13. No product lease remains. Normal source and package restored.",
+      "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE13-HLS-COLD-LEAD-AB.md",
+      "result": "docs/testing/results/2026-11/CODEX-IPHONE13-HLS-COLD-LEAD-AB-20261109.json",
+      "baselineRestoredAt": "2026-11-09T09:24:31.125446+08:00",
+      "ownedWindowClosedAt": "2026-11-09T09:25:05.189791+08:00",
+      "acceptedDefaultLeadSeconds": 11
+    }
+  },
+  "codexOriginalStartupPrefix20261109": {
+    "active": false,
+    "owner": "Codex",
+    "baseline": "main/8db1cc64 plus inherited working tree",
+    "productFiles": [
+      "ios/Nastart/Nastart/Features/Devices/DevicesView.swift"
+    ],
+    "testFiles": [
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+    ],
+    "scope": "Serial local opt-in proof for a single original Range prefix, no NAS or physical device window.",
+    "privateEvidencePointer": "/tmp/nastart-original-prefix-current",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-ORIGINAL-PREFIX-PROOF.md",
+    "result": "docs/testing/results/2026-11/CODEX-ORIGINAL-PREFIX-PROOF-20261109.json",
+    "normalStartupEnabled": false,
+    "testCountPassed": 9,
+    "simulatorDeleted": true,
+    "physicalOperations": 0
+  },
+  "codexOriginalValidatorAudit20261109": {
+    "active": false,
+    "owner": "Codex",
+    "productFiles": [
+      "ios/Nastart/Nastart/Features/Devices/DevicesView.swift"
+    ],
+    "scope": "Audit real original Range response validators by shape only; use existing session and short serial LAN playback.",
+    "privateEvidencePointer": "/tmp/nastart-validator-audit-current",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-ORIGINAL-VALIDATOR-AUDIT.md",
+    "result": "docs/testing/results/2026-11/CODEX-ORIGINAL-VALIDATOR-AUDIT-20261109.json",
+    "devices": [
+      "iphone13",
+      "ipad"
+    ],
+    "packageSHA256": "e6408d71a435cb84a561343c2ed0f53f53980923ee335df584062fe9fb8b6aaf",
+    "defaultPreloadEnabled": false
+  },
+  "codexIPadAsyncPrefix20261109": {
+    "active": false,
+    "owner": "Codex",
+    "productFiles": [
+      "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift"
+    ],
+    "scope": "One temporary opt-in DEBUG hook. Baseline source and normal package will be restored.",
+    "privateEvidencePointer": "/tmp/nastart-ipad-prefix-async-current",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-IPAD-ASYNC-PREFIX-AB.md",
+    "result": "docs/testing/results/2026-11/CODEX-IPAD-ASYNC-PREFIX-AB-20261109.json",
+    "sourceRestored": true,
+    "packageRestored": true,
+    "preparedBytes": 0,
+    "deliveredBytes": 0
+  },
+  "codexOriginalResponseHandoff20261109": {
+    "active": false,
+    "owner": "Codex",
+    "scope": "Opt-in adoption and iOS Debug shared route selection; blank simulator plus exclusive retained-data iPad and iPhone 13 S19 LAN A/B.",
+    "productFiles": [
+      "ios/Nastart/Nastart/Features/Devices/DevicesView.swift",
+      "ios/Nastart/Nastart/Playback/Core/PlaybackSessionCoordinator.swift",
+      "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift"
+    ],
+    "testFiles": [
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+    ],
+    "privateEvidencePointer": "/tmp/nastart-original-response-handoff-current",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-ORIGINAL-RESPONSE-HANDOFF.md",
+    "result": "docs/testing/results/2026-11/CODEX-ORIGINAL-RESPONSE-HANDOFF-20261109.json",
+    "simulatorPassCount": 20,
+    "appDebugDylibSHA256": "a444e8d9159d79d0070f8a688fa35be119ae9c8d703d8faa4fe4bb62e0e90ab9",
+    "defaultProbeEnabled": false,
+    "ipadPreparedAndDeliveredBytes": 14147,
+    "iphone13PreparedAndDeliveredBytes": 34441
+  },
+  "codexDirectNetworkReader20261109": {
+    "active": false,
+    "owner": "Codex",
+    "reviewAndIntegrationOwner": "Codex",
+    "claudeBalance": "unknown",
+    "productFiles": [
+      "ios/Nastart/Nastart/Features/Devices/DevicesView.swift",
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadLayoutViews.swift",
+      "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/NetworkMediaPlaybackSource.swift",
+      "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/NetworkLibraryPlaybackView.swift"
+    ],
+    "testFiles": [
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift",
+      "ios/Nastart/Packages/NetworkMedia/Tests/NetworkMediaTests/NetworkMediaPlaybackSourceTests.swift"
+    ],
+    "scope": "Shared proxy direct NetworkMediaByteReader, legacy registration fallback, private blank simulator/loopback.",
+    "privateEvidencePointer": "/tmp/nastart-network-reader-proxy-current",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-NETWORK-READER-PROXY.md",
+    "result": "docs/testing/results/2026-11/CODEX-NETWORK-READER-PROXY-20261109.json",
+    "simulatorPassCount": 14,
+    "packagePassCount": 30,
+    "packageSkipCount": 6,
+    "appDebugDylibSHA256": "fe63a3119a8949f49357e41d453bd0f9ed82b9746dbc9dbe482245f0051e58f4",
+    "ipadSMBReaderVerified": true,
+    "ipadFTPReaderVerified": true,
+    "iphone13JellyfinHTTPVerified": true,
+    "iphone13ReaderVerified": false
+  },
+  "codexReaderDeviceRegression20261109": {
+    "active": false,
+    "owner": "Codex",
+    "productFiles": [],
+    "toolFiles": [
+      "scripts/playback_compare_entries.py",
+      "scripts/test_playback_compare_entries.py"
+    ],
+    "scope": "iPhone 13 SMB and WebDAV Reader validation on frozen signed package; three-entry playback comparison tooling.",
+    "privateEvidencePointer": "/tmp/nastart-network-reader-physical-current",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE13-READER-SMB-WEBDAV.md",
+    "result": "docs/testing/results/2026-11/CODEX-IPHONE13-READER-SMB-WEBDAV-20261109.json",
+    "iphone13SMBReaderVerified": true,
+    "iphone13WebDAVReaderVerified": true,
+    "toolChecksPassed": 13
+  },
+  "codexS19MatchedSMB20261109": {
+    "active": false,
+    "owner": "Codex",
+    "device": "A16 iPad, then iPhone 13",
+    "productFiles": [],
+    "toolFiles": [
+      "scripts/playback_lab.py"
+    ],
+    "privateEvidencePointer": "/tmp/nastart-s19-matched-smb-current",
+    "endedAt": "2026-11-09T18:29:23.866890+08:00",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-S19-MATCHED-SMB-AND-RANGE.md",
+    "result": "docs/testing/results/2026-11/CODEX-S19-MATCHED-SMB-AND-RANGE-20261109.json"
+  },
+  "codexS19Matroska20261109": {
+    "active": false,
+    "owner": "Codex",
+    "startedAt": "2026-11-09T19:21:57.993052+08:00",
+    "scope": "Isolated Matroska fixture, simulator, temporary hosted test only; no physical operation.",
+    "privateEvidencePointer": "/tmp/nastart-s19-matroska-current",
+    "endedAt": "2026-11-09T19:30:26.270080+08:00",
+    "simulatorWindows": 5,
+    "simulatorDeleted": true,
+    "loopbackFixtureStopped": true,
+    "ipadReady": false,
+    "physicalOperations": false,
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-S19-MATROSKA-CUES.md",
+    "result": "docs/testing/results/2026-11/CODEX-S19-MATROSKA-CUES-20261109.json"
+  },
+  "codexS19PlayerRange20261109": {
+    "active": false,
+    "owner": "Codex",
+    "endedAt": "2026-11-09T19:17:09.977543+08:00",
+    "physicalOperation": false,
+    "loopbackFixtureStopped": true,
+    "simulatorDeleted": true,
+    "simulatorWindows": 5,
+    "productFiles": [],
+    "toolFiles": [
+      "scripts/playback_trace_report.py",
+      "scripts/test_playback_trace_report.py"
+    ],
+    "privateEvidencePointer": "/tmp/nastart-s19-player-range-current",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-S19-PLAYER-RANGE.md",
+    "result": "docs/testing/results/2026-11/CODEX-S19-PLAYER-RANGE-20261109.json"
+  },
+  "codexS19FixedStart20261109": {
+    "active": false,
+    "owner": "Codex",
+    "productFiles": [
+      "ios/Nastart/Nastart/Playback/Core/PlaybackSessionCoordinator.swift",
+      "ios/Nastart/Nastart/Playback/Engines/GreenfieldKSPlayerRenderer.swift",
+      "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift"
+    ],
+    "privateEvidencePointer": "/tmp/nastart-s19-fixed-start-current",
+    "endedAt": "2026-11-09T18:07:45.113852+08:00",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-IPAD-S19-FIXED-START.md",
+    "result": "docs/testing/results/2026-11/CODEX-IPAD-S19-FIXED-START-20261109.json",
+    "normalLaunchRestored": true,
+    "smbTemporaryIndexRemoved": true
+  },
+  "codexS19JellyfinControls20261109": {
+    "active": false,
+    "owner": "Codex",
+    "device": "A16 iPad",
+    "productFiles": [],
+    "toolFiles": [
+      "scripts/playback_trace_report.py",
+      "scripts/playback_compare_entries.py",
+      "scripts/test_playback_trace_report.py",
+      "scripts/test_playback_compare_entries.py"
+    ],
+    "scope": "Existing Jellyfin session, normal package, serial S19 LAN playback and controls, offline engine start validation.",
+    "privateEvidencePointer": "/tmp/nastart-s19-jellyfin-controls-current",
+    "endedAt": "2026-11-09T17:20:16.715331+08:00",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-IPAD-S19-JELLYFIN-CONTROLS.md",
+    "result": "docs/testing/results/2026-11/CODEX-IPAD-S19-JELLYFIN-CONTROLS-20261109.json",
+    "offlineScriptTestsPassed": 145
+  },
+  "codexS19ThreeEntry20261109": {
+    "active": false,
+    "owner": "Codex",
+    "productFiles": [],
+    "device": "A16 iPad only",
+    "scope": "S19 serial Wi-Fi read-only playback across three entrances and a device-files resume repeat.",
+    "privateEvidencePointer": "/tmp/nastart-s19-three-entry-current",
+    "endedAt": "2026-11-09T16:28:57.387304+08:00",
+    "temporarySMBIndexRemoved": true,
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-IPAD-S19-THREE-ENTRY.md",
+    "result": "docs/testing/results/2026-11/CODEX-IPAD-S19-THREE-ENTRY-20261109.json"
+  },
+  "codexIPhone18And13S1920261109": {
+    "owner": "Codex",
+    "startedAt": "2026-11-09T19:44:02.328693+08:00",
+    "status": "iPhone 18 latest install and runner renewal complete; serial two-phone playback windows closed; 13 separate seek recheck blocked by touch transport exit during buffering",
+    "privateEvidencePointer": "/tmp/nastart-iphone18-13-s19-current",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-IPHONE18-13-S19-USB.md",
+    "result": "docs/testing/results/2026-11/CODEX-IPHONE18-13-S19-USB-20261109.json",
+    "sourceChanged": false,
+    "windowClosed": true
+  },
+  "codexS19IndependentCapture20261109": {
+    "owner": "Codex",
+    "startedAt": "2026-11-09T20:22:26.535069+08:00",
+    "status": "Completed bounded Wi-Fi evidence and cleanup on iPhone 13 and A16 iPad. iPhone 18 disconnected and untouched.",
+    "privateEvidencePointer": "/tmp/nastart-s19-independent-capture-current",
+    "endedAt": "2026-11-09T20:39:22.208172+08:00",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-S19-INDEPENDENT-CAPTURE.md",
+    "result": "docs/testing/results/2026-11/CODEX-S19-INDEPENDENT-CAPTURE-20261109.json"
+  },
+  "codexS19RangeAndHLSTiming20261109": {
+    "owner": "Codex",
+    "status": "Completed synthetic loopback with an empty iOS simulator; no physical or NAS work. Candidate first-segment retry reproduced; fixture reuse gives decode, and alignment when subsequent supply stays fast. No product changes.",
+    "endedAt": "2026-11-09T21:02:36+08:00",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-S19-RANGE-AND-HLS-TIMING.md",
+    "result": "docs/testing/results/2026-11/CODEX-S19-RANGE-AND-HLS-TIMING-20261109.json",
+    "fixtureOriginStopped": true,
+    "isolatedSimulatorDeleted": true,
+    "activeTestOwner": null
+  },
+  "codexS19CandidateSegmentRetry20261109": {
+    "owner": "Codex",
+    "active": false,
+    "status": "Debug opt-in synthetic AVPlayer A/B passed; physical and default playback acceptance remain open.",
+    "productFiles": [
+      "ios/Nastart/Nastart/Features/Devices/DevicesView.swift",
+      "ios/Nastart/Nastart/Playback/Core/PlaybackPlanningPolicy.swift",
+      "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift",
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+    ],
+    "privateEvidencePointer": "/tmp/nastart-s19-hls-retry-current",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-S19-CANDIDATE-SEGMENT-RETRY.md",
+    "result": "docs/testing/results/2026-11/CODEX-S19-CANDIDATE-SEGMENT-RETRY-20261109.json",
+    "fixtureOriginStopped": true,
+    "isolatedSimulatorDeleted": true,
+    "activeTestOwner": null
+  },
+  "codexAppleTVWiredHistory20261109": {
+    "owner": "Codex",
+    "active": false,
+    "status": "Wired address reachable and paired identity recognized; development tunnel disconnected and device unavailable in Xcode 27.2. October installations verified; recovery trigger unknown.",
+    "connectionChanged": false,
+    "installationSent": false,
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-APPLE-TV-WIRED-HISTORY.md"
+  },
+  "codexAppleTVWiFiWiredPairing20261109": {
+    "owner": "Codex",
+    "active": false,
+    "status": "The same physical Apple TV authenticated in the TV Wi-Fi and Ethernet captures, without a usable developer tunnel. Current wired discovery and AirPlay are available; exact CoreDevice lookup has no target.",
+    "connectionChanged": false,
+    "installationSent": false,
+    "privateEvidencePointer": "/tmp/nastart-tv-wifi-vs-wired-current",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-APPLE-TV-WIFI-WIRED-PAIRING.md"
+  },
+  "codexAppleTVLiveDiscovery20261109": {
+    "owner": "Codex",
+    "active": false,
+    "status": "User opened the TV pairing page. Device Hub nearby discovery and IPv4/IPv6 pairing ports work; exact Apple development endpoint was absent, so the tunnel assertion was not sent.",
+    "pairedAgain": false,
+    "connectionChanged": false,
+    "installationSent": false,
+    "packetCaptureAvailable": false,
+    "privateEvidencePointer": "/tmp/nastart-tv-live-developer-current",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-APPLE-TV-LIVE-TUNNEL-DISCOVERY.md"
+  },
+  "codexAppleTVDeveloperMenu20261109": {
+    "owner": "Codex",
+    "active": false,
+    "status": "User reports no Developer Settings. Xcode has tvOS 27.2 SDK and preferred DDI, no attributable local network authorization denial found. Mac VPN is active; effect on development communication remains untested.",
+    "configurationChanged": false,
+    "privateEvidencePointer": "/tmp/nastart-tv-developer-menu-current",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-APPLE-TV-DEVELOPER-MENU.md"
+  },
+  "codexS19CandidateSegmentDevice20261109": {
+    "owner": "Codex",
+    "active": false,
+    "activeTestOwner": null,
+    "status": "Physical function confirmed; keep opt-in disabled by default. Both signed device windows and read-only NAS scope released.",
+    "privateEvidencePointer": "/tmp/nastart-s19-hls-retry-physical-current",
+    "endedAt": "2026-11-09T22:15:59.739983+08:00",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-S19-CANDIDATE-SEGMENT-DEVICE.md",
+    "result": "docs/testing/results/2026-11/CODEX-S19-CANDIDATE-SEGMENT-DEVICE-20261109.json"
+  },
+  "codexJellyfinSameAccountLAN20261109": {
+    "owner": "Codex",
+    "active": false,
+    "status": "Three isolated tests passed and latest signed package installed on both devices. iPad Jellyfin and 13 device-files normal playback verified; 13 Jellyfin library 401 remains. No active device, media, or simulator window.",
+    "privateEvidencePointer": "/tmp/nastart-jellyfin-same-account-lan-current",
+    "endedAt": "2026-11-09T22:28:23.408614+08:00",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-09-JELLYFIN-SAME-ACCOUNT-LAN-RECOVERY.md",
+    "result": "docs/testing/results/2026-11/CODEX-JELLYFIN-SAME-ACCOUNT-LAN-RECOVERY-20261109.json"
+  },
+  "codexJellyfinRecoveryHTTPStatus20261110": {
+    "owner": "Codex",
+    "active": false,
+    "endedAt": "2026-11-10T03:42:48.049313+08:00",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-10-JELLYFIN-RECOVERY-HTTP-STATUS.md",
+    "result": "docs/testing/results/2026-11/CODEX-JELLYFIN-RECOVERY-HTTP-STATUS-20261110.json",
+    "status": "Physical authorization check and bounded iPad comparisons finished; device and NAS scopes closed."
+  },
+  "codexJellyfin13AuthorizedReauth20261110": {
+    "owner": "Codex",
+    "active": false,
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-10-IPHONE13-REAUTH-AND-SMB-TRACK.md",
+    "result": "docs/testing/results/2026-11/CODEX-IPHONE13-REAUTH-AND-SMB-TRACK-20261110.json",
+    "endedAt": "2026-11-10T05:14:42.149973+08:00",
+    "status": "iPhone catalog and playback restored, iPad SMB follow-up recorded, no active device or media window."
+  },
+  "codexS19SameBuildTriad20261110": {
+    "handoff": "docs/archive/handoffs/2026-11/CODEX-2026-11-10-S19-SAME-BUILD-TRIAD.md",
+    "result": "docs/testing/results/2026-11/CODEX-S19-SAME-BUILD-TRIAD-20261110.json",
+    "firstStallTaggedIncomingTCPBytes": 27999696,
+    "threeEntryComparisonComplete": false,
+    "deviceWindowReleased": true
+  },
+  "codexTransitionToClaude20261110": {
+    "handoff": "docs/archive/handoffs/2026-11/2026-11-10-0645-CODEX-TRANSITION-TO-CLAUDE.md",
+    "result": "docs/testing/results/2026-11/CODEX-S19-SAME-BUILD-TRIAD-20261110.json",
+    "nextLead": "Claude",
+    "sourceWritesByCodexThisBatch": false,
+    "deviceOrBuildLeaseTransferred": false,
+    "userWillTransferContext": true,
+    "iphone18InstallSucceeded": true,
+    "iphone18OfflineForegroundVerified": true
+  },
+  "claudeS19ProxyTiming20261110": {
+    "owner": "Claude",
+    "active": true,
+    "startedAt": "2026-11-10T07:18:11.764428+08:00",
+    "userAuthorization": "2026-11-10 user handoff: Claude takes playback debugging; first batch diagnoses iPad SMB buffering from NetworkMediaProxyTransfer",
+    "baseline": "main/8db1cc64 + existing uncommitted changes (status snapshot in private DebugEvidence/claude-s19-proxy-timing-20261110/git-status-start.txt)",
+    "sourceFiles": [
+      "ios/Nastart/Nastart/Features/Devices/DevicesView.swift",
+      "ios/Nastart/Nastart/Playback/Diagnostics/PlaybackDiagnostics.swift",
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift",
+      "ios/Nastart/Nastart/en.lproj/Localizable.strings",
+      "ios/Nastart/Nastart/zh-Hans.lproj/Localizable.strings",
+      "scripts/playback_reader_timing_report.py",
+      "scripts/test_playback_reader_timing_report.py"
+    ],
+    "docFiles": [
+      "docs/archive/handoffs/2026-11/CLAUDE-2026-11-10-S19-PROXY-READER-TIMING.md"
+    ],
+    "devices": "iPad (A16) then iPhone 13, exclusive Claude window from 2026-11-10T07:29:10.877390+08:00",
+    "unchangedPolicy": "buffer thresholds, reader concurrency and playback policy unchanged",
+    "simulator": "dedicated blank 'Claude-ProxyTiming-20261110' iPhone 17 Pro / iOS 27.0, created and deleted by this batch",
+    "derivedDataPath": "/Users/lagransun/Library/Developer/Xcode/DerivedData/Nastart-Claude-ProxyTiming-20261110",
+    "deviceBuild": "signed Debug generic/platform=iOS, DerivedData Nastart-Claude-ProxyTiming-20261110-Device",
+    "userRequest": "2026-11-10 user: debug on connected iPad and iPhone 13 now; focus resume/restart first frame, audio/subtitle switch, seek response for large S19, especially weak cellular",
+    "report": "docs/archive/handoffs/2026-11/CLAUDE-2026-11-10-S19-PROXY-READER-TIMING.md",
+    "simulatorDeleted": true,
+    "status": "Local diagnostics 6/6 + script 4/4; iPad three-entry Wi-Fi cycles and iPhone13 Jellyfin Wi-Fi done; iPhone13 cellular pending user Wi-Fi toggle"
+  },
+  "iphone13UserCellularSwitch20261110": {
+    "switchActionAt": "2026-11-10T08:35:12+08:00",
+    "settingsWiFiOffVerified": true,
+    "observedStatusBarNetwork": "4G",
+    "previousWiFiSSIDPrivateEvidencePointer": "/tmp/nastart-iphone13-user-cellular-current",
+    "installedNastartReceiptMatched": true,
+    "runnerReinstalled": false,
+    "ownedRunnerStoppedAt": "2026-11-10T08:35:31.485341+08:00",
+    "playbackStartedByCodex": false,
+    "releasedTo": "Claude",
+    "requiresOriginalWiFiRestorationAfterPlaybackWindow": true
+  },
+  "iphone13UserJellyfinCellularLogin20261110": {
+    "authenticated": true,
+    "catalogRendered": true,
+    "statusBar": "4G",
+    "loginSucceededAt": "2026-11-10T08:56:27.110199+08:00",
+    "latestInstallReceiptMatched": true,
+    "mediaPlaybackDispatched": false,
+    "returnedTo": "Claude",
+    "cleanupAt": "2026-11-10T08:57:03.960493+08:00",
+    "privateEvidencePointer": "/tmp/nastart-iphone13-user-jellyfin-cell-current"
+  },
+  "iphone13UserWiFiRestore20261110": {
+    "switchActionAt": "2026-11-10T10:22:02+08:00",
+    "originalWiFiConnectedVerified": true,
+    "statusBarWiFiIconVerified": true,
+    "cleanupAt": "2026-11-10T10:22:28.068831+08:00",
+    "privateEvidencePointer": "/tmp/nastart-iphone13-user-wifi-restore-current",
+    "returnedTo": "Claude"
+  },
+  "claudeJellyfinCrossEndpointSession20261110": {
+    "owner": "Claude",
+    "active": false,
+    "startedAt": "2026-11-10T10:46:21.255203+08:00",
+    "userDecision": "2026-11-10 user chose: reuse a LAN Jellyfin login on a configured HTTPS public candidate only after its public server ID matches the server ID saved with that login; on success save a separate copy for the public endpoint. Older logins without a saved ID need one LAN app start to backfill.",
+    "sourceFiles": [
+      "ios/Nastart/Nastart/Core/Stores/AppStateStores.swift",
+      "ios/Nastart/Nastart/Core/Stores/KeychainStore.swift",
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadView.swift",
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+    ],
+    "docFiles": [
+      "docs/archive/handoffs/2026-11/CLAUDE-2026-11-10-S19-PROXY-READER-TIMING.md"
+    ],
+    "simulator": "dedicated blank Claude-JellyfinXEndpoint-20261110 created and deleted",
+    "devices": "none this step",
+    "status": "Source change done; 3 targeted unit tests passed (new cross-endpoint policy + 2 existing rejected-restore tests). Not built into a device package; no device verification. iPhone 13 already has its own public-endpoint login from the user's cellular sign-in, so a device check of borrowing needs a device/state without that login.",
+    "endedAt": "2026-11-10T10:50:40.116241+08:00",
+    "testLog": "private evidence tests-xendpoint.log"
+  },
+  "claudeJellyfinRouteCapacity20261110": {
+    "owner": "Claude",
+    "active": false,
+    "startedAt": "2026-11-10T11:34:58.409889+08:00",
+    "userDecision": "2026-11-10 user chose: base Jellyfin original-vs-HLS selection on real playback delivery evidence for the same origin+network (kept longer), instead of the 1 MB pre-play probe alone.",
+    "sourceFiles": [
+      "ios/Nastart/Nastart/Playback/Core/PlaybackPlanningPolicy.swift",
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadView.swift",
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+    ],
+    "docFiles": [
+      "docs/archive/handoffs/2026-11/CLAUDE-2026-11-10-S19-PROXY-READER-TIMING.md"
+    ],
+    "simulator": "Claude dedicated blank simulator, created and deleted",
+    "devices": "none this step",
+    "status": "Source change done; 12 targeted unit tests passed (new route-capacity test + 11 existing throughput/capacity/downshift/proxy tests). Dedicated simulator deleted. Not built into a device package; no cellular device verification.",
+    "endedAt": "2026-11-10T11:38:22.364803+08:00",
+    "testLog": "private evidence tests-routecap.log",
+    "deviceResult": "Cellular 13: same-process resume/restart/resume all HLS (consistent); HLS-derived evidence may under-read (5.2-12.2 Mbps)."
+  },
+  "claudeTrackSwitchSeekRetry20261110": {
+    "owner": "Claude",
+    "active": false,
+    "startedAt": "2026-11-10T11:47:49.981707+08:00",
+    "userDecision": "2026-11-10 user: follow Claude's recommendation (audio/subtitle response first; tell user when a network switch is needed).",
+    "finding": "Cellular PGS 9 switch on server HLS was invalidated by a seek ~3 s into candidate preparation and never retried; resume then had no subtitle. Audio switch time dominated by server transcode restart (first segment wait 4.2 s) plus 11 s preparation lead alignment.",
+    "sourceFiles": [
+      "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift",
+      "ios/Nastart/Nastart/Playback/Core/PlaybackPlanningPolicy.swift",
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+    ],
+    "docFiles": [
+      "docs/archive/handoffs/2026-11/CLAUDE-2026-11-10-S19-PROXY-READER-TIMING.md"
+    ],
+    "simulator": "Claude dedicated blank simulator, created and deleted",
+    "devices": "none yet",
+    "status": "Implemented; 9 unit tests passed; signed package installed on 13; cellular retest: retry after seek verified (PGS applied and retained on next resume).",
+    "endedAt": "2026-11-10T12:37:01.010035+08:00"
+  },
+  "iphone13UserCellularScreenshot20261110": {
+    "switchActionAt": "2026-11-10T12:05:17+08:00",
+    "settingsWiFiOffVerified": true,
+    "statusBarNetwork": "4G",
+    "cleanupAt": "2026-11-10T12:05:28.510583+08:00",
+    "privateEvidencePointer": "/tmp/nastart-iphone13-user-cellular-screenshot-current",
+    "returnedTo": "Claude",
+    "requiresOriginalWiFiRestorationAfterPlaybackWindow": true
+  },
+  "iphone13UserWiFiRestoreRepeat20261110": {
+    "switchActionAt": "2026-11-10T12:30:47+08:00",
+    "originalWiFiConnectedVerified": true,
+    "statusBarWiFiIconVerified": true,
+    "cleanupAt": "2026-11-10T12:31:07.028755+08:00",
+    "privateEvidencePointer": "/tmp/nastart-iphone13-user-wifi-restore-repeat-current",
+    "returnedTo": "Claude"
+  },
+  "jellyfinServiceObservation20261110": {
+    "observedBy": "Claude",
+    "at": "2026-11-10T12:37:01.010035+08:00",
+    "lan8096": "connection refused",
+    "dsm5000": "HTTP 404 (alive)",
+    "public8097": "HTTP 502 from app",
+    "note": "Was reachable at 11:51 Wi-Fi run; several server HLS transcodes (4K HEVC->H.264) were started by Claude cellular tests 12:13-12:26; cause not confirmed. NAS is user-managed; Claude did not restart anything.",
+    "userReportedCause": "2026-11-10 12:39 user screenshot: DSM Storage Manager shows storage pool 5 (Basic, single SSD disk 9, 465.8 GiB, holds Docker) as Missing; Jellyfin container therefore unavailable. User will repair the disk at home; debugging paused until then."
+  },
+  "iphone13UserJellyfinWiFiLogin20261110": {
+    "loginSucceeded": true,
+    "catalogVisible": true,
+    "catalogErrorVisible": false,
+    "eventKeys": [
+      "diagnostics.jellyfin.library_failed",
+      "diagnostics.jellyfin.login_succeeded",
+      "diagnostics.jellyfin.library_loaded",
+      "diagnostics.jellyfin.library_loaded",
+      "diagnostics.jellyfin.library_loaded",
+      "diagnostics.jellyfin.library_loaded",
+      "diagnostics.jellyfin.library_loaded",
+      "diagnostics.jellyfin.library_loaded",
+      "diagnostics.jellyfin.library_loaded"
+    ],
+    "oldCatalogHTTPStatus": 401,
+    "installedDebugDylibSHA256": "8752a1257b03b7d784b886dfd2028a3d723eec8d7fbf469d77286dbd8dfbe40c",
+    "installReceiptMatched": true,
+    "returnedTo": "Claude",
+    "cleanupAt": "2026-11-10T17:50:41.102491+08:00",
+    "privateEvidencePointer": "/tmp/nastart-iphone13-user-jellyfin-wifi-current"
+  },
+  "jellyfinFixBuildAndInstall20261121": {
+    "checkedAt": "2026-11-21T12:54:09+08:00",
+    "sourceHEAD": "8db1cc64",
+    "hasUncommittedChanges": true,
+    "compiledModules": [
+      "Nastart",
+      "NastartTV"
+    ],
+    "completeSignedPackageGenerated": false,
+    "terminalsUpdated": [],
+    "deviceQuery": "devicectl list devices timed out after 12 seconds",
+    "usb": "usbmuxd connect EPERM",
+    "wda": "loopback 8168 connect EPERM",
+    "signing": "security find-identity returned 0 valid identities in this session",
+    "fullBuild": "Xcode SwiftPM manifest diagnostics cache write EPERM despite explicit writable cache options",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-21-JELLYFIN-PLAYBACK-AND-SESSION.md"
+  },
+  "latestUserRolePreference20261121": {
+    "codex": "Source fixes, optimization, builds and relevant offline tests or simulator when needed",
+    "muse": "User handles terminal updates and physical-device debugging/acceptance through Muse",
+    "report": "docs/archive/handoffs/2026-11/CODEX-TO-MUSE-2026-11-21-DEVELOPMENT-AND-OPEN-ITEMS.md",
+    "deviceOwnership": "No Codex physical device window for this handoff"
+  },
+  "tvThreeIssues20261121": {
+    "owner": "Codex",
+    "active": false,
+    "devices": "none acquired; fresh devicectl query timed out",
+    "sourceFiles": [
+      "tvos/NastartTV/Sources/TVJellyfinClient.swift",
+      "tvos/NastartTV/Sources/NastartTVApp.swift",
+      "tvos/NastartTV/Sources/TVViews.swift",
+      "tvos/NastartTV/Sources/TVNASViews.swift",
+      "tvos/NastartTV/Tests/TVClientTests.swift",
+      "tvos/NastartTV/UITests/TVLaunchTests.swift"
+    ],
+    "buildDirectory": "/tmp/nastart-tv-three-fixes-20261121",
+    "quota": "unknown",
+    "status": "16:56 Xcode 27.2 标准 App 构建及 Build for Testing 均已成功，产出 Apple TV 包和测试描述。当前命令会话签名信任校验失败，本批未安装，三项修后真机验收待续。",
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-21-TV-THREE-ISSUES-FIX.md",
+    "evidenceDirectory": "/tmp/nastart-tv-three-fixes-20261121",
+    "dylibSHA256": "b40b542e7d00e9d6a98da3dc1774894b89f6d26c48edd138fbbf252c58d2b445",
+    "deviceWindowAcquired": false,
+    "standardBuildFollowup": {
+      "builtAt": "2026-11-21T16:56:00+08:00",
+      "app": "/Users/lagransun/Library/Developer/Xcode/DerivedData/NastartTV-hedldllpjgmcbmbdybhnuykyxxdb/Build/Products/Debug-appletvos/NastartTV.app",
+      "testDescriptor": "/Users/lagransun/Library/Developer/Xcode/DerivedData/NastartTV-hedldllpjgmcbmbdybhnuykyxxdb/Build/Products/NastartTV_appletvos27.2-arm64.xctestrun",
+      "mainSHA256": "6e6497831d7c063cf001ad34c04728e442e851e25bcbbc56762e98f0eb463d6e",
+      "dylibSHA256": "5919500c2a6b9318d1f6a47d32a2b65f936aea8706c9c3b972b927f0a69e57a7",
+      "currentDeviceInProfile": true,
+      "signatureVerification": "codesign --verify --deep --strict: CSSMERR_TP_NOT_TRUSTED in execution session",
+      "installed": false
+    }
+  },
+  "tvManagementPageWidth20261121": {
+    "owner": "Codex",
+    "active": false,
+    "sourceFiles": [
+      "tvos/NastartTV/Sources/TVNASViews.swift",
+      "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+      "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/SourceContext.swift"
+    ],
+    "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-21-TV-MANAGEMENT-PAGES-WIDTH.md",
+    "builtAt": "2026-11-21T18:38:31+08:00",
+    "bundleDylibSHA256": "0ceef64b8e9aa35552b75d99fecb348adb4306fd4186514966309c60867fe8ad",
+    "offlineTestsPassed": 18,
+    "deviceWindowAcquired": false,
+    "status": "Source and build verified; formatted for Muse physical acceptance"
   }
 }

@@ -16,7 +16,749 @@ import UIKit
 #endif
 @testable import Nastart
 
+final class JellyfinResumeAndRecoveryTests: XCTestCase {
+    func testServerTicksOwnResumeAndExplicitRestartWinsOverPercentage() {
+        XCTAssertEqual(JellyfinResumePosition.serverTicks(position: 60, duration: 100, playedFraction: 0.9), 60)
+        XCTAssertEqual(JellyfinResumePosition.serverTicks(position: 0, duration: 100, playedFraction: 0.9), 0)
+        XCTAssertEqual(JellyfinResumePosition.serverTicks(position: nil, duration: 100, playedFraction: 0.25), 25)
+        XCTAssertEqual(JellyfinResumePosition.serverTicks(position: Int.max, duration: 100, playedFraction: nil), 100)
+        XCTAssertNil(JellyfinResumePosition.serverTicks(position: nil, duration: 100, playedFraction: .nan))
+    }
+
+    func testCheckpointDoesNotOverrideNewServerProgressOrUnversionedBookmark() {
+        let checkpoint = Date(timeIntervalSince1970: 20)
+        XCTAssertTrue(JellyfinResumePosition.prefersLocal(updatedAt: checkpoint,
+            serverPlayedAt: Date(timeIntervalSince1970: 10), serverHasPosition: true, serverMarkedPlayed: false))
+        XCTAssertFalse(JellyfinResumePosition.prefersLocal(updatedAt: checkpoint,
+            serverPlayedAt: Date(timeIntervalSince1970: 30), serverHasPosition: true, serverMarkedPlayed: true))
+        XCTAssertFalse(JellyfinResumePosition.prefersLocal(updatedAt: checkpoint,
+            serverPlayedAt: nil, serverHasPosition: true, serverMarkedPlayed: false))
+        XCTAssertTrue(JellyfinResumePosition.prefersLocal(updatedAt: checkpoint,
+            serverPlayedAt: nil, serverHasPosition: false, serverMarkedPlayed: false))
+    }
+
+    func testRecoveryAllowsAtMostTwoReopensWithoutSustainedPlayback() {
+        var recovery = JellyfinStallRecovery()
+        XCTAssertFalse(recovery.shouldReconnect(now: 0, position: 63, eligible: true, canReconnect: true))
+        XCTAssertFalse(recovery.shouldReconnect(now: 17, position: 63, eligible: true, canReconnect: true))
+        XCTAssertFalse(recovery.shouldReconnect(now: 18, position: 63, eligible: true, canReconnect: false))
+        XCTAssertTrue(recovery.shouldReconnect(now: 19, position: 63, eligible: true, canReconnect: true))
+        XCTAssertFalse(recovery.shouldReconnect(now: 42, position: 63, eligible: true, canReconnect: true))
+        XCTAssertTrue(recovery.shouldReconnect(now: 43, position: 63, eligible: true, canReconnect: true))
+        XCTAssertFalse(recovery.shouldReconnect(now: 80, position: 63, eligible: true, canReconnect: true))
+        for tick in 81...111 {
+            XCTAssertFalse(recovery.shouldReconnect(now: Double(tick), position: Double(tick),
+                eligible: true, canReconnect: true))
+        }
+        XCTAssertTrue(recovery.shouldReconnect(now: 129, position: 111, eligible: true, canReconnect: true))
+    }
+
+    func testPauseOrUnconfirmedSeekClearsStallClock() {
+        var recovery = JellyfinStallRecovery()
+        XCTAssertFalse(recovery.shouldReconnect(now: 0, position: 50, eligible: true, canReconnect: true))
+        XCTAssertFalse(recovery.shouldReconnect(now: 50, position: 50, eligible: false, canReconnect: true))
+        XCTAssertFalse(recovery.shouldReconnect(now: 51, position: 30, eligible: true, canReconnect: true))
+        XCTAssertTrue(recovery.shouldReconnect(now: 69, position: 30, eligible: true, canReconnect: true))
+    }
+}
+
 final class PlaybackNextCoreTests: XCTestCase {
+    @MainActor
+    func testSharedPreparationUsesObservedNetworkAcrossEntries() async throws {
+        let environments: [PlaybackNetworkContext] = [
+            .init(networkClass: .wifi),
+            .init(networkClass: .wifi, isExpensive: true),
+            .init(networkClass: .cellular, isExpensive: true),
+            .init(networkClass: .constrained, isExpensive: true, isConstrained: true),
+            .init(networkClass: .offline)
+        ]
+        for observed in environments {
+            var snapshot = PlaybackNetworkSnapshot(cacheKey: "test", bitrateCap: nil, fallbackBitrate: 0)
+            snapshot.pathGeneration = 7
+            snapshot.playbackContext = observed
+            var policies: [PlaybackStartupPolicy] = []
+            for source in [PlaybackSourceKind.jellyfin, .dsmFile, .webDAVFile] {
+                let intent = PlaybackIntent(
+                    sourceKind: source, contentKind: .video,
+                    itemIdentity: PlaybackItemIdentity(sourceKind: source),
+                    displayTitle: "Large network video",
+                    directURL: URL(string: "http://127.0.0.1:62403/video.mkv")!,
+                    preferredStartTime: 6200,
+                    connectionContext: PlaybackConnectionContext.make(url: URL(string: "http://192.0.2.8")!),
+                    networkContext: PlaybackNetworkContext(networkClass: .local, isPrivateRoute: true, estimatedBitrate: 80_000_000)
+                )
+                let tracks = TrackCatalog(selectedSourceAudioTrackID: "3", selectedSourceSubtitleTrackID: "8")
+                let launch = GreenfieldPlaybackLaunchRequest(intent: intent, fileExtensionHint: "mkv",
+                    byteLength: 128_795_641_934, duration: 13_698, tracks: tracks)
+                let prepared = try await GreenfieldVideoPlayerModel.prepareSession(launch, networkSnapshot: snapshot)
+                let plan = prepared.result.plan
+                XCTAssertEqual(plan.intent.networkContext.networkClass, observed.networkClass)
+                XCTAssertEqual(plan.intent.networkContext.isExpensive, observed.isExpensive)
+                XCTAssertEqual(plan.intent.networkContext.isConstrained, observed.isConstrained)
+                XCTAssertEqual(plan.intent.networkContext.isPrivateRoute, true)
+                XCTAssertEqual(plan.intent.networkContext.estimatedBitrate, 80_000_000)
+                XCTAssertEqual(plan.timeline.startTime, 6200)
+                XCTAssertEqual(plan.tracks.selectedSourceAudioTrackID, "3")
+                XCTAssertEqual(plan.tracks.selectedSourceSubtitleTrackID, "8")
+                XCTAssertEqual(plan.primaryRoute.routeKind, .localRangeProxy)
+                policies.append(plan.startupPolicy)
+                let events = await prepared.recorder.events
+                XCTAssertEqual(events.first(where: { $0.name == .networkConditionChanged })?.metrics["evidence"], "devicePathSnapshot")
+                await prepared.coordinator.finishPlayback(plan: plan)
+            }
+            XCTAssertEqual(policies[0], policies[1])
+            XCTAssertEqual(policies[1], policies[2])
+        }
+    }
+
+    @MainActor
+    func testSharedPreparationKeepsLocalFileIndependentOfObservedNetwork() async throws {
+        let intent = PlaybackIntent(sourceKind: .directURL, contentKind: .video,
+            itemIdentity: PlaybackItemIdentity(sourceKind: .directURL), displayTitle: "Local",
+            directURL: URL(fileURLWithPath: "/tmp/fixture.mkv"),
+            networkContext: PlaybackNetworkContext(networkClass: .local))
+        var snapshot = PlaybackNetworkSnapshot(cacheKey: "cellular", bitrateCap: nil, fallbackBitrate: 0)
+        snapshot.playbackContext = .init(networkClass: .cellular, isExpensive: true)
+        let prepared = try await GreenfieldVideoPlayerModel.prepareSession(
+            GreenfieldPlaybackLaunchRequest(intent: intent), networkSnapshot: snapshot)
+        XCTAssertEqual(prepared.result.plan.intent.networkContext, intent.networkContext)
+        XCTAssertEqual(prepared.result.plan.primaryRoute.routeKind, .localFile)
+        await prepared.coordinator.finishPlayback(plan: prepared.result.plan)
+    }
+
+    func testUnobservedPathPreservesExistingNetworkEvidence() {
+        let previous = PlaybackNetworkContext(networkClass: .constrained, isPrivateRoute: false,
+            estimatedBitrate: 3_000_000, isExpensive: true, isConstrained: true)
+        XCTAssertEqual(previous.observing(nil), previous)
+    }
+
+    func testJellyfinRestorePrefersMostRecentlySavedOwnSession() throws {
+        let publicURL = try XCTUnwrap(URL(string: "https://jellyfin.example"))
+        let lanURL = try XCTUnwrap(URL(string: "http://192.0.2.10:8096"))
+        let older = JellyfinSessionEndpointPolicy.SavedCandidate(endpoint: publicURL,
+            session: .init(endpointString: publicURL.absoluteString, userID: "old-user",
+                           username: "old-account", accessToken: "fixture-public"),
+            modificationDate: Date(timeIntervalSince1970: 1))
+        let newer = JellyfinSessionEndpointPolicy.SavedCandidate(endpoint: lanURL,
+            session: .init(endpointString: lanURL.absoluteString, userID: "new-user",
+                           username: "new-account", accessToken: "fixture-lan"),
+            modificationDate: Date(timeIntervalSince1970: 2))
+
+        XCTAssertEqual(JellyfinSessionEndpointPolicy.preferredSavedSession([older])?.endpoint, publicURL)
+        let restored = JellyfinSessionEndpointPolicy.preferredSavedSession([older, newer])
+        XCTAssertEqual(restored?.endpoint, lanURL)
+        XCTAssertEqual(restored?.session.userID, "new-user")
+        XCTAssertEqual(restored?.session.accessToken, "fixture-lan")
+        XCTAssertTrue(JellyfinSessionEndpointPolicy.canRecoverRejectedSession(newer, from: publicURL,
+            restoredUserID: older.session.userID, savedAt: older.modificationDate, verifiedLANEndpoint: lanURL))
+    }
+
+    func testServerRenditionDeliveryOnlyRaisesRouteCapacity() {
+        typealias Policy = PlaybackRouteCapacityPolicy
+        typealias Decision = PlaybackRouteDecisionPolicy
+        let store = PlaybackRecentThroughputStore()
+        let cellular = "https://jellyfin.example:8097|cellular"
+        store.bindRoute(traceID: "hls", routeKey: cellular)
+        // A 2 Mbps rendition delivered at ~8 Mbps: a floor, never an estimate.
+        store.record(traceID: "hls", bytes: 2_000_000, seconds: 2, backpressureSeconds: 0, now: 100,
+                     isServerRendition: true)
+        XCTAssertNil(store.routeCapacity(routeKey: cellular, now: 200))
+        XCTAssertEqual(store.routeLowerBound(routeKey: cellular, now: 200), 8_000_000)
+
+        // Alone it bounds the route from below only. A source it covers
+        // fits, one within reach is still tried, one far above it is not.
+        let evidence = store.routeEvidence(routeKey: cellular, now: 200)
+        let alone = Policy.assess(sustained: evidence.sustained, rendition: evidence.rendition, probe: nil)
+        XCTAssertEqual(alone.capacity, 8_000_000)
+        XCTAssertFalse(alone.boundsBothSides)
+        XCTAssertEqual(alone.basis, .renditionLowerBound)
+        XCTAssertEqual(Decision.originalVerdict(sourceBitrate: 12_000_000, assessment: alone), .fits)
+        XCTAssertEqual(Decision.originalVerdict(sourceBitrate: 20_000_000, assessment: alone), .explore)
+        XCTAssertEqual(Decision.originalVerdict(sourceBitrate: 75_218_094, assessment: alone), .lowerBoundTooFar)
+
+        // It raises a low small probe (7.7 Mbps -> 2 Mbps; a 30 Mbps floor -> a higher rendition)...
+        let smallProbe = Policy.Probe(bitrate: 7_774_017, age: 30, boundsBothSides: false)
+        let raised = Policy.assess(sustained: [], rendition: [.init(bitrate: 30_000_000, age: 10)],
+                                   probe: smallProbe)
+        XCTAssertEqual(raised.capacity, 30_000_000)
+        XCTAssertEqual(raised.basis, .renditionLowerBound)
+        XCTAssertGreaterThan(
+            Decision.startupBitrate(capacity: raised.capacity, ceiling: 12_000_000,
+                                    unknownCapacityBitrate: 2_000_000),
+            Decision.startupBitrate(capacity: smallProbe.bitrate, ceiling: 12_000_000,
+                                    unknownCapacityBitrate: 2_000_000))
+        // ...but never lowers a higher probe or sustained delivery.
+        XCTAssertEqual(Policy.assess(sustained: [], rendition: [.init(bitrate: 5_000_000, age: 10)],
+            probe: .init(bitrate: 40_000_000, age: 30, boundsBothSides: false)).capacity, 40_000_000)
+        let direct = Policy.assess(sustained: [.init(bitrate: 48_000_000, age: 20)],
+            rendition: [.init(bitrate: 5_000_000, age: 10)],
+            probe: .init(bitrate: 7_000_000, age: 5, boundsBothSides: false))
+        XCTAssertEqual(direct.capacity, 48_000_000)
+        XCTAssertEqual(direct.basis, .playbackDelivery)
+        XCTAssertTrue(direct.boundsBothSides)
+
+        // A sustained original transfer on the same route is an estimate.
+        store.record(traceID: "hls", bytes: 12_000_000, seconds: 2, backpressureSeconds: 0, now: 150)
+        XCTAssertEqual(store.routeCapacity(routeKey: cellular, now: 200), 48_000_000)
+        XCTAssertNil(store.routeLowerBound(routeKey: cellular,
+            now: 100 + PlaybackRecentThroughputStore.routeEvidenceMaximumAge + 1))
+    }
+
+    func testShortOriginalReadsDoNotBecomeARouteEstimate() {
+        let store = PlaybackRecentThroughputStore()
+        let route = "https://jellyfin.example:8097|wifi"
+        store.bindRoute(traceID: "movie", routeKey: route)
+        // Header, index and tail reads of a start closed after two seconds:
+        // 1–5 MB each, still inside connection ramp-up on a fast route.
+        store.record(traceID: "movie", bytes: 1_048_576, seconds: 0.26, backpressureSeconds: 0, now: 10)
+        store.record(traceID: "movie", bytes: 3_145_728, seconds: 0.55, backpressureSeconds: 0, now: 11)
+        store.record(traceID: "movie", bytes: 5_033_164, seconds: 0.7, backpressureSeconds: 0, now: 12)
+        // They still serve this playback's own estimate...
+        XCTAssertNotNil(store.estimate(traceID: "movie", now: 12))
+        // ...but leave the route no figure that could rule the original out next time.
+        XCTAssertNil(store.routeCapacity(routeKey: route, now: 13))
+        XCTAssertNil(store.routeLowerBound(routeKey: route, now: 13))
+        XCTAssertEqual(PlaybackRouteDecisionPolicy.originalVerdict(sourceBitrate: 81_851_565,
+            assessment: PlaybackRouteCapacityPolicy.assess(sustained: [], rendition: [], probe: nil)), .noEvidence)
+        // A transfer that ran long enough counts, as a body window does.
+        store.record(traceID: "movie", bytes: 33_554_432, seconds: 5.401, backpressureSeconds: 0, now: 20)
+        XCTAssertEqual(store.routeCapacity(routeKey: route, now: 21), Int(Double(33_554_432) * 8 / 5.401))
+    }
+
+    func testRouteAssessmentRanksSustainedDeliveryAboveOlderFloorsAndAnyProbe() {
+        typealias Policy = PlaybackRouteCapacityPolicy
+        func samples(_ values: [(Int, TimeInterval)]) -> [Policy.Sample] {
+            values.map { Policy.Sample(bitrate: $0.0, age: $0.1) }
+        }
+        XCTAssertEqual(Policy.assess(sustained: [], rendition: [], probe: nil), .empty)
+
+        // Sustained delivery is the estimate; the median resists one slow window.
+        let sustained = samples([(48_000_000, 30), (52_000_000, 20), (9_000_000, 10)])
+        XCTAssertEqual(Policy.assess(sustained: sustained, rendition: [], probe: nil),
+            Policy.Assessment(capacity: 48_000_000, boundsBothSides: true, basis: .playbackDelivery,
+                              sustained: 48_000_000, renditionLowerBound: nil, probe: nil))
+
+        // No probe overrides it, whether it reads low or high, before or after.
+        for probe in [Policy.Probe(bitrate: 7_774_017, age: 5, boundsBothSides: false),
+                      Policy.Probe(bitrate: 90_000_000, age: 5, boundsBothSides: true),
+                      Policy.Probe(bitrate: 90_000_000, age: 500, boundsBothSides: true)] {
+            let merged = Policy.assess(sustained: sustained, rendition: [], probe: probe)
+            XCTAssertEqual(merged.capacity, 48_000_000)
+            XCTAssertTrue(merged.boundsBothSides)
+            XCTAssertEqual(merged.basis, .playbackDelivery)
+            XCTAssertEqual(merged.probe, probe.bitrate)
+        }
+
+        // Segments delivered before the newest sustained sample describe the
+        // route as it was: a failed original is not retried on their strength.
+        let failed = samples([(20_000_000, 40), (20_000_000, 30)])
+        let stale = Policy.assess(sustained: failed,
+            rendition: samples([(50_000_000, 120), (52_000_000, 90)]), probe: nil)
+        XCTAssertEqual(stale.capacity, 20_000_000)
+        XCTAssertTrue(stale.boundsBothSides)
+        XCTAssertNil(stale.renditionLowerBound)
+
+        // Delivered afterwards, a floor a little above nudges the figure up...
+        let nudged = Policy.assess(sustained: failed, rendition: samples([(24_000_000, 10)]), probe: nil)
+        XCTAssertEqual(nudged.capacity, 24_000_000)
+        XCTAssertTrue(nudged.boundsBothSides)
+        XCTAssertEqual(nudged.sustained, 20_000_000)
+        XCTAssertEqual(nudged.renditionLowerBound, 24_000_000)
+
+        // ...and one well above (>= 1.5x) replaces the estimate: the route got
+        // better or the estimate read low. Only the floor is known then.
+        let improved = Policy.assess(sustained: failed,
+            rendition: samples([(30_000_000, 10), (45_000_000, 5)]), probe: nil)
+        XCTAssertEqual(improved.capacity, 45_000_000)
+        XCTAssertFalse(improved.boundsBothSides)
+        XCTAssertEqual(improved.basis, .renditionLowerBound)
+        XCTAssertEqual(improved.sustained, 20_000_000)
+        let borderline = Policy.assess(sustained: failed, rendition: samples([(29_999_999, 10)]), probe: nil)
+        XCTAssertTrue(borderline.boundsBothSides)
+        XCTAssertFalse(Policy.assess(sustained: failed, rendition: samples([(30_000_000, 10)]),
+                                     probe: nil).boundsBothSides)
+
+        // Expired, future-dated or empty samples are not evidence.
+        XCTAssertEqual(Policy.assess(
+            sustained: samples([(48_000_000, 601), (48_000_000, -1), (0, 5), (48_000_000, .nan)]),
+            rendition: samples([(30_000_000, 700)]),
+            probe: .init(bitrate: 20_000_000, age: 601, boundsBothSides: true)), .empty)
+    }
+
+    func testSmallProbeIsAFloorAndTheWiFiProbeAnEstimateUntilSegmentsSayMore() {
+        typealias Policy = PlaybackRouteCapacityPolicy
+        XCTAssertTrue(Policy.probeBoundsBothSides(networkKey: "wifi"))
+        for network in ["cellular", "constrained", "expensive", "other", "unknown"] {
+            XCTAssertFalse(Policy.probeBoundsBothSides(networkKey: network), network)
+        }
+        let wifi = Policy.Probe(bitrate: 30_000_000, age: 20, boundsBothSides: true)
+        let cellular = Policy.Probe(bitrate: 30_000_000, age: 20, boundsBothSides: false)
+
+        let wifiAlone = Policy.assess(sustained: [], rendition: [], probe: wifi)
+        XCTAssertEqual(wifiAlone.capacity, 30_000_000)
+        XCTAssertTrue(wifiAlone.boundsBothSides)
+        XCTAssertEqual(wifiAlone.basis, .preplayProbe)
+        let cellularAlone = Policy.assess(sustained: [], rendition: [], probe: cellular)
+        XCTAssertEqual(cellularAlone.capacity, 30_000_000)
+        XCTAssertFalse(cellularAlone.boundsBothSides)
+        XCTAssertEqual(cellularAlone.basis, .preplayProbe)
+
+        // Segments near the Wi-Fi probe agree with it: the estimate stands, at
+        // the higher figure. Their order in time does not matter for a probe.
+        let agreed = Policy.assess(sustained: [], rendition: [.init(bitrate: 36_000_000, age: 200)], probe: wifi)
+        XCTAssertEqual(agreed.capacity, 36_000_000)
+        XCTAssertTrue(agreed.boundsBothSides)
+        XCTAssertEqual(agreed.basis, .preplayProbe)
+        // Segments well above it (>= 1.5x) show the probe read low.
+        let refuted = Policy.assess(sustained: [], rendition: [.init(bitrate: 45_000_000, age: 200)], probe: wifi)
+        XCTAssertEqual(refuted.capacity, 45_000_000)
+        XCTAssertFalse(refuted.boundsBothSides)
+        XCTAssertEqual(refuted.basis, .renditionLowerBound)
+        // A small probe never caps: the higher floor is the figure either way.
+        let floors = Policy.assess(sustained: [], rendition: [.init(bitrate: 22_800_000, age: 60)],
+            probe: .init(bitrate: 7_774_017, age: 500, boundsBothSides: false))
+        XCTAssertEqual(floors.capacity, 22_800_000)
+        XCTAssertFalse(floors.boundsBothSides)
+        XCTAssertEqual(floors.renditionLowerBound, 22_800_000)
+        XCTAssertEqual(floors.probe, 7_774_017)
+    }
+
+    func testOriginalVerdictGivesStartResumeAndRestartTheSameAnswer() {
+        typealias Policy = PlaybackRouteCapacityPolicy
+        typealias Decision = PlaybackRouteDecisionPolicy
+        let s19 = 75_218_094
+        func verdict(_ source: Int?, sustained: [Policy.Sample] = [], rendition: [Policy.Sample] = [],
+                     probe: Policy.Probe? = nil) -> Decision.OriginalVerdict {
+            Decision.originalVerdict(sourceBitrate: source,
+                assessment: Policy.assess(sustained: sustained, rendition: rendition, probe: probe))
+        }
+        // Nothing to compare: the original is the default.
+        XCTAssertEqual(verdict(nil, sustained: [.init(bitrate: 1_000_000, age: 1)]), .unknownDemand)
+        XCTAssertEqual(verdict(0, sustained: [.init(bitrate: 1_000_000, age: 1)]), .unknownDemand)
+        XCTAssertEqual(verdict(s19), .noEvidence)
+
+        // 2026-11-10 08:5x, iPhone 13 on cellular: one 7.8 Mbps probe chose HLS
+        // at 62 s and the original at 127 s, only because it had aged past
+        // 120 s. It now gives the same answer for as long as it counts at all.
+        for age in [62.0, 127, 599] {
+            XCTAssertEqual(verdict(s19, probe: .init(bitrate: 7_774_017, age: age, boundsBothSides: false)),
+                           .lowerBoundTooFar, "\(age)")
+        }
+        XCTAssertEqual(verdict(s19, probe: .init(bitrate: 7_774_017, age: 601, boundsBothSides: false)),
+                       .noEvidence)
+        // A single probe is a momentary reading. It lets the original through
+        // within the margin and never opens a trial beyond it.
+        XCTAssertEqual(verdict(s19, probe: .init(bitrate: 50_200_000, age: 10, boundsBothSides: false)), .fits)
+        XCTAssertEqual(verdict(s19, probe: .init(bitrate: 31_400_000, age: 10, boundsBothSides: false)),
+                       .lowerBoundTooFar)
+        XCTAssertEqual(verdict(s19, probe: .init(bitrate: 31_400_000, age: 10, boundsBothSides: true)),
+                       .measuredInsufficient)
+
+        // 20:2x q2: only a 22.8 Mbps rendition floor was left, the original was
+        // tried and took 16.9 s to its first frame. 75.2 > 3 x 22.8: no longer.
+        let q2 = [Policy.Sample(bitrate: 22_800_000, age: 30)]
+        XCTAssertEqual(verdict(s19, rendition: q2), .lowerBoundTooFar)
+        // A source within reach of the same floor is still tried...
+        XCTAssertEqual(verdict(60_000_000, rendition: q2), .explore)
+        XCTAssertEqual(verdict(68_400_000, rendition: q2), .explore)
+        XCTAssertEqual(verdict(68_400_001, rendition: q2), .lowerBoundTooFar)
+        // ...and one the floor already covers simply fits.
+        XCTAssertEqual(verdict(34_200_000, rendition: q2), .fits)
+        XCTAssertEqual(verdict(34_200_001, rendition: q2), .explore)
+
+        // q3: the failed attempt left 15.0 Mbps of sustained delivery and the
+        // segments after it read 20.1 Mbps. Close enough to agree, so the
+        // estimate stands and the original stays ruled out while it lasts.
+        let attempt = [Policy.Sample(bitrate: 15_000_000, age: 60)]
+        let after = [Policy.Sample(bitrate: 20_100_000, age: 20)]
+        XCTAssertEqual(verdict(s19, sustained: attempt, rendition: after), .measuredInsufficient)
+        XCTAssertEqual(verdict(40_000_000, sustained: attempt, rendition: after), .measuredInsufficient)
+        XCTAssertEqual(verdict(30_000_000, sustained: attempt, rendition: after), .fits)
+
+        // 08:5x original: 48 Mbps sustained rules S19 out, not a 60 Mbps source.
+        let sustained48 = [Policy.Sample(bitrate: 48_000_000, age: 300)]
+        XCTAssertEqual(verdict(s19, sustained: sustained48), .measuredInsufficient)
+        XCTAssertEqual(verdict(60_000_000, sustained: sustained48), .fits)
+
+        // The network got better: segments delivered after the low estimate
+        // read well above it, and the original is within reach again.
+        let better = [Policy.Sample(bitrate: 45_000_000, age: 20)]
+        XCTAssertEqual(verdict(s19, sustained: attempt, rendition: better), .explore)
+        XCTAssertEqual(verdict(60_000_000, sustained: attempt, rendition: better), .fits)
+        // The same segments delivered before it change nothing.
+        XCTAssertEqual(verdict(s19, sustained: attempt, rendition: [.init(bitrate: 45_000_000, age: 90)]),
+                       .measuredInsufficient)
+
+        XCTAssertTrue(Decision.OriginalVerdict.measuredInsufficient.prefersServerRendition)
+        XCTAssertTrue(Decision.OriginalVerdict.lowerBoundTooFar.prefersServerRendition)
+        for original in [Decision.OriginalVerdict.unknownDemand, .noEvidence, .fits, .explore] {
+            XCTAssertFalse(original.prefersServerRendition, original.rawValue)
+        }
+        // The in-play predictor keeps the same margin.
+        XCTAssertEqual(Decision.sustainMargin, 1.5)
+        XCTAssertFalse(PlaybackAdaptiveBitratePolicy.isOriginalClearlyUnsustainable(
+            sourceBitrate: 72_000_000, measuredCapacity: 48_000_000, isPrivateRoute: false, forcesOriginal: false))
+        XCTAssertEqual(verdict(72_000_000, sustained: sustained48), .fits)
+    }
+
+    func testStartupRenditionFollowsTheAssessmentUnderThePolicyCeiling() {
+        typealias Decision = PlaybackRouteDecisionPolicy
+        // Public routes stop at 20 Mbps; cellular and constrained keep their own caps.
+        XCTAssertEqual(Decision.renditionCeiling(networkBitrateCap: 80_000_000), 20_000_000)
+        XCTAssertEqual(Decision.renditionCeiling(networkBitrateCap: 12_000_000), 12_000_000)
+        XCTAssertEqual(Decision.renditionCeiling(networkBitrateCap: 16_000_000), 16_000_000)
+        XCTAssertEqual(Decision.renditionCeiling(networkBitrateCap: 6_000_000), 6_000_000)
+        XCTAssertEqual(Decision.renditionCeiling(networkBitrateCap: nil), 20_000_000)
+        XCTAssertEqual(Decision.renditionCeiling(networkBitrateCap: 0), 20_000_000)
+
+        func start(_ capacity: Int?, ceiling: Int, unknown: Int = 2_000_000) -> Int {
+            Decision.startupBitrate(capacity: capacity, ceiling: ceiling, unknownCapacityBitrate: unknown)
+        }
+        // Half the capacity figure, on the ladder, within the ceiling (inclusive).
+        XCTAssertEqual(start(48_000_000, ceiling: 20_000_000), 20_000_000)
+        XCTAssertEqual(start(48_000_000, ceiling: 12_000_000), 12_000_000)
+        XCTAssertEqual(start(48_000_000, ceiling: 16_000_000), 12_000_000)
+        XCTAssertEqual(start(39_999_999, ceiling: 20_000_000), 12_000_000)
+        XCTAssertEqual(start(22_300_000, ceiling: 12_000_000), 10_000_000)
+        XCTAssertEqual(start(20_100_000, ceiling: 12_000_000), 10_000_000)
+        XCTAssertEqual(start(12_200_000, ceiling: 12_000_000), 4_000_000)
+        XCTAssertEqual(start(6_800_000, ceiling: 12_000_000), 2_000_000)
+        XCTAssertEqual(start(300_000, ceiling: 12_000_000), 250_000)
+        // No evidence: the network kind's conservative default, within the ceiling.
+        XCTAssertEqual(start(nil, ceiling: 12_000_000, unknown: 2_000_000), 2_000_000)
+        XCTAssertEqual(start(nil, ceiling: 20_000_000, unknown: 8_000_000), 8_000_000)
+        XCTAssertEqual(start(nil, ceiling: 6_000_000, unknown: 8_000_000), 6_000_000)
+        XCTAssertEqual(start(0, ceiling: 6_000_000, unknown: 2_500_000), 2_500_000)
+        // The share is the one the in-play step-down uses; that step still
+        // lands strictly below the rendition it leaves.
+        XCTAssertEqual(PlaybackAdaptiveBitratePolicy.renditionShare, 0.5)
+        XCTAssertEqual(PlaybackAdaptiveBitratePolicy.target(currentCeiling: 20_000_000,
+            capacity: 48_000_000, networkKey: "wifi"), 12_000_000)
+    }
+
+    func testFallbackCapacityHoldsLiveDeliveryToTheRouteFigure() {
+        typealias Decision = PlaybackRouteDecisionPolicy
+        XCTAssertEqual(Decision.fallbackCapacity(live: 9_000_000, route: 20_100_000), 9_000_000)
+        XCTAssertEqual(Decision.fallbackCapacity(live: 30_000_000, route: 20_100_000), 20_100_000)
+        XCTAssertEqual(Decision.fallbackCapacity(live: nil, route: 20_100_000), 20_100_000)
+        XCTAssertEqual(Decision.fallbackCapacity(live: 9_000_000, route: nil), 9_000_000)
+        XCTAssertNil(Decision.fallbackCapacity(live: nil, route: nil))
+        XCTAssertNil(Decision.fallbackCapacity(live: 0, route: nil))
+        // An original started with no cached probe used to step down from the
+        // 2 Mbps cellular default, whatever it had measured since. Its envelope
+        // is now the policy ceiling, so the step follows the measured delivery.
+        let ceiling = Decision.renditionCeiling(networkBitrateCap: 12_000_000)
+        XCTAssertEqual(PlaybackAdaptiveBitratePolicy.target(currentCeiling: ceiling,
+            capacity: Decision.fallbackCapacity(live: 50_000_000, route: nil), networkKey: "cellular"),
+            10_000_000)
+        XCTAssertEqual(PlaybackAdaptiveBitratePolicy.target(currentCeiling: 2_000_000,
+            capacity: 50_000_000, networkKey: "cellular"), 1_500_000)
+    }
+
+    func testRouteEvidenceKeepsItsAgeThroughDeviceSleep() {
+        var wall: TimeInterval = 1_000_000
+        let store = PlaybackRecentThroughputStore(wallClock: { wall })
+        let route = "https://jellyfin.example:8097|cellular"
+        store.bindRoute(traceID: "t", routeKey: route)
+        store.recordQualifiedBodyWindow(traceID: "t", bitrate: 48_000_000, now: 100)
+        store.record(traceID: "t", bytes: 2_000_000, seconds: 1, backpressureSeconds: 0, now: 101,
+                     isServerRendition: true)
+        // Awake for a minute: both clocks agree.
+        wall += 60
+        XCTAssertEqual(store.routeEvidence(routeKey: route, now: 160).sustained,
+                       [.init(bitrate: 48_000_000, age: 60)])
+        // The monotonic clock stops while the device sleeps. Two hours later it
+        // has advanced one more minute; the evidence is two hours old all the same.
+        wall += 7_200
+        XCTAssertNil(store.routeCapacity(routeKey: route, now: 220))
+        XCTAssertNil(store.routeLowerBound(routeKey: route, now: 220))
+        XCTAssertTrue(store.routeEvidence(routeKey: route, now: 220).rendition.isEmpty)
+        // A wall clock set backwards cannot make evidence younger than the
+        // monotonic clock says it is.
+        store.recordQualifiedBodyWindow(traceID: "t", bitrate: 30_000_000, now: 300)
+        wall -= 86_400
+        XCTAssertEqual(store.routeEvidence(routeKey: route, now: 500).sustained,
+                       [.init(bitrate: 30_000_000, age: 200)])
+        XCTAssertNil(store.routeCapacity(routeKey: route,
+            now: 300 + PlaybackRecentThroughputStore.routeEvidenceMaximumAge + 1))
+    }
+
+    func testRouteEvidenceSurvivesARelaunchOnlyWhileItStillCounts() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let persistence = PlaybackRecentThroughputStore.Persistence(
+            url: directory.appendingPathComponent("route-evidence.json"))
+        let route = "https://jellyfin.example:8097|cellular"
+        var wall: TimeInterval = 2_000_000
+
+        let first = PlaybackRecentThroughputStore(persistence: persistence, wallClock: { wall },
+                                                  uptimeClock: { 5_000 })
+        XCTAssertEqual(first.restoredRouteSampleCount, 0)
+        first.bindRoute(traceID: "original", routeKey: route)
+        first.bindRoute(traceID: "hls", routeKey: route)
+        first.recordQualifiedBodyWindow(traceID: "original", bitrate: 15_000_000, now: 5_000)
+        wall += 30
+        first.record(traceID: "hls", bytes: 5_000_000, seconds: 2, backpressureSeconds: 0, now: 5_030,
+                     isServerRendition: true)
+        // Playback that is not bound to a route (device files) is never written.
+        first.recordQualifiedBodyWindow(traceID: "files", bitrate: 90_000_000, now: 5_030)
+        first.persistRouteEvidence()
+
+        // The file names no server, network or playback: a digest, rates, times.
+        let text = try XCTUnwrap(String(data: Data(contentsOf: persistence.url), encoding: .utf8))
+        for secret in ["jellyfin", "example", "cellular", "original", "hls", "files", "90000000"] {
+            XCTAssertFalse(text.contains(secret), secret)
+        }
+
+        // Relaunched 300 s after the first sample, on a monotonic clock that
+        // started over: the samples keep their real age, and the next start
+        // decides as the last process would have.
+        wall += 270
+        let second = PlaybackRecentThroughputStore(persistence: persistence, wallClock: { wall },
+                                                   uptimeClock: { 40 })
+        XCTAssertEqual(second.restoredRouteSampleCount, 2)
+        let evidence = second.routeEvidence(routeKey: route, now: 40)
+        XCTAssertEqual(evidence.sustained, [.init(bitrate: 15_000_000, age: 300)])
+        XCTAssertEqual(evidence.rendition, [.init(bitrate: 20_000_000, age: 270)])
+        XCTAssertEqual(PlaybackRouteDecisionPolicy.originalVerdict(sourceBitrate: 75_218_094,
+            assessment: PlaybackRouteCapacityPolicy.assess(sustained: evidence.sustained,
+                rendition: evidence.rendition, probe: nil)), .measuredInsufficient)
+
+        // Samples of the new process join the restored ones.
+        second.bindRoute(traceID: "resume", routeKey: route)
+        second.recordQualifiedBodyWindow(traceID: "resume", bitrate: 17_000_000, now: 50)
+        XCTAssertEqual(second.routeCapacity(routeKey: route, now: 50), 17_000_000)
+        second.persistRouteEvidence()
+
+        // Past its lifetime nothing is restored, whatever the new clock reads.
+        wall += 601
+        let third = PlaybackRecentThroughputStore(persistence: persistence, wallClock: { wall },
+                                                  uptimeClock: { 7 })
+        XCTAssertEqual(third.restoredRouteSampleCount, 0)
+        XCTAssertNil(third.routeCapacity(routeKey: route, now: 7))
+        XCTAssertNil(third.routeLowerBound(routeKey: route, now: 7))
+
+        // Evidence dated after the present, or a file that is not ours, is ignored.
+        wall = 1_000_000
+        XCTAssertEqual(PlaybackRecentThroughputStore(persistence: persistence,
+            wallClock: { wall }).restoredRouteSampleCount, 0)
+        try Data("not json".utf8).write(to: persistence.url)
+        XCTAssertEqual(PlaybackRecentThroughputStore(persistence: persistence,
+            wallClock: { wall }).restoredRouteSampleCount, 0)
+
+        // Without a location nothing is ever written.
+        let memoryOnly = PlaybackRecentThroughputStore(wallClock: { wall })
+        memoryOnly.bindRoute(traceID: "original", routeKey: route)
+        memoryOnly.recordQualifiedBodyWindow(traceID: "original", bitrate: 15_000_000, now: 10)
+        memoryOnly.persistRouteEvidence()
+        XCTAssertEqual(try String(contentsOf: persistence.url, encoding: .utf8), "not json")
+    }
+
+    func testRouteCapacityKeepsPlaybackDeliveryPerRouteAndDrivesTheSameChoice() {
+        let store = PlaybackRecentThroughputStore()
+        let cellular = "https://jellyfin.example:8097|cellular"
+        let wifi = "https://jellyfin.example:8097|wifi"
+        // Unbound traces (device files, other sources) never become route evidence.
+        store.recordQualifiedBodyWindow(traceID: "files", bitrate: 90_000_000, now: 10)
+        XCTAssertNil(store.routeCapacity(routeKey: cellular, now: 11))
+
+        store.bindRoute(traceID: "start", routeKey: cellular)
+        store.bindRoute(traceID: "other", routeKey: wifi)
+        store.recordQualifiedBodyWindow(traceID: "start", bitrate: 48_000_000, now: 100)
+        store.record(traceID: "start", bytes: 6_000_000, seconds: 1, backpressureSeconds: 0, now: 101)  // 48 Mbps
+        store.record(traceID: "start", bytes: 6_500_000, seconds: 1, backpressureSeconds: 0, now: 102)  // 52 Mbps
+        // Backpressured or tiny transfers are not delivery capacity.
+        store.record(traceID: "start", bytes: 6_000_000, seconds: 1, backpressureSeconds: 0.5, now: 103)
+        store.record(traceID: "start", bytes: 10_000, seconds: 1, backpressureSeconds: 0, now: 103)
+        store.recordQualifiedBodyWindow(traceID: "other", bitrate: 200_000_000, now: 100)
+
+        // Per-trace estimates expire quickly, route evidence survives for restart/resume.
+        XCTAssertNil(store.estimate(traceID: "start", now: 400))
+        XCTAssertEqual(store.routeCapacity(routeKey: cellular, now: 400), 48_000_000)
+        XCTAssertEqual(store.routeCapacity(routeKey: wifi, now: 400), 200_000_000)
+        XCTAssertNil(store.routeCapacity(routeKey: cellular,
+            now: 102 + PlaybackRecentThroughputStore.routeEvidenceMaximumAge + 1))
+        XCTAssertNil(store.routeCapacity(routeKey: cellular, now: 50), "future samples are ignored")
+
+        // With ~48 Mbps of real delivery, S19 (75 Mbps) still needs transcoding,
+        // but at a 12 Mbps rendition instead of the 2 Mbps the 1 MB probe chose,
+        // and a 60 Mbps original is allowed.
+        let capacity = store.routeCapacity(routeKey: cellular, now: 400)
+        XCTAssertTrue(PlaybackAdaptiveBitratePolicy.isOriginalClearlyUnsustainable(sourceBitrate: 75_218_094,
+            measuredCapacity: capacity, isPrivateRoute: false, forcesOriginal: false))
+        XCTAssertEqual(PlaybackAdaptiveBitratePolicy.target(currentCeiling: 20_000_000, capacity: capacity,
+            networkKey: "cellular"), 12_000_000)
+        XCTAssertEqual(PlaybackAdaptiveBitratePolicy.target(currentCeiling: 20_000_000, capacity: 7_774_017,
+            networkKey: "cellular"), 2_000_000)
+        XCTAssertFalse(PlaybackAdaptiveBitratePolicy.isOriginalClearlyUnsustainable(sourceBitrate: 60_000_000,
+            measuredCapacity: capacity, isPrivateRoute: false, forcesOriginal: false))
+
+        // Retention is bounded: newest samples win the median.
+        store.bindRoute(traceID: "later", routeKey: cellular)
+        for second in 0..<20 {
+            store.recordQualifiedBodyWindow(traceID: "later", bitrate: 20_000_000, now: 500 + Double(second) * 7)
+        }
+        XCTAssertEqual(store.routeCapacity(routeKey: cellular, now: 700), 20_000_000)
+    }
+
+    func testJellyfinPublicCandidateBorrowsOnlySameServerLoginWithRecordedServerID() throws {
+        let publicURL = try XCTUnwrap(URL(string: "https://jellyfin.example:8097"))
+        let plainPublic = try XCTUnwrap(URL(string: "http://jellyfin.example:8097"))
+        let lanURL = try XCTUnwrap(URL(string: "http://192.0.2.10:8096"))
+        let otherLAN = try XCTUnwrap(URL(string: "http://192.0.2.11:8096"))
+        func saved(_ endpoint: URL, server: String?, token: String, at: TimeInterval) -> JellyfinSessionEndpointPolicy.SavedCandidate {
+            .init(endpoint: endpoint, session: .init(endpointString: endpoint.absoluteString, userID: "u",
+                  username: "account", accessToken: token, serverID: server),
+                  modificationDate: Date(timeIntervalSince1970: at))
+        }
+        let legacy = saved(lanURL, server: nil, token: "legacy", at: 3)
+        let older = saved(lanURL, server: "server-a", token: "older", at: 1)
+        let newer = saved(otherLAN, server: "server-a", token: "newer", at: 2)
+        let foreign = saved(otherLAN, server: "server-b", token: "foreign", at: 4)
+
+        // Without a recorded server ID, nothing is borrowed.
+        XCTAssertNil(JellyfinSessionEndpointPolicy.crossEndpointSource(for: publicURL,
+            publicServerID: "server-a", saved: [legacy]))
+        // Matching server picks the newest matching login, never a different server.
+        XCTAssertEqual(JellyfinSessionEndpointPolicy.crossEndpointSource(for: publicURL,
+            publicServerID: "server-a", saved: [older, newer, foreign, legacy])?.session.accessToken, "newer")
+        XCTAssertNil(JellyfinSessionEndpointPolicy.crossEndpointSource(for: publicURL,
+            publicServerID: "server-c", saved: [older, foreign]))
+        // Only configured HTTPS public candidates may receive a borrowed token.
+        XCTAssertNil(JellyfinSessionEndpointPolicy.crossEndpointSource(for: plainPublic,
+            publicServerID: "server-a", saved: [older]))
+        XCTAssertNil(JellyfinSessionEndpointPolicy.crossEndpointSource(for: lanURL,
+            publicServerID: "server-a", saved: [newer]))
+        XCTAssertNil(JellyfinSessionEndpointPolicy.crossEndpointSource(for: publicURL,
+            publicServerID: " ", saved: [older]))
+        // A misplaced session (saved under a key that is not its own endpoint) is ignored.
+        let misplaced = JellyfinSessionEndpointPolicy.SavedCandidate(endpoint: otherLAN,
+            session: older.session, modificationDate: Date(timeIntervalSince1970: 9))
+        XCTAssertNil(JellyfinSessionEndpointPolicy.crossEndpointSource(for: publicURL,
+            publicServerID: "server-a", saved: [misplaced]))
+
+        // The token must prove the same user and server on the public endpoint.
+        XCTAssertTrue(JellyfinSessionEndpointPolicy.acceptsCrossEndpointIdentity(
+            .init(userID: "u", serverID: "server-a"), source: older))
+        XCTAssertFalse(JellyfinSessionEndpointPolicy.acceptsCrossEndpointIdentity(
+            .init(userID: "u", serverID: "server-b"), source: older))
+        XCTAssertFalse(JellyfinSessionEndpointPolicy.acceptsCrossEndpointIdentity(
+            .init(userID: "other", serverID: "server-a"), source: older))
+        XCTAssertFalse(JellyfinSessionEndpointPolicy.acceptsCrossEndpointIdentity(nil, source: older))
+        XCTAssertFalse(JellyfinSessionEndpointPolicy.acceptsCrossEndpointIdentity(
+            .init(userID: "u", serverID: "server-a"), source: legacy))
+
+        // The saved copy is the public endpoint's own login, usable by the normal restore.
+        let copy = JellyfinSessionEndpointPolicy.copy(older.session, for: publicURL)
+        XCTAssertEqual(copy.endpointString, publicURL.absoluteString)
+        XCTAssertEqual(copy.serverID, "server-a")
+        XCTAssertTrue(JellyfinSessionEndpointPolicy.SavedCandidate(endpoint: publicURL, session: copy,
+            modificationDate: nil).hasOwnSession)
+
+        // Older keychain payloads without serverID still decode.
+        let oldPayload = Data(#"{"endpointString":"http://192.0.2.10:8096","userID":"u","username":"a","accessToken":"t"}"#.utf8)
+        XCTAssertNil(try JSONDecoder().decode(StoredJellyfinSession.self, from: oldPayload).serverID)
+        let roundTrip = try JSONDecoder().decode(StoredJellyfinSession.self, from: JSONEncoder().encode(copy))
+        XCTAssertEqual(roundTrip.serverID, "server-a")
+    }
+
+    func testJellyfinRejectedPublicLoginCanReuseOnlySameAccountLANLogin() throws {
+        let publicURL = try XCTUnwrap(URL(string: "https://jellyfin.example"))
+        let otherPublic = try XCTUnwrap(URL(string: "https://alternative.example"))
+        let lanURL = try XCTUnwrap(URL(string: "http://192.168.1.20:8096"))
+        let otherLAN = try XCTUnwrap(URL(string: "http://192.168.1.21:8096"))
+        typealias Policy = JellyfinSessionEndpointPolicy
+
+        func saved(_ endpoint: URL, token: String, user: String = "same-user",
+                   server: String? = "server-a", date: TimeInterval = 1) -> Policy.SavedCandidate {
+            .init(endpoint: endpoint, session: .init(endpointString: endpoint.absoluteString,
+                userID: user, username: user, accessToken: token, serverID: server),
+                modificationDate: Date(timeIntervalSince1970: date))
+        }
+
+        let rejected = saved(publicURL, token: "rejected", date: 6)
+        let valid = saved(lanURL, token: "valid")
+        let alternatives = [
+            rejected,
+            saved(otherLAN, token: "other-user", user: "different-user", date: 5),
+            saved(otherLAN, token: "rejected", date: 4),
+            saved(otherLAN, token: "other-server", server: "server-b", date: 3),
+            saved(otherPublic, token: "other-public", date: 2)
+        ]
+
+        XCTAssertNil(Policy.crossEndpointSource(for: publicURL, publicServerID: "server-a",
+            saved: alternatives, replacing: rejected))
+        XCTAssertEqual(Policy.crossEndpointSource(for: publicURL, publicServerID: "server-a",
+            saved: alternatives + [valid], replacing: rejected)?.session.accessToken, "valid")
+        XCTAssertNil(Policy.crossEndpointSource(for: otherPublic, publicServerID: "server-a",
+            saved: [valid], replacing: rejected))
+        XCTAssertNil(Policy.crossEndpointSource(for: publicURL, publicServerID: "server-b",
+            saved: [saved(lanURL, token: "valid-b", server: "server-b")], replacing: rejected))
+
+        let legacy = saved(publicURL, token: "rejected", server: nil)
+        XCTAssertEqual(Policy.crossEndpointSource(for: publicURL, publicServerID: "server-a",
+            saved: [valid], replacing: legacy)?.session.accessToken, "valid")
+
+        XCTAssertTrue(rejected.matchesSession(rejected.session))
+        XCTAssertFalse(rejected.matchesSession(nil))
+        XCTAssertFalse(rejected.matchesSession(saved(publicURL, token: "new-login").session))
+        XCTAssertFalse(rejected.matchesSession(saved(publicURL, token: "rejected", user: "new-user").session))
+        XCTAssertTrue(Policy.acceptsCrossEndpointIdentity(
+            .init(userID: "same-user", serverID: "server-a"), source: valid))
+        XCTAssertFalse(Policy.acceptsCrossEndpointIdentity(
+            .init(userID: "different-user", serverID: "server-a"), source: valid))
+    }
+
+    func testJellyfinRejectedRestoreRequiresNewerVerifiedSessionForDifferentAccount() throws {
+        let publicURL = try XCTUnwrap(URL(string: "https://jellyfin.example"))
+        let lanURL = try XCTUnwrap(URL(string: "http://192.0.2.10:8096"))
+        let oldDate = Date(timeIntervalSince1970: 1)
+        let own = StoredJellyfinSession(endpointString: lanURL.absoluteString,
+            userID: "new-user", username: "new-account", accessToken: "fixture-lan")
+        let misplaced = JellyfinSessionEndpointPolicy.SavedCandidate(endpoint: publicURL,
+            session: own, modificationDate: Date(timeIntervalSince1970: 3))
+        XCTAssertNil(JellyfinSessionEndpointPolicy.preferredSavedSession([misplaced]))
+        let stale = JellyfinSessionEndpointPolicy.SavedCandidate(endpoint: lanURL,
+            session: own, modificationDate: oldDate)
+        let fresh = JellyfinSessionEndpointPolicy.SavedCandidate(endpoint: lanURL,
+            session: own, modificationDate: Date(timeIntervalSince1970: 2))
+        XCTAssertFalse(JellyfinSessionEndpointPolicy.canRecoverRejectedSession(stale, from: publicURL,
+            restoredUserID: "old-user", savedAt: oldDate, verifiedLANEndpoint: lanURL))
+        XCTAssertFalse(JellyfinSessionEndpointPolicy.canRecoverRejectedSession(fresh, from: publicURL,
+            restoredUserID: "old-user", savedAt: oldDate, verifiedLANEndpoint: nil))
+        XCTAssertFalse(JellyfinSessionEndpointPolicy.canRecoverRejectedSession(fresh, from: publicURL,
+            restoredUserID: "old-user", savedAt: nil, verifiedLANEndpoint: lanURL))
+    }
+
+    func testJellyfinRejectedRestoreCanProbeOlderVerifiedLANSessionForSameAccount() throws {
+        let publicURL = try XCTUnwrap(URL(string: "https://jellyfin.example"))
+        let lanURL = try XCTUnwrap(URL(string: "http://192.0.2.10:8096"))
+        let publicSession = JellyfinSessionEndpointPolicy.SavedCandidate(endpoint: publicURL,
+            session: .init(endpointString: publicURL.absoluteString, userID: "same-user",
+                           username: "same-account", accessToken: "rejected-public"),
+            modificationDate: Date(timeIntervalSince1970: 2))
+        let lanSession = JellyfinSessionEndpointPolicy.SavedCandidate(endpoint: lanURL,
+            session: .init(endpointString: lanURL.absoluteString, userID: "same-user",
+                           username: "same-account", accessToken: "fixture-lan"),
+            modificationDate: Date(timeIntervalSince1970: 1))
+
+        XCTAssertEqual(JellyfinSessionEndpointPolicy.preferredSavedSession([lanSession, publicSession])?.endpoint,
+                       publicURL)
+        XCTAssertTrue(JellyfinSessionEndpointPolicy.canRecoverRejectedSession(lanSession, from: publicURL,
+            restoredUserID: publicSession.session.userID, savedAt: publicSession.modificationDate,
+            verifiedLANEndpoint: lanURL))
+        XCTAssertFalse(JellyfinSessionEndpointPolicy.canRecoverRejectedSession(lanSession, from: publicURL,
+            restoredUserID: publicSession.session.userID, savedAt: publicSession.modificationDate,
+            verifiedLANEndpoint: nil))
+        let misplaced = JellyfinSessionEndpointPolicy.SavedCandidate(endpoint: lanURL,
+            session: publicSession.session, modificationDate: lanSession.modificationDate)
+        XCTAssertFalse(JellyfinSessionEndpointPolicy.canRecoverRejectedSession(misplaced, from: publicURL,
+            restoredUserID: publicSession.session.userID, savedAt: publicSession.modificationDate,
+            verifiedLANEndpoint: lanURL))
+    }
+
     @MainActor func testSharedSeekCompletionRejectsOldAndDetachedRendererCallbacks() {
         let controls = GreenfieldPlaybackControls()
         controls.isReady = true; controls.isSeekable = true; controls.durationSeconds = 600
@@ -1952,50 +2694,285 @@ final class PlaybackNextCoreTests: XCTestCase {
         XCTAssertNil(rejected); XCTAssertEqual(calls, 0)
     }
 
-    func testRepeatedPendingTrackChoiceDoesNotReplaceCandidateOrLatestDifferentChoice() {
-        var tracker = PlaybackSourceChangeRequestTracker()
-        let a = PlaybackSourceChangeRequestTracker.Tracks(audio: 1, subtitle: 8,
-            seekGeneration: 0, pictureInPictureGeneration: 0)
-        let b = PlaybackSourceChangeRequestTracker.Tracks(audio: 2, subtitle: 8,
-            seekGeneration: 0, pictureInPictureGeneration: 0)
-        let c = PlaybackSourceChangeRequestTracker.Tracks(audio: 2, subtitle: 9,
-            seekGeneration: 0, pictureInPictureGeneration: 0)
-        var accepted = [PlaybackSourceChangeRequestTracker.Tracks]()
-        for request in [a, a, b, b, c, c] where tracker.accept(request) {
-            accepted.append(request)
-        }
-        XCTAssertEqual(accepted, [a, b, c], "Repeated taps cannot add a pending closure that invalidates the prepared candidate")
-        XCTAssertTrue(tracker.accept(a), "Returning to the original track is a new choice, not a duplicate")
+    private func sourceChangeAttempt(_ changes: inout PlaybackSourceChangeCoordinator,
+                                     _ change: PlaybackSourceChangeCoordinator.Change,
+                                     live: PlaybackSourceChangeCoordinator.Live)
+        -> PlaybackSourceChangeCoordinator.Attempt? {
+        if case .start(let attempt) = changes.submit(change, live: live) { return attempt }
+        return nil
     }
 
-    func testPendingTrackChoiceAfterSeekOrPiPRetainsNewOwnership() {
-        var tracker = PlaybackSourceChangeRequestTracker()
-        let before = PlaybackSourceChangeRequestTracker.Tracks(audio: 1, subtitle: 8,
-            seekGeneration: 0, pictureInPictureGeneration: 0)
-        let afterSeek = PlaybackSourceChangeRequestTracker.Tracks(audio: 1, subtitle: 8,
-            seekGeneration: 1, pictureInPictureGeneration: 0)
-        let afterPiP = PlaybackSourceChangeRequestTracker.Tracks(audio: 1, subtitle: 8,
-            seekGeneration: 1, pictureInPictureGeneration: 1)
-        XCTAssertTrue(tracker.accept(before))
-        XCTAssertTrue(tracker.accept(afterSeek), "A candidate invalidated by seek cannot swallow a fresh selection")
-        XCTAssertFalse(tracker.accept(afterSeek))
-        XCTAssertTrue(tracker.accept(afterPiP))
+    func testSourceChangeStartsWhenIdleAndPreparesNothingForWhatIsAlreadyOnItsWay() throws {
+        typealias C = PlaybackSourceChangeCoordinator
+        let playing = C.Tracks(audio: 1, subtitle: nil), chosen = C.Tracks(audio: 2, subtitle: nil)
+        let live = C.Live(tracks: playing)
+        var changes = C()
+        XCTAssertEqual(changes.submit(.tracks(playing), live: live), .coalesced,
+                       "Choosing what is playing prepares nothing")
+        XCTAssertFalse(changes.isChanging)
+
+        let attempt = try XCTUnwrap(sourceChangeAttempt(&changes, .tracks(chosen), live: live))
+        XCTAssertEqual(attempt.target, C.Target(tracks: chosen))
+        XCTAssertNil(attempt.startsPaused, "A track change keeps the outgoing stream playing")
+        XCTAssertTrue(changes.isChanging)
+        XCTAssertFalse(changes.holdsPlayback)
+        XCTAssertEqual(changes.submit(.tracks(chosen), live: live), .coalesced)
+        XCTAssertTrue(changes.mayCommit(attempt.id, live: live), "A repeated tap leaves the candidate alone")
+        XCTAssertEqual(changes.finish(attempt.id, .committed, live: C.Live(tracks: chosen)), C.Completion())
+        XCTAssertFalse(changes.isChanging)
+        XCTAssertFalse(changes.mayCommit(attempt.id, live: live))
+
+        // The view cannot always vouch for the playing selection: a missing
+        // subtitle index may still be a server default burned into the video.
+        var unknown = C()
+        XCTAssertNotNil(sourceChangeAttempt(&unknown, .tracks(playing), live: C.Live()))
     }
 
-    func testFinishedOrInterruptedTrackPreparationAllowsRetryAndExplicitOff() {
-        var tracker = PlaybackSourceChangeRequestTracker()
-        let track = PlaybackSourceChangeRequestTracker.Tracks(audio: 1, subtitle: 8,
-            seekGeneration: 0, pictureInPictureGeneration: 0)
-        let off = PlaybackSourceChangeRequestTracker.Tracks(audio: 1, subtitle: nil,
-            seekGeneration: 0, pictureInPictureGeneration: 0)
-        XCTAssertTrue(tracker.accept(track))
-        tracker.finish() // Failed/committed/cancelled preparation has released ownership.
-        XCTAssertTrue(tracker.accept(track), "An unapplied choice can be retried")
-        XCTAssertTrue(tracker.accept(off))
-        XCTAssertFalse(tracker.accept(off))
-        XCTAssertTrue(tracker.accept(nil), "Automatic, quality and server-seek requests are never deduplicated")
-        XCTAssertTrue(tracker.accept(nil))
-        XCTAssertTrue(tracker.accept(off), "A track choice after another source operation must be delivered")
+    func testLatestTrackChoiceReplacesTheAttemptInFlightAndThePlayingTracksCancelIt() throws {
+        typealias C = PlaybackSourceChangeCoordinator
+        let playing = C.Tracks(audio: 1, subtitle: nil)
+        let b = C.Tracks(audio: 2, subtitle: nil), c = C.Tracks(audio: 2, subtitle: 9)
+        let live = C.Live(tracks: playing)
+        var changes = C()
+        let first = try XCTUnwrap(sourceChangeAttempt(&changes, .tracks(b), live: live))
+        XCTAssertEqual(changes.submit(.tracks(c), live: live), .replaces)
+        XCTAssertFalse(changes.mayCommit(first.id, live: live))
+        XCTAssertEqual(changes.submit(.tracks(c), live: live), .coalesced)
+        XCTAssertEqual(changes.submit(.tracks(b), live: live), .replaces)
+        XCTAssertEqual(changes.submit(.tracks(c), live: live), .replaces)
+        let replaced = changes.finish(first.id, .failed, live: live)
+        XCTAssertFalse(replaced.reportsFailure, "An attempt the user already replaced fails silently")
+        let second = try XCTUnwrap(replaced.next)
+        XCTAssertEqual(second.target, C.Target(tracks: c), "Only the latest choice is prepared")
+        XCTAssertNotEqual(second.id, first.id)
+        XCTAssertTrue(changes.mayCommit(second.id, live: live))
+        XCTAssertFalse(changes.mayCommit(first.id, live: live))
+
+        XCTAssertEqual(changes.submit(.tracks(playing), live: live), .cancels)
+        XCTAssertFalse(changes.mayCommit(second.id, live: live))
+        XCTAssertEqual(changes.submit(.tracks(playing), live: live), .coalesced)
+        XCTAssertEqual(changes.finish(second.id, .abandoned, live: live), C.Completion(),
+                       "Back on the playing tracks: nothing follows and nothing is reported")
+        XCTAssertFalse(changes.isChanging)
+    }
+
+    func testServerSeekDuringATrackChangeBecomesOneSeekCarryingTheChoice() throws {
+        typealias C = PlaybackSourceChangeCoordinator
+        let playing = C.Tracks(audio: 1, subtitle: nil), chosen = C.Tracks(audio: 2, subtitle: 9)
+        let live = C.Live(tracks: playing)
+        var changes = C()
+        let tracks = try XCTUnwrap(sourceChangeAttempt(&changes, .tracks(chosen), live: live))
+        XCTAssertEqual(changes.submit(.seek(600), live: live), .replaces)
+        XCTAssertFalse(changes.mayCommit(tracks.id, live: live))
+        XCTAssertEqual(changes.submit(.seek(900), live: live), .replaces)
+        let merged = try XCTUnwrap(changes.finish(tracks.id, .abandoned, live: live).next)
+        XCTAssertEqual(merged.target, C.Target(tracks: chosen, seekSeconds: 900),
+                       "The server seek used to renegotiate the playing tracks and drop the choice")
+        XCTAssertTrue(changes.holdsPlayback)
+        XCTAssertEqual(merged.startsPaused, false)
+
+        var plain = C()
+        let other = try XCTUnwrap(sourceChangeAttempt(&plain, .tracks(chosen), live: live))
+        XCTAssertEqual(plain.submit(.seek(600), live: live), .replaces)
+        XCTAssertEqual(plain.submit(.tracks(playing), live: live), .replaces)
+        XCTAssertEqual(plain.finish(other.id, .abandoned, live: live).next?.target, C.Target(seekSeconds: 600),
+                       "Going back to the playing tracks leaves a plain seek")
+    }
+
+    func testTrackChoiceDuringAServerSeekWaitsForTheSeekInsteadOfDroppingIt() throws {
+        typealias C = PlaybackSourceChangeCoordinator
+        let playing = C.Tracks(audio: 1, subtitle: nil), chosen = C.Tracks(audio: 2, subtitle: nil)
+        let live = C.Live(tracks: playing)
+        var changes = C()
+        let seek = try XCTUnwrap(sourceChangeAttempt(&changes, .seek(600), live: live))
+        XCTAssertTrue(changes.holdsPlayback)
+        XCTAssertEqual(changes.submit(.seek(600), live: live), .coalesced, "The same target again restarts nothing")
+        XCTAssertEqual(changes.submit(.tracks(chosen), live: live), .queued)
+        XCTAssertTrue(changes.mayCommit(seek.id, live: live), "The screen is already waiting on this seek")
+        XCTAssertEqual(changes.submit(.tracks(chosen), live: live), .coalesced)
+        XCTAssertEqual(changes.submit(.tracks(playing), live: live), .coalesced,
+                       "The seek already delivers the playing tracks")
+        XCTAssertEqual(changes.submit(.tracks(chosen), live: live), .queued)
+        let committed = changes.finish(seek.id, .committed, live: live)
+        XCTAssertFalse(committed.resumesOutgoing)
+        let follow = try XCTUnwrap(committed.next)
+        XCTAssertEqual(follow.target, C.Target(tracks: chosen))
+        XCTAssertNil(follow.startsPaused)
+        XCTAssertFalse(changes.holdsPlayback)
+
+        var moved = C()
+        let firstSeek = try XCTUnwrap(sourceChangeAttempt(&moved, .seek(600), live: live))
+        XCTAssertEqual(moved.submit(.tracks(chosen), live: live), .queued)
+        XCTAssertEqual(moved.submit(.seek(900), live: live), .replaces)
+        XCTAssertFalse(moved.mayCommit(firstSeek.id, live: live), "An obsolete position must not appear first")
+        XCTAssertEqual(moved.finish(firstSeek.id, .abandoned, live: live).next?.target,
+                       C.Target(tracks: chosen, seekSeconds: 900))
+
+        var failing = C()
+        let failedSeek = try XCTUnwrap(sourceChangeAttempt(&failing, .seek(600), live: live))
+        XCTAssertEqual(failing.submit(.tracks(chosen), live: live), .queued)
+        let failure = failing.finish(failedSeek.id, .failed, live: live)
+        XCTAssertTrue(failure.reportsFailure)
+        XCTAssertTrue(failure.resumesOutgoing)
+        XCTAssertEqual(failure.next?.target, C.Target(tracks: chosen), "The choice does not depend on the seek")
+
+        // A seek that already carries a choice commits it; the next choice
+        // is measured against that, not against what plays now.
+        var carried = C()
+        let first = try XCTUnwrap(sourceChangeAttempt(&carried, .tracks(chosen), live: live))
+        XCTAssertEqual(carried.submit(.seek(600), live: live), .replaces)
+        let both = try XCTUnwrap(carried.finish(first.id, .abandoned, live: live).next)
+        XCTAssertEqual(carried.submit(.tracks(chosen), live: live), .coalesced)
+        XCTAssertEqual(carried.submit(.tracks(playing), live: live), .queued)
+        XCTAssertEqual(carried.finish(both.id, .committed, live: C.Live(tracks: chosen)).next?.target,
+                       C.Target(tracks: playing))
+    }
+
+    func testUsersChangeBeatsTheAppsOwnAndNeverTheOtherWayRound() throws {
+        typealias C = PlaybackSourceChangeCoordinator
+        let playing = C.Tracks(audio: 1, subtitle: nil), chosen = C.Tracks(audio: 2, subtitle: nil)
+        let live = C.Live(tracks: playing)
+        var changes = C()
+        let downshift = try XCTUnwrap(sourceChangeAttempt(&changes, .automatic, live: live))
+        XCTAssertEqual(downshift.target, C.Target(isAutomatic: true))
+        XCTAssertNil(downshift.startsPaused)
+        XCTAssertEqual(changes.submit(.automatic, live: live), .ignored)
+        XCTAssertEqual(changes.submit(.tracks(playing), live: live), .coalesced,
+                       "Choosing the playing tracks asks for nothing and leaves the downshift alone")
+        XCTAssertTrue(changes.mayCommit(downshift.id, live: live))
+        XCTAssertEqual(changes.submit(.tracks(chosen), live: live), .replaces)
+        XCTAssertFalse(changes.mayCommit(downshift.id, live: live))
+        XCTAssertEqual(changes.submit(.automatic, live: live), .ignored)
+        let done = changes.finish(downshift.id, .failed, live: live)
+        XCTAssertFalse(done.reportsFailure, "The app's own change never raises an alert")
+        let user = try XCTUnwrap(done.next)
+        XCTAssertEqual(user.target, C.Target(tracks: chosen), "The downshift is not carried into the user's request")
+        XCTAssertEqual(changes.submit(.automatic, live: live), .ignored)
+        XCTAssertTrue(changes.mayCommit(user.id, live: live))
+
+        var seeking = C()
+        let other = try XCTUnwrap(sourceChangeAttempt(&seeking, .automatic, live: live))
+        XCTAssertEqual(seeking.submit(.seek(600), live: live), .replaces)
+        XCTAssertEqual(seeking.finish(other.id, .abandoned, live: live).next?.target, C.Target(seekSeconds: 600))
+    }
+
+    func testAnotherItemDropsChangesAskedOfTheOutgoingOne() throws {
+        typealias C = PlaybackSourceChangeCoordinator
+        let playing = C.Tracks(audio: 1, subtitle: nil), chosen = C.Tracks(audio: 2, subtitle: nil)
+        let live = C.Live(wantsPlayback: false, tracks: playing)
+        var changes = C()
+        let tracks = try XCTUnwrap(sourceChangeAttempt(&changes, .tracks(chosen), live: live))
+        XCTAssertFalse(changes.isChangingItem)
+        XCTAssertEqual(changes.submit(.seek(600), live: live), .replaces)
+        XCTAssertEqual(changes.submit(.item(1), live: live), .replaces)
+        XCTAssertTrue(changes.isChangingItem, "Local controls stop accepting old-item inputs as soon as the episode is queued")
+        XCTAssertEqual(changes.submit(.item(1), live: live), .coalesced)
+        XCTAssertEqual(changes.submit(.tracks(chosen), live: live), .ignored)
+        let next = try XCTUnwrap(changes.finish(tracks.id, .abandoned, live: live).next)
+        XCTAssertEqual(next.target, C.Target(item: 1), "The old item's tracks and position do not follow")
+        XCTAssertEqual(next.startsPaused, false, "Another item plays even when this one was paused")
+        XCTAssertTrue(changes.holdsPlayback)
+        XCTAssertEqual(changes.submit(.item(1), live: live), .coalesced, "A second tap does not load the episode twice")
+        XCTAssertEqual(changes.submit(.tracks(chosen), live: live), .ignored)
+        XCTAssertEqual(changes.submit(.seek(30), live: live), .ignored)
+        XCTAssertEqual(changes.submit(.automatic, live: live), .ignored)
+        XCTAssertTrue(changes.mayCommit(next.id, live: live))
+        XCTAssertEqual(changes.submit(.item(-1), live: live), .replaces)
+        let other = changes.finish(next.id, .abandoned, live: live)
+        let previous = try XCTUnwrap(other.next)
+        XCTAssertEqual(previous.target, C.Target(item: -1))
+        XCTAssertFalse(other.resumesOutgoing)
+        XCTAssertTrue(changes.isChangingItem)
+        XCTAssertTrue(changes.finish(previous.id, .failed, live: live).reportsFailure)
+        XCTAssertFalse(changes.isChangingItem, "A failed episode load restores access to the outgoing item")
+    }
+
+    func testLocalSeekPreparesATrackChoiceAgainAndPictureInPictureEndsIt() throws {
+        typealias C = PlaybackSourceChangeCoordinator
+        let playing = C.Tracks(audio: 1, subtitle: nil), chosen = C.Tracks(audio: 2, subtitle: nil)
+        let live = C.Live(seekGeneration: 3, pictureInPictureGeneration: 5, tracks: playing)
+        var sought = live
+        sought.seekGeneration = 4
+        var changes = C()
+        let first = try XCTUnwrap(sourceChangeAttempt(&changes, .tracks(chosen), live: live))
+        XCTAssertFalse(changes.mayCommit(first.id, live: sought), "The candidate was aligned to the old position")
+        let retry = changes.finish(first.id, .failed, live: sought)
+        XCTAssertFalse(retry.reportsFailure, "A candidate the seek already invalidated fails silently")
+        let second = try XCTUnwrap(retry.next)
+        XCTAssertEqual(second.target, C.Target(tracks: chosen), "The seek moved the position, not the choice")
+        XCTAssertTrue(changes.mayCommit(second.id, live: sought))
+
+        var pictureInPicture = sought
+        pictureInPicture.pictureInPictureGeneration = 6
+        pictureInPicture.pictureInPictureOwnsRenderer = true
+        XCTAssertFalse(changes.mayCommit(second.id, live: pictureInPicture))
+        pictureInPicture.seekGeneration = 9
+        XCTAssertEqual(changes.finish(second.id, .abandoned, live: pictureInPicture), C.Completion(),
+                       "A new picture-in-picture owner ends the change, seek or not")
+
+        let downshift = try XCTUnwrap(sourceChangeAttempt(&changes, .automatic, live: live))
+        XCTAssertFalse(changes.mayCommit(downshift.id, live: sought))
+        XCTAssertEqual(changes.finish(downshift.id, .abandoned, live: sought), C.Completion(),
+                       "The sampling loop decides again; the app's change is not repeated here")
+
+        // A seek replacement is not aligned to the outgoing clock.
+        let seek = try XCTUnwrap(sourceChangeAttempt(&changes, .seek(600), live: live))
+        XCTAssertTrue(changes.mayCommit(seek.id, live: sought))
+        var starting = live
+        starting.pictureInPictureOwnsRenderer = true
+        XCTAssertFalse(changes.mayCommit(seek.id, live: starting))
+        XCTAssertEqual(changes.finish(seek.id, .abandoned, live: starting),
+                       C.Completion(next: nil, reportsFailure: false, resumesOutgoing: true))
+
+        var ended = C()
+        let before = try XCTUnwrap(sourceChangeAttempt(&ended, .tracks(chosen), live: live))
+        var afterPictureInPicture = live
+        afterPictureInPicture.pictureInPictureGeneration = 6
+        XCTAssertEqual(ended.submit(.tracks(chosen), live: afterPictureInPicture), .replaces,
+                       "The same choice after picture in picture came and went is a new request")
+        let again = try XCTUnwrap(ended.finish(before.id, .abandoned, live: afterPictureInPicture).next)
+        XCTAssertTrue(ended.mayCommit(again.id, live: afterPictureInPicture))
+    }
+
+    func testOutgoingStreamStaysHeldAcrossChainedSeeksAndResumesOnlyWhenNothingFollows() throws {
+        typealias C = PlaybackSourceChangeCoordinator
+        let live = C.Live()
+        var held = live
+        held.wantsPlayback = false // The handoff itself paused the outgoing stream.
+        var changes = C()
+        let first = try XCTUnwrap(sourceChangeAttempt(&changes, .seek(600), live: live))
+        XCTAssertEqual(first.startsPaused, false)
+        XCTAssertEqual(changes.submit(.seek(900), live: held), .replaces)
+        let handover = changes.finish(first.id, .abandoned, live: held)
+        XCTAssertFalse(handover.resumesOutgoing, "No burst of the old position between two seeks")
+        let second = try XCTUnwrap(handover.next)
+        XCTAssertEqual(second.startsPaused, false, "Playback was wanted before the first seek paused it")
+        XCTAssertEqual(changes.finish(second.id, .failed, live: held),
+                       C.Completion(next: nil, reportsFailure: true, resumesOutgoing: true))
+
+        let paused = try XCTUnwrap(sourceChangeAttempt(&changes, .seek(600), live: held))
+        XCTAssertEqual(paused.startsPaused, true)
+        XCTAssertEqual(changes.finish(paused.id, .failed, live: held),
+                       C.Completion(next: nil, reportsFailure: true, resumesOutgoing: false))
+
+        let committed = try XCTUnwrap(sourceChangeAttempt(&changes, .seek(600), live: live))
+        XCTAssertEqual(changes.finish(committed.id, .committed, live: live), C.Completion(),
+                       "The new stream owns playback after a commit")
+
+        // A pause made while a track candidate was prepared holds when a seek takes over.
+        let tracks = try XCTUnwrap(sourceChangeAttempt(&changes, .tracks(C.Tracks(audio: 2, subtitle: nil)),
+                                                       live: live))
+        XCTAssertEqual(changes.submit(.seek(600), live: held), .replaces)
+        let merged = try XCTUnwrap(changes.finish(tracks.id, .abandoned, live: held).next)
+        XCTAssertEqual(merged.startsPaused, true)
+
+        // Closing the player ends the chain: nothing follows, nothing resumes.
+        XCTAssertEqual(changes.submit(.item(1), live: held), .replaces)
+        XCTAssertEqual(changes.finish(merged.id, .cancelled, live: held), C.Completion())
+        XCTAssertFalse(changes.isChanging)
+        XCTAssertEqual(try XCTUnwrap(sourceChangeAttempt(&changes, .seek(30), live: live)).startsPaused, false)
+        XCTAssertEqual(changes.finish(999, .failed, live: live), C.Completion(), "An unknown attempt changes nothing")
+        XCTAssertTrue(changes.isChanging)
     }
 
     func testPlaybackDownloadSpeedUsesElapsedReceiveBytesAndResetsAcrossSources() throws {
@@ -2831,6 +3808,57 @@ final class PlaybackNextCoreTests: XCTestCase {
         XCTAssertFalse(policy.sample(seconds: 8, uptime: 6, isPlaying: true, seekGeneration: 0, rate: 2))
     }
 
+    func testDeviceFileStartupRenditionSharesTheRouteVerdictAndPublicCeiling() {
+        typealias Stream = JellyfinMatchedFileStream
+        // The verdict is unchanged: the original is left only when the source
+        // is clearly beyond the lookup's probe.
+        for (source, probe) in [(75_218_094, 40_000_000), (75_218_094, 50_200_000), (60_000_000, 40_000_000),
+                                (60_000_001, 40_000_000), (8_000_000, 5_000_000), (1, 1)] {
+            let before = PlaybackAdaptiveBitratePolicy.isOriginalClearlyUnsustainable(
+                sourceBitrate: source, measuredCapacity: probe, isPrivateRoute: false, forcesOriginal: false)
+            XCTAssertEqual(Stream.startupRendition(sourceBitrate: source, probe: probe, probeAge: 5,
+                networkBitrateCap: 12_000_000) != nil, before, "\(source) / \(probe)")
+        }
+        // No probe, no source bitrate, or a probe too old to count: the original.
+        XCTAssertNil(Stream.startupRendition(sourceBitrate: 75_218_094, probe: nil, probeAge: 5,
+                                             networkBitrateCap: 12_000_000))
+        XCTAssertNil(Stream.startupRendition(sourceBitrate: 0, probe: 5_000_000, probeAge: 5,
+                                             networkBitrateCap: 12_000_000))
+        XCTAssertNil(Stream.startupRendition(sourceBitrate: 75_218_094, probe: 5_000_000, probeAge: 601,
+                                             networkBitrateCap: 12_000_000))
+        // A clock stepped back does not discard a probe taken a moment ago.
+        XCTAssertEqual(Stream.startupRendition(sourceBitrate: 75_218_094, probe: 22_300_000, probeAge: -3,
+                                               networkBitrateCap: 12_000_000), 10_000_000)
+
+        func rendition(_ probe: Int, cap: Int?) -> Int? {
+            Stream.startupRendition(sourceBitrate: 200_000_000, probe: probe, probeAge: 5, networkBitrateCap: cap)
+        }
+        // Half the probe on the ladder, as before...
+        for probe in [7_774_017, 22_300_000, 31_400_000] {
+            XCTAssertEqual(rendition(probe, cap: nil), PlaybackAdaptiveBitratePolicy.target(
+                currentCeiling: 200_000_000, capacity: probe, networkKey: "cellular"))
+        }
+        XCTAssertEqual(rendition(7_774_017, cap: 12_000_000), 2_000_000)
+        XCTAssertEqual(rendition(22_300_000, cap: 12_000_000), 10_000_000)
+        // ...now within the public ceiling the Jellyfin entry uses on the same
+        // network. A fast probe used to ask for 20 or 30 Mbps here.
+        XCTAssertEqual(rendition(48_000_000, cap: 12_000_000), 12_000_000)
+        XCTAssertEqual(rendition(48_000_000, cap: 16_000_000), 12_000_000)
+        XCTAssertEqual(rendition(48_000_000, cap: nil), 20_000_000)
+        XCTAssertEqual(rendition(70_000_000, cap: nil), 20_000_000)
+        XCTAssertEqual(rendition(70_000_000, cap: 6_000_000), 4_000_000)
+        XCTAssertEqual(PlaybackAdaptiveBitratePolicy.target(currentCeiling: 200_000_000,
+            capacity: 70_000_000, networkKey: "cellular"), 30_000_000)
+        // The lowest rung is never offered to a source already at or below it,
+        // as the old step-down refused a ceiling of 250 kbps.
+        XCTAssertEqual(Stream.startupRendition(sourceBitrate: 300_000, probe: 100_000, probeAge: 5,
+                                               networkBitrateCap: nil), 250_000)
+        XCTAssertNil(Stream.startupRendition(sourceBitrate: 250_000, probe: 100_000, probeAge: 5,
+                                             networkBitrateCap: nil))
+        XCTAssertNil(PlaybackAdaptiveBitratePolicy.target(currentCeiling: 250_000, capacity: 100_000,
+                                                          networkKey: "cellular"))
+    }
+
     private func largeFallbackFile(size: Int64 = 32 * 1024 * 1024 * 1024) -> FileItem {
         FileItem(id: UUID(), name: "fixture.mkv", subtitle: "/video/fixture.mkv",
                  kind: .video, sizeText: nil, children: [], sizeBytes: size)
@@ -3035,7 +4063,21 @@ final class PlaybackNextCoreTests: XCTestCase {
             XCTAssertEqual(JellyfinMatchedFileStream.verifiedTracks(match: match, runtime: runtime),
                 .init(audioIndex: 4, subtitleIndex: subtitle == 5 ? 5 : nil,
                       externalSubtitleURL: subtitle == -2 ? external : nil))
+            let target = runtime.atSourcePosition(900, duration: 7200)
+            XCTAssertEqual(target.positionSeconds, 900)
+            XCTAssertEqual(target.normalizedPosition, 0.125)
+            XCTAssertEqual(target.playbackRate, runtime.playbackRate)
+            XCTAssertEqual(target.orientationMode, runtime.orientationMode)
+            XCTAssertEqual(JellyfinMatchedFileStream.verifiedTracks(match: match, runtime: target),
+                           JellyfinMatchedFileStream.verifiedTracks(match: match, runtime: runtime))
+            XCTAssertEqual(request.confirmedSourceChangeTracks(for: runtime),
+                           subtitle.map { .init(audio: 4, subtitle: $0) },
+                           "An unresolved server subtitle is distinct from explicit Off")
         }
+        let offRequest = MediaPlaybackRequest(url: request.url, title: request.title, source: .dsmFile,
+            prefersSubtitlesDisabled: true, sourceAudioTracks: request.sourceAudioTracks)
+        let off = request.runtimeStateForSourceChange(before, selectedAudioID: 4, selectedSubtitleID: nil)
+        XCTAssertEqual(offRequest.confirmedSourceChangeTracks(for: off), .init(audio: 4, subtitle: nil))
     }
 
     @MainActor
@@ -6821,6 +7863,332 @@ final class PlaybackNextCoreTests: XCTestCase {
     }
 
     @MainActor
+    func testSharedPreparationProbesOnlyEligibleOriginalStartsInDebug() async throws {
+        let wifi = PlaybackNetworkContext(networkClass: .wifi)
+        let cases: [(PlaybackSourceKind, PlaybackNetworkContext?, Double, Bool, Bool)] = [
+            (.jellyfin, wifi, 0, true, true),
+            (.dsmFile, wifi, 0, true, true),
+            (.jellyfin, wifi, 0, false, false),
+            (.dsmFile, wifi, 50, true, false),
+            (.jellyfin, .init(networkClass: .wifi, isConstrained: true), 0, true, false),
+            (.dsmFile, nil, 0, true, false)
+        ]
+        for (source, observed, start, enabled, expected) in cases {
+            let payload = Data(repeating: 1, count: 4_096)
+            let server = try PlaybackRangeTestServer(payload: payload)
+            defer { server.stop() }
+            await fulfillment(of: [server.ready], timeout: 3)
+            let trace = String(UUID().uuidString.prefix(8))
+            let proxy = AuthenticatedMediaStreamProxy.shared
+            let url = try await proxy.registerOriginalStream(upstreamURL: XCTUnwrap(server.url),
+                filename: "fixture.mkv", allowsSelfSignedCertificates: false, playbackTraceID: trace)
+            defer { proxy.unregister(url) }
+            let intent = PlaybackIntent(sourceKind: source, contentKind: .video,
+                itemIdentity: PlaybackItemIdentity(sourceKind: source), displayTitle: "Original probe fixture",
+                directURL: url, preferredStartTime: start,
+                connectionContext: PlaybackConnectionContext.make(url: URL(string: "http://192.168.0.10")!),
+                networkContext: wifi)
+            var snapshot = PlaybackNetworkSnapshot(cacheKey: "test", bitrateCap: nil, fallbackBitrate: 0)
+            snapshot.playbackContext = observed
+            let prepared = try await GreenfieldVideoPlayerModel.prepareSession(
+                .init(intent: intent, playbackTraceID: trace, fileExtensionHint: "mkv"),
+                networkSnapshot: snapshot, enableOriginalResponseProbe: enabled)
+            XCTAssertEqual(prepared.result.plan.primaryRoute.routeKind, .localRangeProxy)
+            XCTAssertEqual(prepared.result.plan.timeline.startTime, start)
+            if expected { try await awaitProxyFixture { server.requestCount == 1 } }
+            var request = URLRequest(url: url, timeoutInterval: 5)
+            request.setValue("bytes=0-", forHTTPHeaderField: "Range")
+            let (body, _) = try await URLSession.shared.data(for: request)
+            XCTAssertEqual(body, payload)
+            try await awaitProxyFixture {
+                self.proxyFixtureDetails(trace).contains { $0.contains("stage=upstreamRequestIssued") }
+            }
+            let details = proxyFixtureDetails(trace)
+            XCTAssertEqual(details.contains { $0.contains("transportScope=preparedOriginal") }, expected)
+            XCTAssertEqual(details.contains { $0.contains("stage=originalResponseAdopted") }, expected)
+            XCTAssertEqual(server.requestCount, 1)
+            XCTAssertEqual(prepared.result.completedPreloadBytes, 0)
+            await prepared.coordinator.finishPlayback(plan: prepared.result.plan)
+        }
+    }
+
+    @MainActor
+    func testPreparedOriginalResponseUsesOneUpstreamGETBeforeAndAfterHeaders() async throws {
+        for holdsHeaders in [true, false] {
+            let payload = Data((0..<32_768).map { UInt8($0 % 251) })
+            let server = try PlaybackRangeTestServer(payload: payload, holdsResponses: holdsHeaders)
+            defer { server.stop() }
+            await fulfillment(of: [server.ready], timeout: 3)
+            let trace = String(UUID().uuidString.prefix(8))
+            let proxy = AuthenticatedMediaStreamProxy.shared
+            let url = try await proxy.registerOriginalStream(upstreamURL: XCTUnwrap(server.url),
+                filename: "fixture.mkv", allowsSelfSignedCertificates: false, playbackTraceID: trace)
+            defer { proxy.unregister(url) }
+            XCTAssertTrue(proxy.prepareOriginalResponse(url))
+            try await awaitProxyFixture { server.requestCount == 1 }
+            if !holdsHeaders {
+                try await awaitProxyFixture {
+                    self.proxyFixtureDetails(trace).contains { $0.contains("stage=upstreamTaskCompleted") }
+                }
+            }
+            let client = URLSession(configuration: .ephemeral)
+            defer { client.invalidateAndCancel() }
+            var request = URLRequest(url: url, timeoutInterval: 5)
+            request.setValue("bytes=0-", forHTTPHeaderField: "Range")
+            let response = Task { try await client.data(for: request) }
+            defer { response.cancel() }
+            try await awaitProxyFixture {
+                self.proxyFixtureDetails(trace).contains {
+                    $0.contains("stage=originalResponseAdopted")
+                        && $0.contains("headersReady=\(!holdsHeaders)")
+                        && $0.contains("preparedBytes=\(holdsHeaders ? 0 : payload.count)")
+                }
+            }
+            if holdsHeaders { server.releaseResponses() }
+            let (body, raw) = try await response.value
+            let http = try XCTUnwrap(raw as? HTTPURLResponse)
+            XCTAssertEqual(http.statusCode, 206)
+            XCTAssertEqual(http.value(forHTTPHeaderField: "Content-Range"), "bytes 0-32767/32768")
+            XCTAssertEqual(body, payload)
+            XCTAssertEqual(server.requestCount, 1)
+            XCTAssertTrue(server.receivedRequests.first?.lowercased().contains("range: bytes=0-33554431\r\n") == true)
+            XCTAssertFalse(proxy.prepareOriginalResponse(url), "Playback already consumed its first request")
+        }
+    }
+
+    @MainActor
+    func testPreparedOriginalResponsePausesAndResumesTheSameBody() async throws {
+        let payload = Data((0..<(512 * 1024)).map { UInt8($0 % 251) })
+        let server = try PlaybackRangeTestServer(payload: payload, pacedBodyChunkBytes: 8 * 1024,
+                                                 pacedBodyDelay: 0.012)
+        defer { server.stop() }
+        await fulfillment(of: [server.ready], timeout: 3)
+        let trace = String(UUID().uuidString.prefix(8))
+        let proxy = AuthenticatedMediaStreamProxy.shared
+        let url = try await proxy.registerOriginalStream(upstreamURL: XCTUnwrap(server.url),
+            filename: "fixture.mkv", allowsSelfSignedCertificates: false, playbackTraceID: trace)
+        defer { proxy.unregister(url) }
+        XCTAssertTrue(proxy.prepareOriginalResponse(url))
+        try await awaitProxyFixture {
+            self.proxyFixtureDetails(trace).contains { $0.contains("stage=originalResponsePreparationPaused") }
+        }
+        let client = URLSession(configuration: .ephemeral)
+        defer { client.invalidateAndCancel() }
+        let (body, response) = try await client.data(for: URLRequest(url: url, timeoutInterval: 5))
+        XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 206)
+        XCTAssertEqual(body, payload)
+        XCTAssertEqual(server.requestCount, 1)
+        let details = proxyFixtureDetails(trace)
+        let adoption = try XCTUnwrap(details.first { $0.contains("stage=originalResponseAdopted") })
+        let count = try XCTUnwrap(adoption.components(separatedBy: "preparedBytes=").last?
+            .prefix(while: { $0.isNumber })).description
+        XCTAssertTrue((64 * 1024...256 * 1024).contains(Int(count) ?? -1))
+        XCTAssertTrue(details.contains { $0.contains("stage=originalResponsePreparedBytesDelivered") })
+    }
+
+    @MainActor
+    func testPreparedOriginalResponseCancelsOnRevokeOrExpiry() async throws {
+        for revokes in [true, false] {
+            let server = try PlaybackRangeTestServer(payload: Data("abcdefgh".utf8), holdsResponses: true)
+            defer { server.stop() }
+            await fulfillment(of: [server.ready], timeout: 3)
+            let trace = String(UUID().uuidString.prefix(8))
+            let proxy = AuthenticatedMediaStreamProxy.shared
+            let url = try await proxy.registerOriginalStream(upstreamURL: XCTUnwrap(server.url),
+                filename: "fixture.mkv", allowsSelfSignedCertificates: false, playbackTraceID: trace)
+            defer { proxy.unregister(url) }
+            XCTAssertTrue(proxy.prepareOriginalResponse(url))
+            try await awaitProxyFixture { server.requestCount == 1 }
+            if revokes { proxy.unregister(url); proxy.unregister(url) }
+            try await awaitProxyFixture {
+                let details = self.proxyFixtureDetails(trace)
+                return details.contains { $0.contains("stage=upstreamCancellationRequested") }
+                    && details.contains { $0.contains("stage=upstreamTaskCompleted") && $0.contains("errorCode=-999") }
+            }
+            server.releaseResponses()
+            let client = URLSession(configuration: .ephemeral)
+            defer { client.invalidateAndCancel() }
+            let (body, response) = try await client.data(for: URLRequest(url: url, timeoutInterval: 5))
+            XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, revokes ? 404 : 206)
+            XCTAssertEqual(body, revokes ? Data() : Data("abcdefgh".utf8))
+            XCTAssertEqual(server.requestCount, revokes ? 1 : 2)
+            XCTAssertFalse(proxyFixtureDetails(trace).contains { $0.contains("stage=originalResponseAdopted") })
+        }
+    }
+
+    @MainActor
+    func testPreparedOriginalResponseDoesNotReplaceConditionalOrOffsetRead() async throws {
+        for range in ["bytes=0-", "bytes=4-7"] {
+            let server = try PlaybackRangeTestServer(payload: Data("abcdefgh".utf8), holdsResponses: true)
+            defer { server.stop() }
+            await fulfillment(of: [server.ready], timeout: 3)
+            let trace = String(UUID().uuidString.prefix(8))
+            let proxy = AuthenticatedMediaStreamProxy.shared
+            let url = try await proxy.registerOriginalStream(upstreamURL: XCTUnwrap(server.url),
+                filename: "fixture.mkv", allowsSelfSignedCertificates: false, playbackTraceID: trace)
+            defer { proxy.unregister(url) }
+            XCTAssertTrue(proxy.prepareOriginalResponse(url))
+            try await awaitProxyFixture { server.requestCount == 1 }
+            let client = URLSession(configuration: .ephemeral)
+            defer { client.invalidateAndCancel() }
+            var request = URLRequest(url: url, timeoutInterval: 5)
+            request.setValue(range, forHTTPHeaderField: "Range")
+            if range == "bytes=0-" { request.setValue("\"fixture\"", forHTTPHeaderField: "If-Range") }
+            let response = Task { try await client.data(for: request) }
+            defer { response.cancel() }
+            try await awaitProxyFixture { server.requestCount == 2 }
+            server.releaseResponses()
+            let (body, raw) = try await response.value
+            XCTAssertEqual((raw as? HTTPURLResponse)?.statusCode, 206)
+            XCTAssertEqual(body, Data((range == "bytes=0-" ? "abcdefgh" : "efgh").utf8))
+            XCTAssertFalse(proxyFixtureDetails(trace).contains { $0.contains("stage=originalResponseAdopted") })
+            let requests = server.receivedRequests.map { $0.lowercased() }
+            if range == "bytes=0-" {
+                XCTAssertTrue(requests.last?.contains("if-range: \"fixture\"\r\n") == true)
+            } else {
+                XCTAssertTrue(requests.last?.contains("range: bytes=4-7\r\n") == true)
+            }
+        }
+    }
+
+    @MainActor
+    func testPreparedOriginalContinuationRejectsChangedLengthOrVersion() async throws {
+        func partial(_ range: String, _ etag: String, _ body: String) -> String {
+            "HTTP/1.1 206 Partial Content\r\nContent-Length: 4\r\n"
+                + "Content-Range: \(range)\r\nETag: \(etag)\r\nConnection: close\r\n\r\n" + body
+        }
+        for rejected in [partial("bytes 4-7/8", "\"new\"", "1234"), partial("bytes 4-7/9", "\"old\"", "1234")] {
+            let server = try PlaybackRangeTestServer(rawResponses: [
+                partial("bytes 0-3/8", "\"old\"", "abcd"), rejected
+            ])
+            defer { server.stop() }
+            await fulfillment(of: [server.ready], timeout: 3)
+            let trace = String(UUID().uuidString.prefix(8))
+            let proxy = AuthenticatedMediaStreamProxy.shared
+            let url = try await proxy.registerOriginalStream(upstreamURL: XCTUnwrap(server.url),
+                filename: "fixture.mkv", allowsSelfSignedCertificates: false, playbackTraceID: trace)
+            defer { proxy.unregister(url) }
+            XCTAssertTrue(proxy.prepareOriginalResponse(url))
+            try await awaitProxyFixture {
+                self.proxyFixtureDetails(trace).contains { $0.contains("stage=upstreamTaskCompleted") }
+            }
+            XCTAssertEqual(server.requestCount, 1, "Only the first response can be prepared")
+            let client = try PlaybackRawHTTPClient(url: url, range: "bytes=0-")
+            defer { client.close() }
+            let response = try await client.response()
+            XCTAssertFalse(response.contains("\r\n\r\n1234"))
+            XCTAssertFalse(response.contains("abcd1234"))
+            let requests = server.receivedRequests.map { $0.lowercased() }
+            XCTAssertEqual(requests.count, 2)
+            XCTAssertTrue(requests.last?.contains("range: bytes=4-7\r\n") == true)
+            XCTAssertTrue(requests.last?.contains("if-range: \"old\"\r\n") == true)
+            XCTAssertTrue(proxyFixtureDetails(trace).contains { $0.contains("finishSource=invalidContinuationResponse") })
+        }
+    }
+
+    @MainActor
+    func testOriginalStartupPrefixFeedsContinuousRangeWithoutRefetchingHead() async throws {
+        let window = Int(MediaRangePolicy.upstreamWindowBytes)
+        var payload = Data(repeating: 0x61, count: window)
+        payload.replaceSubrange(0..<8, with: Data("01234567".utf8))
+        payload.append(Data(repeating: 0x7b, count: 16))
+        let server = try PlaybackRangeTestServer(payload: payload, payloadETag: "\"v1\"")
+        defer { server.stop() }
+        await fulfillment(of: [server.ready], timeout: 3)
+        let proxy = AuthenticatedMediaStreamProxy.shared
+        let url = try await proxy.registerOriginalStream(upstreamURL: XCTUnwrap(server.url),
+            filename: "fixture.mkv", allowsSelfSignedCertificates: false)
+        defer { proxy.unregister(url) }
+        let prepared = try await proxy.prepareOriginalStartupPrefix(url, byteCount: 4)
+        XCTAssertEqual(prepared, 4)
+        let client = URLSession(configuration: .ephemeral)
+        defer { client.invalidateAndCancel() }
+        var request = URLRequest(url: url, timeoutInterval: 10)
+        request.setValue("bytes=0-", forHTTPHeaderField: "Range")
+        let (body, response) = try await client.data(for: request)
+        let http = try XCTUnwrap(response as? HTTPURLResponse)
+        XCTAssertEqual(http.statusCode, 206)
+        XCTAssertEqual(http.expectedContentLength, Int64(payload.count))
+        XCTAssertEqual(http.value(forHTTPHeaderField: "Content-Range"), "bytes 0-\(payload.count - 1)/\(payload.count)")
+        XCTAssertEqual(body, payload)
+        let requests = server.receivedRequests.map { $0.lowercased() }
+        XCTAssertEqual(requests.count, 3)
+        XCTAssertTrue(requests.first?.contains("range: bytes=0-3\r\n") == true)
+        XCTAssertTrue(requests.dropFirst().first?.contains("range: bytes=4-\(window - 1)\r\n") == true)
+        XCTAssertTrue(requests.dropFirst(2).first?.contains("range: bytes=\(window)-\(window + 15)\r\n") == true)
+        XCTAssertTrue(requests.dropFirst().allSatisfy { $0.contains("if-range: \"v1\"\r\n") })
+    }
+
+    @MainActor
+    func testOriginalStartupPrefixRevalidatesBeforeAnyOldBytesAreSent() async throws {
+        func response(_ contentRange: String, tag: String, body: String) -> String {
+            "HTTP/1.1 206 Partial Content\r\nContent-Length: \(body.utf8.count)\r\n"
+                + "Content-Range: \(contentRange)\r\nETag: \(tag)\r\nConnection: close\r\n\r\n" + body
+        }
+        let prefix = response("bytes 0-3/8", tag: "\"v1\"", body: "abcd")
+        let newRepresentation = response("bytes 0-7/8", tag: "\"v2\"", body: "12345678")
+        for rejected in [
+            response("bytes 4-7/8", tag: "\"v2\"", body: "5678"),
+            response("bytes 4-7/9", tag: "\"v1\"", body: "efgh"),
+            "HTTP/1.1 200 OK\r\nContent-Length: 8\r\nETag: \"v2\"\r\nConnection: close\r\n\r\n12345678"
+        ] {
+            let server = try PlaybackRangeTestServer(rawResponses: [prefix, rejected, newRepresentation])
+            defer { server.stop() }
+            await fulfillment(of: [server.ready], timeout: 3)
+            let proxy = AuthenticatedMediaStreamProxy.shared
+            let url = try await proxy.registerOriginalStream(upstreamURL: XCTUnwrap(server.url),
+                filename: "fixture.mkv", allowsSelfSignedCertificates: false)
+            defer { proxy.unregister(url) }
+            let prepared = try await proxy.prepareOriginalStartupPrefix(url, byteCount: 4)
+            XCTAssertEqual(prepared, 4)
+            let client = URLSession(configuration: .ephemeral)
+            defer { client.invalidateAndCancel() }
+            let (body, response) = try await client.data(for: URLRequest(url: url, timeoutInterval: 5))
+            XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 206)
+            XCTAssertEqual(body, Data("12345678".utf8))
+            let requests = server.receivedRequests.map { $0.lowercased() }
+            XCTAssertEqual(requests.count, 3)
+            XCTAssertTrue(requests.dropFirst().first?.contains("if-range: \"v1\"\r\n") == true)
+            XCTAssertTrue(requests.last?.contains("range: bytes=0-33554431\r\n") == true)
+            XCTAssertFalse(requests.last?.contains("if-range:") == true)
+        }
+    }
+
+    @MainActor
+    func testRevokedOriginalPrefixPreparationDoesNotPublishLateBytes() async throws {
+        let server = try PlaybackRangeTestServer(payload: Data("01234567".utf8), payloadETag: "\"v1\"", holdsResponses: true)
+        defer { server.stop() }
+        await fulfillment(of: [server.ready], timeout: 3)
+        let proxy = AuthenticatedMediaStreamProxy.shared
+        let url = try await proxy.registerOriginalStream(upstreamURL: XCTUnwrap(server.url),
+            filename: "fixture.mkv", allowsSelfSignedCertificates: false)
+        defer { proxy.unregister(url) }
+        let preparation = Task { try await proxy.prepareOriginalStartupPrefix(url, byteCount: 4) }
+        defer { preparation.cancel() }
+        for _ in 0..<100 where server.requestCount == 0 {
+            try await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTAssertEqual(server.requestCount, 1)
+        proxy.unregister(url)
+        // unregister and the route lookup are serialized before the server can respond.
+        let revoked = try await proxy.prepareOriginalStartupPrefix(url, byteCount: 4)
+        XCTAssertEqual(revoked, 0)
+        server.releaseResponses()
+        do {
+            let prepared = try await preparation.value
+            XCTAssertEqual(prepared, 0)
+        } catch {
+            XCTAssertTrue(error is CancellationError || (error as? URLError)?.code == .cancelled)
+        }
+        let client = URLSession(configuration: .ephemeral)
+        defer { client.invalidateAndCancel() }
+        let (data, response) = try await client.data(for: URLRequest(url: url, timeoutInterval: 5))
+        XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 404)
+        XCTAssertTrue(data.isEmpty)
+        XCTAssertEqual(server.requestCount, 1)
+    }
+
+    @MainActor
     func testOriginalProxyResolvesSuffixWithFiniteProbeAndRejectsInvalidRangesLocally() async throws {
         let payload = Data((0..<1_024).map { UInt8($0 % 251) })
         let server = try PlaybackRangeTestServer(payload: payload)
@@ -6892,6 +8260,402 @@ final class PlaybackNextCoreTests: XCTestCase {
                     XCTAssertTrue(server.receivedRequests[1].lowercased().contains("if-range: \"v1\"\r\n"))
                     XCTAssertTrue(server.receivedRequests[1].contains("bytes=7-9"))
                 }
+            }
+        }
+    }
+
+    @MainActor
+    func testNetworkReaderProxyServesRangesAndDoesNotFetchOrigin() async throws {
+        let reader = ProxyBridgeFixture(byteCount: 32)
+        let proxy = AuthenticatedMediaStreamProxy.shared
+        // This port has no HTTP server. Only the Reader can serve the bytes.
+        let origin = try XCTUnwrap(URL(string: "http://127.0.0.1:1/movie.m3u8"))
+        let trace = String(UUID().uuidString.prefix(8))
+        let url = try await proxy.registerNetworkReader(reader, originURL: origin, playbackTraceID: trace)
+        defer { proxy.unregister(url) }
+        XCTAssertEqual(url.pathExtension, "mkv")
+        XCTAssertFalse(proxy.isRegisteredPlaylistRoot(url))
+        XCTAssertFalse(proxy.prepareOriginalResponse(url))
+        let client = URLSession(configuration: .ephemeral)
+        defer { client.invalidateAndCancel() }
+        func request(_ range: String? = nil, target: URL? = nil, method: String = "GET",
+                     ifRange: String? = nil) async throws -> (Data, HTTPURLResponse) {
+            var req = URLRequest(url: target ?? url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 4)
+            req.httpMethod = method
+            req.setValue(range, forHTTPHeaderField: "Range")
+            req.setValue(ifRange, forHTTPHeaderField: "If-Range")
+            let (data, response) = try await client.data(for: req)
+            return (data, try XCTUnwrap(response as? HTTPURLResponse))
+        }
+        let (head, headInfo) = try await request(method: "HEAD")
+        XCTAssertTrue(head.isEmpty)
+        XCTAssertEqual(headInfo.statusCode, 200)
+        XCTAssertEqual(headInfo.expectedContentLength, 32)
+        let (_, bad) = try await request("bytes=32-")
+        XCTAssertEqual(bad.statusCode, 416)
+        XCTAssertEqual(bad.value(forHTTPHeaderField: "Content-Range"), "bytes */32")
+        let (_, multiple) = try await request("bytes=0-1,4-5")
+        XCTAssertEqual(multiple.statusCode, 416)
+        let (_, altered) = try await request(target: url.deletingLastPathComponent().appendingPathComponent("other.mkv"))
+        XCTAssertEqual(altered.statusCode, 404)
+        let redirect = try XCTUnwrap(URL(string: url.absoluteString + "?u=http://127.0.0.1:1/"))
+        let (_, redirected) = try await request(target: redirect)
+        XCTAssertEqual(redirected.statusCode, 404)
+        let readCountBeforeGET = await reader.calls.count
+        XCTAssertEqual(readCountBeforeGET, 0)
+        for (range, offset, count) in [("bytes=4-7", 4, 4), ("bytes=-3", 29, 3), ("bytes=30-99", 30, 2), ("bytes=20-", 20, 12)] {
+            let (bytes, response) = try await request(range)
+            XCTAssertEqual(response.statusCode, 206)
+            XCTAssertEqual(response.value(forHTTPHeaderField: "Content-Range"), "bytes \(offset)-\(offset + count - 1)/32")
+            XCTAssertEqual(bytes, ProxyBridgeFixture.bytes(offset: Int64(offset), count: count))
+        }
+        let (full, ok) = try await request("bytes=4-7", ifRange: "\"foreign\"")
+        XCTAssertEqual(ok.statusCode, 200)
+        XCTAssertEqual(full, ProxyBridgeFixture.bytes(offset: 0, count: 32))
+        let calls = await reader.calls
+        XCTAssertEqual(calls, ["4:4", "29:3", "30:2", "20:12", "0:32"])
+        try await awaitProxyFixture {
+            self.proxyFixtureDetails(trace).contains {
+                $0.contains("measurementBoundary=readerDelivery") && $0.contains("adaptiveMeasurementBoundary=ineligibleReaderDelivery")
+            }
+        }
+    }
+
+    @MainActor
+    func testNetworkReaderProxyKeepsFiniteUpstreamWindowsAcrossOneResponse() async throws {
+        let window = Int(MediaRangePolicy.upstreamWindowBytes)
+        let reader = ProxyBridgeFixture(byteCount: Int64(window + 128))
+        let origin = try XCTUnwrap(URL(string: "ftp://fixture.local/media"))
+        let proxy = AuthenticatedMediaStreamProxy.shared
+        let url = try await proxy.registerNetworkReader(reader, originURL: origin)
+        defer { proxy.unregister(url) }
+        var request = URLRequest(url: url, timeoutInterval: 12)
+        request.setValue("bytes=64-", forHTTPHeaderField: "Range")
+        let (body, response) = try await URLSession.shared.data(for: request)
+        XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 206)
+        XCTAssertEqual(response.expectedContentLength, Int64(window + 64))
+        XCTAssertEqual(body.count, window + 64)
+        XCTAssertEqual(body.prefix(4), ProxyBridgeFixture.bytes(offset: 64, count: 4))
+        XCTAssertEqual(body.suffix(68), ProxyBridgeFixture.bytes(offset: Int64(window + 60), count: 68))
+        let calls = await reader.calls
+        XCTAssertEqual(calls, ["64:\(window)", "\(window + 64):64"])
+    }
+
+    @MainActor
+    func testNetworkReaderProxyCapsReadersAndCancelsOnlyRevokedRoute() async throws {
+        let reader = ProxyBridgeFixture(byteCount: 64, initiallyHeld: true)
+        let peer = ProxyBridgeFixture(byteCount: 64, initiallyHeld: true)
+        let proxy = AuthenticatedMediaStreamProxy.shared
+        let origin = try XCTUnwrap(URL(string: "smb://fixture.local/media"))
+        let url = try await proxy.registerNetworkReader(reader, originURL: origin)
+        let peerURL = try await proxy.registerNetworkReader(peer, originURL: origin)
+        defer { proxy.unregister(url); proxy.unregister(peerURL) }
+        let clients = try (0..<4).map { try PlaybackRawHTTPClient(url: url, range: "bytes=\($0)-\($0)") }
+        defer { clients.forEach { $0.close() } }
+        let peerClient = try PlaybackRawHTTPClient(url: peerURL)
+        defer { peerClient.close() }
+        try peerClient.writeHalfClose()
+        for _ in 0..<200 {
+            let admitted = await reader.activeCount
+            let peerAdmitted = await peer.activeCount
+            if admitted == 4 && peerAdmitted == 1 { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        let admitted = await reader.activeCount
+        XCTAssertEqual(admitted, 4)
+        let (empty, rejected) = try await URLSession.shared.data(from: url)
+        XCTAssertEqual((rejected as? HTTPURLResponse)?.statusCode, 503)
+        XCTAssertEqual((rejected as? HTTPURLResponse)?.value(forHTTPHeaderField: "Retry-After"), "1")
+        XCTAssertTrue(empty.isEmpty)
+        try clients[0].reset()
+        for _ in 0..<200 {
+            if await reader.activeCount == 3 { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        let remaining = await reader.activeCount
+        XCTAssertEqual(remaining, 3)
+        let replacement = try PlaybackRawHTTPClient(url: url)
+        defer { replacement.close() }
+        for _ in 0..<200 {
+            if await reader.activeCount == 4 { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        let readmitted = await reader.activeCount
+        XCTAssertEqual(readmitted, 4)
+        proxy.unregister(url)
+        for _ in 0..<200 {
+            if await reader.activeCount == 0 { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        let stopped = await reader.activeCount
+        let peerStillActive = await peer.activeCount
+        XCTAssertEqual(stopped, 0)
+        XCTAssertEqual(peerStillActive, 1)
+        let (_, revoked) = try await URLSession.shared.data(from: url)
+        XCTAssertEqual((revoked as? HTTPURLResponse)?.statusCode, 404)
+        await peer.release()
+        let peerResponse = try await peerClient.response()
+        XCTAssertTrue(peerResponse.hasPrefix("HTTP/1.1 206"))
+        XCTAssertTrue(peerResponse.hasSuffix(String(decoding: ProxyBridgeFixture.bytes(offset: 0, count: 4), as: UTF8.self)))
+    }
+
+    func testNetworkReaderTimelineAttributesWaitsAndPendingTermination() {
+        var timeline = NetworkMediaProxyTransferTimeline(startedAt: 100)
+        // Reader-bound: 0.9 s waiting for the chunk, 0.05 s to hand it off.
+        XCTAssertNil(timeline.record(offset: 10, bytes: 4, readerWait: 0.5, consumerWait: 0.01, now: 100.51))
+        let reader = try? XCTUnwrap(timeline.record(offset: 14, bytes: 6, readerWait: 0.45, consumerWait: 0.04, now: 101.0))
+        XCTAssertEqual(reader?.dominantWait, "reader")
+        XCTAssertEqual(reader?.chunks, 2)
+        XCTAssertEqual(reader?.fields()["deliveredOffsets"], "10-19")
+        XCTAssertEqual(reader?.fields()["windowBytes"], "10")
+        // Consumer-bound window, then a mixed one.
+        let consumer = timeline.record(offset: 20, bytes: 8, readerWait: 0.1, consumerWait: 1.2, now: 102.3)
+        XCTAssertEqual(consumer?.dominantWait, "consumer")
+        XCTAssertEqual(consumer?.fields()["maxConsumerWaitMs"], "1200")
+        let mixed = timeline.record(offset: 28, bytes: 2, readerWait: 0.5, consumerWait: 0.5, now: 103.3)
+        XCTAssertEqual(mixed?.dominantWait, "mixed")
+        // A transfer cancelled while waiting on the Reader charges the wait to it.
+        let closing = timeline.finish(pending: .reader, wait: 2, now: 105.3)
+        XCTAssertEqual(closing.window?.pending, .reader)
+        XCTAssertEqual(closing.window?.dominantWait, "reader")
+        XCTAssertEqual(closing.window?.chunks, 0)
+        XCTAssertEqual(closing.total.chunks, 4)
+        XCTAssertEqual(closing.total.bytes, 20)
+        XCTAssertEqual(closing.total.fields()["readerWaitMs"], "3550")
+        XCTAssertEqual(closing.total.fields()["consumerWaitMs"], "1750")
+        XCTAssertEqual(closing.total.fields()["pendingWait"], "reader")
+        XCTAssertEqual(closing.total.fields()["deliveredOffsets"], "10-29")
+        var idle = NetworkMediaProxyTransferTimeline(startedAt: 0)
+        XCTAssertNil(idle.finish(pending: nil, wait: 0, now: 1).window)
+    }
+
+    func testNetworkReaderTimelineCarriesTheReadersOwnQueueAndReadTime() {
+        func timing(queue: TimeInterval, read: TimeInterval) -> NetworkMediaReadTimingRecorder.Summary {
+            var value = NetworkMediaReadTimingRecorder.Summary()
+            value.reads = 1
+            value.queueWait = queue
+            value.readTime = read
+            value.maxQueueWait = queue
+            value.maxReadTime = read
+            return value
+        }
+        var timeline = NetworkMediaProxyTransferTimeline(startedAt: 100)
+        // S19 over SMB: about 95 ms for each 1 MiB read, nothing queued.
+        XCTAssertNil(timeline.record(offset: 0, bytes: 1_048_576, readerWait: 0.097, consumerWait: 0.003,
+                                     now: 100.1, readTiming: timing(queue: 0, read: 0.095)))
+        // A tail request whose first read waited 90 ms behind a body read.
+        let window = timeline.record(offset: 1_048_576, bytes: 16_384, readerWait: 0.141, consumerWait: 0.001,
+                                     now: 101.0, readTiming: timing(queue: 0.090, read: 0.050))
+        let fields = window?.fields() ?? [:]
+        XCTAssertEqual(fields["readerReads"], "2")
+        XCTAssertEqual(fields["readerQueueWaitMs"], "90")
+        XCTAssertEqual(fields["readerReadMs"], "145")
+        XCTAssertEqual(fields["maxReaderQueueWaitMs"], "90")
+        XCTAssertEqual(fields["maxReaderReadMs"], "95")
+        XCTAssertEqual(fields["readerWaitMs"], "238")
+        // A Reader that reports nothing adds no fields.
+        let silent = timeline.record(offset: 2_000_000, bytes: 10, readerWait: 1.2, consumerWait: 0, now: 102.2)
+        XCTAssertNotNil(silent)
+        XCTAssertNil(silent?.fields()["readerReads"])
+        XCTAssertNil(silent?.fields()["readerReadMs"])
+        // A read that ended without a chunk, failed or no longer wanted, is
+        // still counted when the transfer closes.
+        let closing = timeline.finish(pending: .reader, wait: 20, now: 122.2,
+                                      readTiming: timing(queue: 0, read: 20))
+        XCTAssertEqual(closing.window?.fields()["readerReads"], "1")
+        XCTAssertEqual(closing.window?.fields()["maxReaderReadMs"], "20000")
+        XCTAssertEqual(closing.total.fields()["readerReads"], "3")
+        XCTAssertEqual(closing.total.fields()["readerReadMs"], "20145")
+        XCTAssertEqual(closing.total.fields()["readerQueueWaitMs"], "90")
+        // Timing alone, without a chunk or a pending wait, still closes a window.
+        var onlyTiming = NetworkMediaProxyTransferTimeline(startedAt: 0)
+        XCTAssertEqual(onlyTiming.finish(pending: nil, wait: 0, now: 1,
+            readTiming: timing(queue: 0.2, read: 0.3)).window?.fields()["readerQueueWaitMs"], "200")
+    }
+
+    @MainActor
+    func testNetworkReaderProxyReportsTheReadersQueueAndReadTime() async throws {
+        let proxy = AuthenticatedMediaStreamProxy.shared
+        let origin = try XCTUnwrap(URL(string: "smb://fixture.local/media"))
+        func details(_ trace: String, stage: String) -> [[String: String]] {
+            proxyFixtureDetails(trace).map(Self.parseDiagnosticDetail).filter { $0["stage"] == stage }
+        }
+        // Eight 128 KiB reads, each 60 ms behind another read and 90 ms on the wire.
+        let trace = String(UUID().uuidString.prefix(8))
+        let url = try await proxy.registerNetworkReader(
+            ProxyTimedReader(byteCount: 1024 * 1024, chunkBytes: 128 * 1024, queueWait: 0.06, readTime: 0.09),
+            originURL: origin, playbackTraceID: trace)
+        defer { proxy.unregister(url) }
+        let client = try PlaybackRawHTTPClient(url: url, range: "bytes=0-")
+        defer { client.close() }
+        let body = try await client.drainBody()
+        XCTAssertEqual(body, 1024 * 1024)
+        try await awaitProxyFixture { !details(trace, stage: "readerTransferFinished").isEmpty }
+        let finished = try XCTUnwrap(details(trace, stage: "readerTransferFinished").first)
+        XCTAssertEqual(finished["terminalKind"], "rangeComplete")
+        XCTAssertEqual(finished["totalReaderReads"], "8")
+        XCTAssertEqual(finished["totalReaderQueueWaitMs"], "480")
+        XCTAssertEqual(finished["totalReaderReadMs"], "720")
+        XCTAssertEqual(finished["totalMaxReaderQueueWaitMs"], "60")
+        XCTAssertEqual(finished["totalMaxReaderReadMs"], "90")
+        // The wait the proxy measured covers what the Reader reported.
+        XCTAssertGreaterThanOrEqual(Int(finished["totalReaderWaitMs"] ?? "") ?? 0, 1200)
+        let first = try XCTUnwrap(details(trace, stage: "readerFirstChunkDelivered").first)
+        XCTAssertEqual(first["firstReadQueueWaitMs"], "60")
+        XCTAssertEqual(first["firstReadMs"], "90")
+        // Every read lands in exactly one window.
+        let windows = details(trace, stage: "readerTimingWindow")
+        XCTAssertFalse(windows.isEmpty)
+        XCTAssertEqual(windows.compactMap { Int($0["readerReads"] ?? "") }.reduce(0, +), 8)
+        XCTAssertEqual(windows.compactMap { Int($0["readerQueueWaitMs"] ?? "") }.reduce(0, +), 480)
+
+        // A Reader that reports nothing leaves the fields out.
+        let silentTrace = String(UUID().uuidString.prefix(8))
+        let silentURL = try await proxy.registerNetworkReader(
+            ProxyPacedReader(byteCount: 512 * 1024, chunkBytes: 128 * 1024, delay: 0),
+            originURL: origin, playbackTraceID: silentTrace)
+        defer { proxy.unregister(silentURL) }
+        let silentClient = try PlaybackRawHTTPClient(url: silentURL, range: "bytes=0-")
+        defer { silentClient.close() }
+        let silentBody = try await silentClient.drainBody()
+        XCTAssertEqual(silentBody, 512 * 1024)
+        try await awaitProxyFixture { !details(silentTrace, stage: "readerTransferFinished").isEmpty }
+        let silent = try XCTUnwrap(details(silentTrace, stage: "readerTransferFinished").first)
+        XCTAssertNil(silent["totalReaderReads"])
+        XCTAssertNil(try XCTUnwrap(details(silentTrace, stage: "readerFirstChunkDelivered").first)["firstReadMs"])
+    }
+
+    @MainActor
+    func testNetworkReaderProxyTimingSeparatesNormalSlowReaderAndSlowConsumer() async throws {
+        let proxy = AuthenticatedMediaStreamProxy.shared
+        let origin = try XCTUnwrap(URL(string: "smb://fixture.local/media"))
+        func details(_ trace: String, stage: String) -> [[String: String]] {
+            proxyFixtureDetails(trace).map(Self.parseDiagnosticDetail).filter { $0["stage"] == stage }
+        }
+        func finished(_ trace: String) async throws -> [String: String] {
+            try await awaitProxyFixture { !details(trace, stage: "readerTransferFinished").isEmpty }
+            return try XCTUnwrap(details(trace, stage: "readerTransferFinished").first)
+        }
+
+        // Normal supply and an immediately draining consumer.
+        let normalTrace = String(UUID().uuidString.prefix(8))
+        let normalBytes = 4 * 1024 * 1024
+        let normalURL = try await proxy.registerNetworkReader(
+            ProxyPacedReader(byteCount: Int64(normalBytes), chunkBytes: 256 * 1024, delay: 0),
+            originURL: origin, playbackTraceID: normalTrace)
+        defer { proxy.unregister(normalURL) }
+        let normalClient = try PlaybackRawHTTPClient(url: normalURL, range: "bytes=0-")
+        defer { normalClient.close() }
+        let normalBody = try await normalClient.drainBody()
+        XCTAssertEqual(normalBody, normalBytes)
+        let normal = try await finished(normalTrace)
+        XCTAssertEqual(normal["terminalKind"], "rangeComplete")
+        XCTAssertEqual(normal["deliveredBytes"], "\(normalBytes)")
+        XCTAssertEqual(normal["totalChunks"], "16")
+        XCTAssertEqual(normal["totalDeliveredOffsets"], "0-\(normalBytes - 1)")
+        XCTAssertLessThan(Int(normal["totalReaderWaitMs"] ?? "") ?? .max, 500)
+        XCTAssertLessThan(Int(normal["totalConsumerWaitMs"] ?? "") ?? .max, 500)
+        XCTAssertNil(normal["totalPendingWait"])
+
+        // Slow Reader: each 128 KiB chunk takes 150 ms to arrive.
+        let readerTrace = String(UUID().uuidString.prefix(8))
+        let readerURL = try await proxy.registerNetworkReader(
+            ProxyPacedReader(byteCount: 1024 * 1024, chunkBytes: 128 * 1024, delay: 0.15),
+            originURL: origin, playbackTraceID: readerTrace)
+        defer { proxy.unregister(readerURL) }
+        let readerClient = try PlaybackRawHTTPClient(url: readerURL, range: "bytes=0-")
+        defer { readerClient.close() }
+        let readerBody = try await readerClient.drainBody()
+        XCTAssertEqual(readerBody, 1024 * 1024)
+        let slowReader = try await finished(readerTrace)
+        XCTAssertEqual(slowReader["terminalKind"], "rangeComplete")
+        XCTAssertEqual(slowReader["totalDominantWait"], "reader")
+        XCTAssertGreaterThanOrEqual(Int(slowReader["totalReaderWaitMs"] ?? "") ?? 0, 1000)
+        XCTAssertLessThan(Int(slowReader["totalConsumerWaitMs"] ?? "") ?? .max, 300)
+        let readerWindows = details(readerTrace, stage: "readerTimingWindow")
+        XCTAssertFalse(readerWindows.isEmpty)
+        XCTAssertTrue(readerWindows.allSatisfy { $0["dominantWait"] == "reader" })
+        XCTAssertTrue(readerWindows.allSatisfy { $0["windowStartUptimeMs"] != nil && $0["windowEndUptimeMs"] != nil })
+
+        // Slow consumer: the Reader is immediate but the player socket is
+        // not read for 1.5 s, so sends wait on local backpressure.
+        let consumerTrace = String(UUID().uuidString.prefix(8))
+        let consumerBytes = 24 * 1024 * 1024
+        let consumerURL = try await proxy.registerNetworkReader(
+            ProxyPacedReader(byteCount: Int64(consumerBytes), chunkBytes: 512 * 1024, delay: 0),
+            originURL: origin, playbackTraceID: consumerTrace)
+        defer { proxy.unregister(consumerURL) }
+        let consumerClient = try PlaybackRawHTTPClient(url: consumerURL, range: "bytes=0-",
+                                                       receiveBufferBytes: 64 * 1024)
+        defer { consumerClient.close() }
+        try await Task.sleep(for: .milliseconds(1500))
+        let consumerBody = try await consumerClient.drainBody()
+        XCTAssertEqual(consumerBody, consumerBytes)
+        let slowConsumer = try await finished(consumerTrace)
+        XCTAssertEqual(slowConsumer["terminalKind"], "rangeComplete")
+        XCTAssertEqual(slowConsumer["totalDominantWait"], "consumer")
+        XCTAssertGreaterThanOrEqual(Int(slowConsumer["totalConsumerWaitMs"] ?? "") ?? 0, 1000)
+        XCTAssertLessThan(Int(slowConsumer["totalReaderWaitMs"] ?? "") ?? .max, 500)
+        XCTAssertTrue(details(consumerTrace, stage: "readerTimingWindow").contains {
+            $0["dominantWait"] == "consumer" && (Int($0["maxConsumerWaitMs"] ?? "") ?? 0) >= 500
+        })
+
+        // A player that abandons its request while the Reader is waiting.
+        let abandonTrace = String(UUID().uuidString.prefix(8))
+        let abandonURL = try await proxy.registerNetworkReader(
+            ProxyPacedReader(byteCount: 1024 * 1024, chunkBytes: 128 * 1024, delay: 0.4),
+            originURL: origin, playbackTraceID: abandonTrace)
+        defer { proxy.unregister(abandonURL) }
+        let abandonClient = try PlaybackRawHTTPClient(url: abandonURL, range: "bytes=0-")
+        try await Task.sleep(for: .milliseconds(600))
+        try abandonClient.reset()
+        let abandoned = try await finished(abandonTrace)
+        XCTAssertEqual(abandoned["terminalKind"], "playerClosedRequest")
+        XCTAssertEqual(abandoned["totalPendingWait"], "reader")
+        XCTAssertNil(abandoned["errorKind"])
+
+        // A real Reader error stays distinct from a player disconnect.
+        let errorTrace = String(UUID().uuidString.prefix(8))
+        let errorURL = try await proxy.registerNetworkReader(ProxyFaultyReader(fault: .stale),
+            originURL: origin, playbackTraceID: errorTrace)
+        defer { proxy.unregister(errorURL) }
+        let errorClient = try PlaybackRawHTTPClient(url: errorURL, range: "bytes=0-7")
+        defer { errorClient.close() }
+        _ = try await errorClient.response()
+        let failed = try await finished(errorTrace)
+        XCTAssertEqual(failed["terminalKind"], "readerFailure")
+        XCTAssertEqual(failed["result"], "readerError")
+        XCTAssertEqual(failed["errorKind"], "networkMedia.staleFile")
+        XCTAssertEqual(failed["status"], "502")
+    }
+
+    private static func parseDiagnosticDetail(_ detail: String) -> [String: String] {
+        var fields: [String: String] = [:]
+        for part in detail.components(separatedBy: ", ") {
+            guard let separator = part.firstIndex(of: "=") else { continue }
+            fields[String(part[..<separator])] = String(part[part.index(after: separator)...])
+        }
+        return fields
+    }
+
+    @MainActor
+    func testNetworkReaderProxyDoesNotCompleteShortOrOversizedBodies() async throws {
+        let proxy = AuthenticatedMediaStreamProxy.shared
+        let origin = try XCTUnwrap(URL(string: "ftp://fixture.local/media"))
+        for scenario in [ProxyFaultyReader.Fault.stale, .oversized, .short] {
+            let url = try await proxy.registerNetworkReader(ProxyFaultyReader(fault: scenario), originURL: origin)
+            defer { proxy.unregister(url) }
+            let raw = try PlaybackRawHTTPClient(url: url, range: "bytes=0-7")
+            defer { raw.close() }
+            let response = try await raw.response()
+            let body = response.components(separatedBy: "\r\n\r\n").last
+            if scenario == .short {
+                XCTAssertTrue(response.hasPrefix("HTTP/1.1 206"))
+                XCTAssertTrue(response.contains("Content-Length: 8"))
+                XCTAssertEqual(body, "abc")
+            } else {
+                XCTAssertTrue(response.hasPrefix("HTTP/1.1 502"))
+                XCTAssertEqual(body, "")
             }
         }
     }
@@ -7578,6 +9342,114 @@ final class PlaybackNextCoreTests: XCTestCase {
         attachment.lifetime = .keepAlways
         add(attachment)
     }
+
+#if DEBUG
+    @MainActor
+    func testCandidateSegmentProbeSharesOnePendingFullGETAndKeepsIndependentReaders() async throws {
+        let server = try PlaybackRangeTestServer(
+            playlist: "#EXTM3U\n#EXTINF:4,\n0.ts\n#EXT-X-ENDLIST\n", segmentBody: "candidate-ts-body")
+        defer { server.stop() }
+        await fulfillment(of: [server.ready], timeout: 3)
+        let proxy = AuthenticatedMediaStreamProxy.shared
+        let trace = String(UUID().uuidString.prefix(8))
+        let root = try await proxy.register(upstreamURL: XCTUnwrap(server.url), filename: "vod.m3u8",
+            allowsSelfSignedCertificates: false, playbackTraceID: trace)
+        defer { proxy.unregister(root) }
+        XCTAssertNil(proxy.beginCandidateSegmentRetry(root), "Unvalidated playlist must not arm the probe")
+        let child = try await firstRewrittenHLSChild(root)
+        let lease = try XCTUnwrap(proxy.beginCandidateSegmentRetry(root))
+        defer { proxy.endCandidateSegmentRetry(lease) }
+        server.holdResponses()
+        let first = try PlaybackRawHTTPClient(url: child, range: nil)
+        let independent = try PlaybackRawHTTPClient(url: child, range: nil)
+        let retry = try PlaybackRawHTTPClient(url: child, range: nil)
+        defer { first.close(); independent.close(); retry.close() }
+        try independent.writeHalfClose()
+        try await awaitProxyFixture {
+            server.requestCount >= 2 && self.proxyFixtureDetails(trace)
+                .filter { $0.contains("stage=candidateSegmentProbeJoined") }.count == 2
+        }
+        try first.reset()
+        XCTAssertEqual(server.requestCount, 2)
+        server.releaseResponses()
+        async let a = independent.response()
+        async let b = retry.response()
+        let responses = try await [a, b]
+        XCTAssertTrue(responses.allSatisfy { $0.hasPrefix("HTTP/1.1 200 ") && $0.hasSuffix("\r\n\r\ncandidate-ts-body") })
+        XCTAssertEqual(server.receivedRequests.filter { $0.hasPrefix("GET /0.ts ") }.count, 1)
+        let (_, response) = try await URLSession.shared.data(from: child)
+        XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 200)
+        XCTAssertEqual(server.receivedRequests.filter { $0.hasPrefix("GET /0.ts ") }.count, 2,
+                       "The completed body must not become a route cache")
+    }
+
+    @MainActor
+    func testCandidateSegmentProbeBypassesRangesAndRevocationLeavesPeerRouteIntact() async throws {
+        let server = try PlaybackRangeTestServer(
+            playlist: "#EXTM3U\n#EXTINF:4,\n0.ts\n#EXT-X-ENDLIST\n", segmentBody: "peer-ts-body")
+        defer { server.stop() }
+        await fulfillment(of: [server.ready], timeout: 3)
+        let proxy = AuthenticatedMediaStreamProxy.shared
+        let trace = String(UUID().uuidString.prefix(8))
+        let root = try await proxy.register(upstreamURL: XCTUnwrap(server.url), filename: "vod.m3u8",
+            allowsSelfSignedCertificates: false, playbackTraceID: trace)
+        let peerRoot = try await proxy.register(upstreamURL: XCTUnwrap(server.url), filename: "vod.m3u8",
+            allowsSelfSignedCertificates: false)
+        defer { proxy.unregister(root); proxy.unregister(peerRoot) }
+        let child = try await firstRewrittenHLSChild(root)
+        let peerChild = try await firstRewrittenHLSChild(peerRoot)
+        let lease = try XCTUnwrap(proxy.beginCandidateSegmentRetry(root))
+        defer { proxy.endCandidateSegmentRetry(lease) }
+        server.holdResponses()
+        let first = try PlaybackRawHTTPClient(url: child, range: nil, playbackSession: "candidate-a")
+        let retry = try PlaybackRawHTTPClient(url: child, range: nil, playbackSession: "candidate-a")
+        try await awaitProxyFixture {
+            self.proxyFixtureDetails(trace).contains { $0.contains("stage=candidateSegmentProbeJoined") }
+        }
+        let differentSession = try PlaybackRawHTTPClient(url: child, range: nil, playbackSession: "candidate-b")
+        let rangeA = try PlaybackRawHTTPClient(url: child, range: "bytes=1-2")
+        let rangeB = try PlaybackRawHTTPClient(url: child, range: "bytes=4-5")
+        let peer = try PlaybackRawHTTPClient(url: peerChild, range: nil)
+        defer { first.close(); retry.close(); differentSession.close(); rangeA.close(); rangeB.close(); peer.close() }
+        try await awaitProxyFixture { server.requestCount >= 7 }
+        XCTAssertEqual(server.requestCount, 7, "Two ranged reads, another playback session and the other route must remain independent")
+        XCTAssertTrue(server.receivedRequests.contains { $0.lowercased().contains("range: bytes=1-2") })
+        XCTAssertTrue(server.receivedRequests.contains { $0.lowercased().contains("range: bytes=4-5") })
+        proxy.unregister(root)
+        try await awaitProxyFixture { self.proxyFixtureDetails(trace).contains { $0.contains("stage=candidateSegmentProbeCancelled") } }
+        let closedA = try await first.response()
+        let closedB = try await retry.response()
+        XCTAssertTrue(closedA.isEmpty && closedB.isEmpty)
+        server.releaseResponses()
+        let peerResponse = try await peer.response()
+        XCTAssertTrue(peerResponse.hasSuffix("\r\n\r\npeer-ts-body"))
+        let (_, response) = try await URLSession.shared.data(from: child)
+        XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 404)
+    }
+
+    @MainActor
+    func testCandidateSegmentProbeFallsBackWithoutPublishingUnvalidatedResponse() async throws {
+        let server = try PlaybackRangeTestServer(
+            playlist: "#EXTM3U\n#EXTINF:4,\n0.ts\n#EXT-X-ENDLIST\n",
+            startupSegmentResponse: "HTTP/1.1 200 OK\r\nContent-Type: video/mp2t\r\nContent-Length: 4\r\nVary: User-Agent\r\n\r\nbody")
+        defer { server.stop() }
+        await fulfillment(of: [server.ready], timeout: 3)
+        let proxy = AuthenticatedMediaStreamProxy.shared
+        let trace = String(UUID().uuidString.prefix(8))
+        let root = try await proxy.register(upstreamURL: XCTUnwrap(server.url), filename: "vod.m3u8",
+            allowsSelfSignedCertificates: false, playbackTraceID: trace)
+        defer { proxy.unregister(root) }
+        let child = try await firstRewrittenHLSChild(root)
+        let lease = try XCTUnwrap(proxy.beginCandidateSegmentRetry(root))
+        defer { proxy.endCandidateSegmentRetry(lease) }
+        let (body, response) = try await URLSession.shared.data(from: child)
+        XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 200)
+        XCTAssertEqual(body, Data("body".utf8))
+        XCTAssertEqual(server.receivedRequests.filter { $0.hasPrefix("GET /0.ts ") }.count, 2)
+        XCTAssertTrue(proxyFixtureDetails(trace).contains { $0.contains("stage=candidateSegmentProbeFallback") })
+        XCTAssertFalse(proxyFixtureDetails(trace).contains { $0.contains("stage=candidateSegmentProbeReady") })
+    }
+#endif
 
     @MainActor
     func testHLSChildDelayedFirstSegmentKeepsThreeHalfClosedReadersAlive() async throws {
@@ -8956,9 +10828,7 @@ final class PlaybackNextCoreTests: XCTestCase {
     }
 
     @MainActor
-    func testOriginalReplacementDecodesPausedPreviewBeforeHandoff() async throws {
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".mp4")
-        defer { try? FileManager.default.removeItem(at: url) }
+    private func writeWarmupVideo(to url: URL) async throws {
         let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
         let input = AVAssetWriterInput(mediaType: .video, outputSettings: [
             AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: 160, AVVideoHeightKey: 90,
@@ -8987,6 +10857,146 @@ final class PlaybackNextCoreTests: XCTestCase {
         input.markAsFinished()
         await writer.finishWriting()
         XCTAssertEqual(writer.status, .completed)
+    }
+
+    @MainActor
+    func testPreparedOriginalKeepsSubtitleOnFirstAttachment() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".mp4")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try await writeWarmupVideo(to: url)
+        let intent = PlaybackIntent(sourceKind: .directURL, itemIdentity: PlaybackItemIdentity(sourceKind: .directURL),
+                                    displayTitle: "Subtitle handoff", directURL: url)
+        let plan = PlaybackPlan(intent: intent, timeline: PlaybackTimeline(duration: 6),
+            primaryRoute: PlaybackRoute(routeKind: .localFile, playMethod: .directPlay, url: url))
+        let prepared = await GreenfieldKSPlayerRenderer.prepareReplacement(plan: plan,
+            controls: GreenfieldPlaybackControls(), liveClock: { 0.5 }, isPlaying: { false },
+            report: { _, _ in })
+        let coordinator = try XCTUnwrap(prepared)
+        defer { coordinator.resetPlayer() }
+        let layer = try XCTUnwrap(coordinator.playerLayer)
+        XCTAssertEqual(coordinator.subtitleModel.url, url)
+
+        _ = coordinator.makeView(url: url, options: layer.options)
+        let subtitle = ResetSubtitleProbe()
+        coordinator.subtitleModel.selectedSubtitleInfo = subtitle
+        // First attachment can enqueue both URL assignment and the model reset.
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            DispatchQueue.main.async { DispatchQueue.main.async { continuation.resume() } }
+        }
+        XCTAssertTrue(coordinator.playerLayer === layer)
+        XCTAssertTrue(coordinator.subtitleModel.selectedSubtitleInfo === subtitle)
+        XCTAssertTrue(subtitle.isEnabled)
+    }
+
+    @MainActor
+    func testKSPlayerDecodesOriginalFromNetworkReaderProxy() async throws {
+        let file = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".mp4")
+        defer { try? FileManager.default.removeItem(at: file) }
+        try await writeWarmupVideo(to: file)
+        let payload = try Data(contentsOf: file)
+        let reader = ProxyBridgeFixture(byteCount: Int64(payload.count), payload: payload, fileName: "fixture.mp4")
+        let origin = try XCTUnwrap(URL(string: "smb://fixture.local/media"))
+        let proxy = AuthenticatedMediaStreamProxy.shared
+        let trace = String(UUID().uuidString.prefix(8))
+        let url = try await proxy.registerNetworkReader(reader, originURL: origin, playbackTraceID: trace)
+        defer { proxy.unregister(url) }
+        let intent = PlaybackIntent(sourceKind: .smbFile, itemIdentity: PlaybackItemIdentity(sourceKind: .smbFile),
+                                    displayTitle: "Reader original", directURL: url)
+        let plan = PlaybackPlan(intent: intent, timeline: PlaybackTimeline(duration: 6),
+            primaryRoute: PlaybackRoute(routeKind: .localRangeProxy, playMethod: .directPlay, url: url))
+        var stages: [String] = []
+        let renderer = await GreenfieldKSPlayerRenderer.prepareReplacement(plan: plan,
+            controls: GreenfieldPlaybackControls(), liveClock: { 0.5 }, isPlaying: { false },
+            report: { stage, _ in stages.append(stage) })
+        defer { renderer?.resetPlayer() }
+        XCTAssertNotNil(renderer, "Playback stages: \(stages)")
+        XCTAssertTrue(stages.contains("candidate_aligned"))
+        let reads = await reader.calls
+        XCTAssertEqual(reads.first, "0:\(payload.count)")
+        XCTAssertTrue(proxyFixtureDetails(trace).contains {
+            $0.contains("transportScope=networkReader") && $0.contains("result=complete")
+        })
+    }
+
+    @MainActor
+    func testKSPlayerDecodesThePreparedOriginalResponseWithoutETag() async throws {
+        let file = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".mp4")
+        defer { try? FileManager.default.removeItem(at: file) }
+        try await writeWarmupVideo(to: file)
+        let payload = try Data(contentsOf: file)
+        let server = try PlaybackRangeTestServer(payload: payload)
+        defer { server.stop() }
+        await fulfillment(of: [server.ready], timeout: 3)
+        let trace = String(UUID().uuidString.prefix(8))
+        let proxy = AuthenticatedMediaStreamProxy.shared
+        let url = try await proxy.registerOriginalStream(upstreamURL: XCTUnwrap(server.url),
+            filename: "fixture.mp4", allowsSelfSignedCertificates: false, playbackTraceID: trace)
+        defer { proxy.unregister(url) }
+        XCTAssertTrue(proxy.prepareOriginalResponse(url))
+        try await awaitProxyFixture {
+            self.proxyFixtureDetails(trace).contains { $0.contains("stage=upstreamTaskCompleted") }
+        }
+        let intent = PlaybackIntent(sourceKind: .directURL, itemIdentity: PlaybackItemIdentity(sourceKind: .directURL),
+                                    displayTitle: "Adopted original", directURL: url)
+        let plan = PlaybackPlan(intent: intent, timeline: PlaybackTimeline(duration: 6),
+            primaryRoute: PlaybackRoute(routeKind: .localRangeProxy, playMethod: .directPlay, url: url))
+        var stages: [String] = []
+        let renderer = await GreenfieldKSPlayerRenderer.prepareReplacement(plan: plan,
+            controls: GreenfieldPlaybackControls(), liveClock: { 0.5 }, isPlaying: { false },
+            report: { stage, _ in stages.append(stage) })
+        defer { renderer?.resetPlayer() }
+        XCTAssertNotNil(renderer, "Playback stages: \(stages)")
+        XCTAssertTrue(stages.contains("candidate_aligned"))
+        let details = proxyFixtureDetails(trace)
+        let deliveredIndex = try XCTUnwrap(details.firstIndex {
+            $0.contains("stage=originalResponsePreparedBytesDelivered")
+        })
+        let firstTransfer = details.prefix(through: deliveredIndex)
+        XCTAssertTrue(firstTransfer.contains { $0.contains("stage=originalResponseAdopted")
+            && $0.contains("preparedBytes=\(payload.count)") })
+        let requestsBeforeDelivery = firstTransfer.filter { $0.contains("stage=upstreamRequestIssued") }
+        XCTAssertEqual(requestsBeforeDelivery.count, 1)
+        XCTAssertTrue(requestsBeforeDelivery.first?.contains("range=bytes=0-33554431") == true)
+    }
+
+    @MainActor
+    func testKSPlayerConsumesPreparedOriginalPrefixAndDecodesPreview() async throws {
+        let file = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".mp4")
+        defer { try? FileManager.default.removeItem(at: file) }
+        try await writeWarmupVideo(to: file)
+        let payload = try Data(contentsOf: file)
+        let count = 512
+        let server = try PlaybackRangeTestServer(payload: payload, payloadETag: "\"v1\"")
+        defer { server.stop() }
+        await fulfillment(of: [server.ready], timeout: 3)
+        let proxy = AuthenticatedMediaStreamProxy.shared
+        let url = try await proxy.registerOriginalStream(upstreamURL: XCTUnwrap(server.url),
+            filename: "fixture.mp4", allowsSelfSignedCertificates: false)
+        defer { proxy.unregister(url) }
+        let prepared = try await proxy.prepareOriginalStartupPrefix(url, byteCount: count)
+        XCTAssertEqual(prepared, count)
+        let intent = PlaybackIntent(sourceKind: .directURL, itemIdentity: PlaybackItemIdentity(sourceKind: .directURL),
+                                    displayTitle: "Preloaded original", directURL: url)
+        let plan = PlaybackPlan(intent: intent, timeline: PlaybackTimeline(duration: 6),
+            primaryRoute: PlaybackRoute(routeKind: .localRangeProxy, playMethod: .directPlay, url: url))
+        var stages: [String] = []
+        let renderer = await GreenfieldKSPlayerRenderer.prepareReplacement(plan: plan,
+            controls: GreenfieldPlaybackControls(), liveClock: { 0.5 }, isPlaying: { false },
+            report: { stage, _ in stages.append(stage) })
+        defer { renderer?.resetPlayer() }
+        XCTAssertNotNil(renderer, "Playback stages: \(stages)")
+        XCTAssertTrue(stages.contains("candidate_aligned"))
+        let requests = server.receivedRequests.map { $0.lowercased() }
+        XCTAssertTrue(requests.first?.contains("range: bytes=0-511\r\n") == true)
+        XCTAssertTrue(requests.dropFirst().first?.contains("range: bytes=512-\(payload.count - 1)\r\n") == true)
+        XCTAssertTrue(requests.dropFirst().first?.contains("if-range: \"v1\"\r\n") == true)
+    }
+
+    @MainActor
+    func testOriginalReplacementDecodesPausedPreviewBeforeHandoff() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".mp4")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try await writeWarmupVideo(to: url)
         let controls = GreenfieldPlaybackControls()
         let model = GreenfieldVideoPlayerModel()
         model.avControls = controls
@@ -9689,10 +11699,15 @@ final class PlaybackNextCoreTests: XCTestCase {
 /// cannot establish which TCP close signal actually reached the proxy.
 private final class PlaybackRawHTTPClient: @unchecked Sendable {
     private var descriptor: Int32
-    init(url: URL, range: String? = "bytes=0-3") throws {
+    init(url: URL, range: String? = "bytes=0-3", playbackSession: String? = nil,
+         receiveBufferBytes: Int32? = nil) throws {
         descriptor = Darwin.socket(AF_INET, SOCK_STREAM, 0)
         guard descriptor >= 0 else { throw POSIXError(.ENOTSOCK) }
         do {
+            if var receiveBufferBytes {
+                guard setsockopt(descriptor, SOL_SOCKET, SO_RCVBUF, &receiveBufferBytes,
+                    socklen_t(MemoryLayout<Int32>.size)) == 0 else { throw POSIXError(.EINVAL) }
+            }
             var address = sockaddr_in()
             address.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
             address.sin_family = sa_family_t(AF_INET)
@@ -9711,8 +11726,9 @@ private final class PlaybackRawHTTPClient: @unchecked Sendable {
             guard setsockopt(descriptor, SOL_SOCKET, SO_NOSIGPIPE, &noSignal,
                 socklen_t(MemoryLayout<Int32>.size)) == 0 else { throw POSIXError(.EINVAL) }
             let rangeHeader = range.map { "Range: \($0)\r\n" } ?? ""
+            let sessionHeader = playbackSession.map { "X-Playback-Session-Id: \($0)\r\n" } ?? ""
             let target = url.path + (url.query.map { "?" + $0 } ?? "")
-            let request = Data("GET \(target) HTTP/1.1\r\nHost: 127.0.0.1\r\n\(rangeHeader)Connection: close\r\n\r\n".utf8)
+            let request = Data("GET \(target) HTTP/1.1\r\nHost: 127.0.0.1\r\n\(rangeHeader)\(sessionHeader)Connection: close\r\n\r\n".utf8)
             let written = request.withUnsafeBytes { Darwin.send(descriptor, $0.baseAddress, $0.count, 0) }
             guard written == request.count else { throw POSIXError(.EIO) }
         } catch { close(); throw error }
@@ -9729,6 +11745,29 @@ private final class PlaybackRawHTTPClient: @unchecked Sendable {
     func close() {
         if descriptor >= 0 { Darwin.close(descriptor); descriptor = -1 }
     }
+    /// Reads one response to the end and returns its body length only.
+    func drainBody() async throws -> Int {
+        try await Task.detached { [self] in
+            var header = Data()
+            var body = 0
+            var buffer = [UInt8](repeating: 0, count: 64 * 1024)
+            while true {
+                let count = Darwin.recv(descriptor, &buffer, buffer.count, 0)
+                if count == 0 { return body }
+                guard count > 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
+                if body > 0 || header.range(of: Data("\r\n\r\n".utf8)) != nil {
+                    body += count
+                    continue
+                }
+                header.append(contentsOf: buffer.prefix(count))
+                if let delimiter = header.range(of: Data("\r\n\r\n".utf8)) {
+                    body = header.count - delimiter.upperBound
+                    header = header.prefix(upTo: delimiter.upperBound)
+                } else if header.count > 64 * 1024 { throw POSIXError(.EFBIG) }
+            }
+        }.value
+    }
+
     func response() async throws -> String {
         try await Task.detached { [self] in
             var response = Data()
@@ -9757,25 +11796,32 @@ private final class PlaybackRawHTTPClient: @unchecked Sendable {
 
 private actor ProxyBridgeFixture: NetworkMediaByteReader {
     let byteCount: Int64
-    let fileName = "fixture.mkv"
+    let fileName: String
     private var held: Bool
     private(set) var activeCount = 0
+    private(set) var calls: [String] = []
+    private let payload: Data?
 
-    init(byteCount: Int64, initiallyHeld: Bool = false) {
+    init(byteCount: Int64, initiallyHeld: Bool = false, payload: Data? = nil, fileName: String = "fixture.mkv") {
         self.byteCount = byteCount
         held = initiallyHeld
+        self.payload = payload
+        self.fileName = fileName
     }
 
     func release() { held = false }
 
     func stream(offset: Int64, count: Int64, deliver: (Data) async throws -> Void) async throws {
+        calls.append("\(offset):\(count)")
         activeCount += 1
         defer { activeCount -= 1 }
         while held { try await Task.sleep(for: .milliseconds(10)) }
         var position = offset
         while position < offset + count {
             let length = Int(min(512 * 1024, offset + count - position))
-            try await deliver(Self.bytes(offset: position, count: length))
+            let bytes = payload.map { $0.subdata(in: Int(position)..<(Int(position) + length)) }
+                ?? Self.bytes(offset: position, count: length)
+            try await deliver(bytes)
             position += Int64(length)
         }
     }
@@ -9790,6 +11836,60 @@ private actor ProxyBridgeFixture: NetworkMediaByteReader {
             index = 0
         }
         return bytes
+    }
+}
+
+/// Deterministic bytes in fixed chunks, each delayed before delivery.
+private struct ProxyPacedReader: NetworkMediaByteReader {
+    let byteCount: Int64
+    let chunkBytes: Int
+    let delay: TimeInterval
+    let fileName = "fixture.mkv"
+    func stream(offset: Int64, count: Int64, deliver: (Data) async throws -> Void) async throws {
+        var position = offset
+        while position < offset + count {
+            if delay > 0 { try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000)) }
+            let length = Int(min(Int64(chunkBytes), offset + count - position))
+            try await deliver(ProxyBridgeFixture.bytes(offset: position, count: length))
+            position += Int64(length)
+        }
+    }
+}
+
+/// Like SMB, says how long each read queued and how long it took.
+private struct ProxyTimedReader: NetworkMediaByteReader {
+    let byteCount: Int64
+    let chunkBytes: Int
+    let queueWait: TimeInterval
+    let readTime: TimeInterval
+    let fileName = "fixture.mkv"
+    func stream(offset: Int64, count: Int64, deliver: (Data) async throws -> Void) async throws {
+        try await stream(offset: offset, count: count, timing: nil, deliver: deliver)
+    }
+    func stream(offset: Int64, count: Int64, timing: NetworkMediaReadTimingRecorder?,
+                deliver: (Data) async throws -> Void) async throws {
+        var position = offset
+        while position < offset + count {
+            try await Task.sleep(nanoseconds: UInt64((queueWait + readTime) * 1_000_000_000))
+            timing?.record(queueWait: queueWait, readTime: readTime)
+            let length = Int(min(Int64(chunkBytes), offset + count - position))
+            try await deliver(ProxyBridgeFixture.bytes(offset: position, count: length))
+            position += Int64(length)
+        }
+    }
+}
+
+private struct ProxyFaultyReader: NetworkMediaByteReader {
+    enum Fault: Sendable { case stale, oversized, short }
+    let fault: Fault
+    let byteCount: Int64 = 8
+    let fileName = "fixture.mkv"
+    func stream(offset: Int64, count: Int64, deliver: (Data) async throws -> Void) async throws {
+        switch fault {
+        case .stale: throw NetworkMediaPlaybackError.staleFile
+        case .oversized: try await deliver(Data(repeating: 1, count: Int(count) + 1))
+        case .short: try await deliver(Data("abc".utf8))
+        }
     }
 }
 
@@ -9810,6 +11910,7 @@ private final class PlaybackRangeTestServer: @unchecked Sendable {
     private let segmentBody: String?
     private let compressedPlaylist: Data?
     private let payload: Data?
+    private let payloadETag: String?
     private let pacedBodyChunkBytes: Int?
     private let pacedBodyDelay: TimeInterval
     private var pacedProgress: [Int: (bytes: Int, elapsed: TimeInterval)] = [:]
@@ -9823,7 +11924,7 @@ private final class PlaybackRangeTestServer: @unchecked Sendable {
     var pacedResponseProgress: [(bytes: Int, elapsed: TimeInterval)] {
         queue.sync { pacedProgress.keys.sorted().compactMap { pacedProgress[$0] } }
     }
-    init(playlist: String? = nil, compressedPlaylist: Data? = nil, payload: Data? = nil,
+    init(playlist: String? = nil, compressedPlaylist: Data? = nil, payload: Data? = nil, payloadETag: String? = nil,
          masterPlaylist: String? = nil, segmentBody: String? = nil, pacedBodyChunkBytes: Int? = nil,
          pacedBodyDelay: TimeInterval = 0, rejectsCompactQuery: Bool = false,
          payloadIsPlaylist: Bool = false, requiresExplicitMediaSource: Bool = false,
@@ -9843,6 +11944,7 @@ private final class PlaybackRangeTestServer: @unchecked Sendable {
         self.playlist = playlist
         self.compressedPlaylist = compressedPlaylist
         self.payload = payload
+        self.payloadETag = payloadETag
         listener = try NWListener(using: .tcp, on: .any)
         listener.stateUpdateHandler = { [weak self] state in
             if case .ready = state { self?.ready.fulfill() }
@@ -9936,9 +12038,10 @@ private final class PlaybackRangeTestServer: @unchecked Sendable {
             let end = min(range.last.flatMap(Int.init) ?? (payload.count - 1), payload.count - 1)
             guard start >= 0, end >= start else { connection.cancel(); return }
             let body = payload.subdata(in: start..<(end + 1))
+            let etag = payloadETag.map { "ETag: \($0)\r\n" } ?? ""
             let header = self.payloadIsPlaylist
                 ? "HTTP/1.1 200 OK\r\nContent-Type: application/vnd.apple.mpegurl\r\nContent-Length: \(body.count)\r\nConnection: keep-alive\r\n\r\n"
-                : "HTTP/1.1 206 Partial Content\r\nContent-Type: video/mp4\r\nContent-Length: \(body.count)\r\nContent-Range: bytes \(start)-\(end)/\(payload.count)\r\nAccept-Ranges: bytes\r\nConnection: keep-alive\r\n\r\n"
+                : "HTTP/1.1 206 Partial Content\r\nContent-Type: video/mp4\r\nContent-Length: \(body.count)\r\nContent-Range: bytes \(start)-\(end)/\(payload.count)\r\n\(etag)Accept-Ranges: bytes\r\nConnection: keep-alive\r\n\r\n"
             if let chunk = self.pacedBodyChunkBytes {
                 let started = DispatchTime.now()
                 let response = self.requests

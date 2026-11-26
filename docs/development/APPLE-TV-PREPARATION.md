@@ -1,4 +1,20 @@
+> **恢复链路（2026-11-20 已验证）：[Apple TV — Mac 开发连接恢复链路](../handoffs/APPLE-TV-CONNECTION-RECOVERY.md)——配对成功但 Disconnected 时按此文档阶梯恢复，唯一确认有效的解法是重启 Mac。**
+
 # Apple TV 开发与真机安装准备
+
+2026-11-20 17:14 已在 Device Hub 提交本轮验证码，窗口关闭。Device Hub 仍显示 Currently Unavailable，NastartTV 真机运行目标仍未出现。此次没有取得配对认证的独立结果。 [提交后复核](../archive/handoffs/2026-11/CODEX-2026-11-20-PLAYBACK-DEVICE-COMPARISON-AND-TV.md#1714-apple-tv-验证码提交后)
+
+2026-11-20 17:06 Device Hub 新扫描已重新发现 `Appletv` 并打开新的验证码页，Xcode 26.6 同时列为 Discovered。原配对保留，待输入电视验证码后核对 Connected 和 tvOS 运行目标。 [复查记录](../archive/handoffs/2026-11/CODEX-2026-11-20-PLAYBACK-DEVICE-COMPARISON-AND-TV.md#1706-开发连接复查)
+
+2026-11-20 13:52 Apple TV 已在 Device Hub 附近列表发现。普通设备条目仍不可用，已打开电视验证码输入页，等提交后核开发连接。 [下午接续](../archive/handoffs/2026-11/CODEX-2026-11-20-PLAYBACK-DEVICE-COMPARISON-AND-TV.md#当日下午接续)
+
+2026-11-20 Device Hub 仍显示电视不可用，Apple TV 附近配对扫描持续为空；Xcode 26.6 设备列表同样未显示电视。等待电视停留在远程 App 与设备页面时做同窗发现检查。 [设备排查](../archive/handoffs/2026-11/CODEX-2026-11-20-PLAYBACK-DEVICE-COMPARISON-AND-TV.md)
+
+2026-11-09 用户确认电视没有“开发者”设置；Mac 当前 Xcode 27.2 的 tvOS SDK 与首选开发镜像已核，开发端点仍未出现。现有 VPN 是否影响开发设备通信尚无对照，网线、配对和 VPN 均保留。 [本轮记录](../archive/handoffs/2026-11/CODEX-2026-11-09-APPLE-TV-DEVELOPER-MENU.md)
+
+2026-11-09 21:51–21:55 电视停在配对页，Device Hub 附近设备有电视，IPv4/IPv6 配对端口可达；普通开发设备列表与定点原生服务均无目标端点，本轮未发开发隧道申请。保留配对和有线连接。 [现场记录](../archive/handoffs/2026-11/CODEX-2026-11-09-APPLE-TV-LIVE-TUNNEL-DISCOVERY.md)
+
+2026-11-09 补到 Wi-Fi 和有线两窗：两次均认证成功但开发隧道未连通，Wi-Fi 约 9 秒后变为不可用；当前有线可达，Xcode 27.2 枚举和实际硬件身份查询均无可用目标。保留配对和有线连接，下一窗同步观测隧道是否发起。10 月 24、29 日确有 LAN 安装和正常启动，恢复动作没有找到。[两窗对照](../archive/handoffs/2026-11/CODEX-2026-11-09-APPLE-TV-WIFI-WIRED-PAIRING.md) · [十月时间线](../archive/handoffs/2026-11/CODEX-2026-11-09-APPLE-TV-WIRED-HISTORY.md)。
 
 2026-11-08 升级后的现场为 AppleTV14,1 / tvOS 27.2（24K122），Xcode 27.0。两次无线配对认证成功后仍报 RemotePairing 1005，后来设备条目转为不可用。[升级后日志](../archive/handoffs/2026-11/CODEX-2026-11-08-APPLE-TV-27-2-DEVICE-HUB-LOGS.md)。下方 tvOS 18.2 为升级前和历史安装记录。
 

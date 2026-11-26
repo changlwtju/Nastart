@@ -1,0 +1,1017 @@
+{
+  "date": "2026-11-09",
+  "sampleBytes": 128795641934,
+  "package": {
+    "mainSHA256": "f55fd4f5f7eafc3678ad4fac5a04669f40065316db03411e6acc4d5c305aac80",
+    "dylibSHA256": "807b3c7e2b2176aee1167d716ea06190b000d0642bcac44b998656b3e46da8b4",
+    "builtAt": "2026-11-09T17:55:38.740887+08:00",
+    "configuration": "signed Debug with S19 fixed-start diagnostics",
+    "sourceHEAD": "8db1cc6491c6e8bce2bc8b41f57e6112142132ba",
+    "profileExpires": "2026-11-15T00:30:17+00:00"
+  },
+  "sourceInputCount": 498,
+  "changedProductSource": false,
+  "iPhone18DisconnectedNoActions": true,
+  "matrixNewCompletePasses": 0,
+  "iphone13": {
+    "normalLaunchAndWiFiVerified": true,
+    "deviceInstallReceiptReverified": true,
+    "sameTouchSessionOrdinaryExit": true,
+    "nativePictures": [
+      {
+        "targetSecondsAfterDispatch": 6,
+        "appPidStillPresent": true,
+        "runnerPresent": true,
+        "screenshotCaptured": true,
+        "observedSecondsAfterDispatch": 6.89
+      },
+      {
+        "targetSecondsAfterDispatch": 13,
+        "appPidStillPresent": true,
+        "runnerPresent": true,
+        "screenshotCaptured": true,
+        "observedSecondsAfterDispatch": 13.62
+      },
+      {
+        "targetSecondsAfterDispatch": 22,
+        "appPidStillPresent": true,
+        "runnerPresent": true,
+        "screenshotCaptured": true,
+        "observedSecondsAfterDispatch": 22.5
+      }
+    ],
+    "nativePictureReview": {
+      "6": "actual movie picture",
+      "13": "actual movie picture plus visible buffering",
+      "22": "different movie picture, no spinner"
+    },
+    "cleanup": {
+      "startedAt": "2026-11-09T20:23:18.654160+08:00",
+      "runnerReinstalled": false,
+      "normalLaunchArguments": [],
+      "normalLaunchEnvironment": {},
+      "installedIdentityMatched": true,
+      "ready": true,
+      "ownedLocalProcessesStopped": true,
+      "remainingAppOrRunner": 0,
+      "endedAt": "2026-11-09T20:24:40.634721+08:00"
+    },
+    "playback": {
+      "intentObserved": true,
+      "sourceKind": "dsmFile",
+      "events": [
+        {
+          "secondsAfterIntent": -0.001,
+          "event": "network_condition_changed",
+          "networkClass": "wifi",
+          "evidence": "devicePathSnapshot"
+        },
+        {
+          "secondsAfterIntent": 0.001,
+          "event": "route_selected",
+          "plannedStartSeconds": "0.0",
+          "routeKind": "localRangeProxy",
+          "connectionAddressKind": "privateIP",
+          "playMethod": "directPlay",
+          "decodeEngine": "ksPlayer"
+        },
+        {
+          "secondsAfterIntent": 0.002,
+          "event": "preload_cancelled",
+          "reason": "bytesNotMaterialized",
+          "preloadedBytes": "0"
+        },
+        {
+          "secondsAfterIntent": 0.082,
+          "event": "engine_ready",
+          "state": "preparing"
+        },
+        {
+          "secondsAfterIntent": 0.082,
+          "event": "engine_ready",
+          "state": "rendererAppeared"
+        },
+        {
+          "secondsAfterIntent": 0.146,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamTaskCompleted",
+          "upstreamIssueToHeadersCallbackMs": "49",
+          "upstreamIssueToFirstBodyCallbackMs": "50",
+          "upstreamIssueToLastBodyCallbackMs": "83",
+          "taskReceivedBytes": "195147",
+          "expectedBytes": "33554432"
+        },
+        {
+          "secondsAfterIntent": 0.148,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamTaskCompleted",
+          "upstreamIssueToHeadersCallbackMs": "30",
+          "upstreamIssueToFirstBodyCallbackMs": "31",
+          "upstreamIssueToLastBodyCallbackMs": "35",
+          "taskReceivedBytes": "16567",
+          "expectedBytes": "16567"
+        },
+        {
+          "secondsAfterIntent": 0.477,
+          "event": "engine_ready",
+          "state": "readyToPlay"
+        },
+        {
+          "secondsAfterIntent": 0.478,
+          "event": "engine_ready",
+          "state": "buffering"
+        },
+        {
+          "secondsAfterIntent": 0.584,
+          "event": "video_frame_submitted",
+          "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation"
+        },
+        {
+          "secondsAfterIntent": 0.587,
+          "event": "engine_ready",
+          "state": "bufferFinished"
+        },
+        {
+          "secondsAfterIntent": 0.752,
+          "event": "engine_startup_timing",
+          "initialPositionSeconds": "0.0",
+          "evidence": "engineMonotonicStagesAndAdvancingClock"
+        },
+        {
+          "secondsAfterIntent": 0.764,
+          "event": "first_frame",
+          "firstFramePositionSeconds": "0.051",
+          "tapToFirstFrameMs": "895"
+        },
+        {
+          "secondsAfterIntent": 1.038,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "0.243",
+          "deliveryCapacity": "unknown",
+          "deliveryCapacitySource": "unknown",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "false",
+          "bufferedAheadSeconds": "3.0237082505790216",
+          "buffering": "false",
+          "runtimeDemand": "unknown",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 2.045,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "1.246",
+          "deliveryCapacity": "unknown",
+          "deliveryCapacitySource": "unknown",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "false",
+          "bufferedAheadSeconds": "2.564916596382183",
+          "buffering": "false",
+          "runtimeDemand": "4045481",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 2.178,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamBodyProgress",
+          "bytes": "12025303",
+          "effectiveBps": "47858011",
+          "qualifiedBodyCapacity": "unknown",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "secondsAfterIntent": 3.062,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "2.333",
+          "deliveryCapacity": "unknown",
+          "deliveryCapacitySource": "unknown",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "false",
+          "bufferedAheadSeconds": "1.8338749489870683",
+          "buffering": "false",
+          "runtimeDemand": "8453845",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 4.124,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "3.336",
+          "deliveryCapacity": "unknown",
+          "deliveryCapacitySource": "unknown",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "false",
+          "bufferedAheadSeconds": "0.9789999727931025",
+          "buffering": "false",
+          "runtimeDemand": "8453845",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 4.178,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamBodyProgress",
+          "bytes": "4895688",
+          "effectiveBps": "19580671",
+          "qualifiedBodyCapacity": "unknown",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "secondsAfterIntent": 5.155,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "4.446",
+          "deliveryCapacity": "unknown",
+          "deliveryCapacitySource": "unknown",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "false",
+          "bufferedAheadSeconds": "0.45749998639655143",
+          "buffering": "false",
+          "runtimeDemand": "41121763",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 5.883,
+          "event": "engine_ready",
+          "state": "buffering"
+        },
+        {
+          "secondsAfterIntent": 6.181,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "5.149",
+          "deliveryCapacity": "unknown",
+          "deliveryCapacitySource": "unknown",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "false",
+          "bufferedAheadSeconds": "0.0",
+          "buffering": "true",
+          "runtimeDemand": "41121763",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 6.32,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamBodyProgress",
+          "bytes": "5680504",
+          "effectiveBps": "21224458",
+          "qualifiedBodyCapacity": "21224458",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "secondsAfterIntent": 7.242,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "5.149",
+          "deliveryCapacity": "21224458",
+          "deliveryCapacitySource": "bodyWindow",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "true",
+          "bufferedAheadSeconds": "0.0",
+          "buffering": "true",
+          "runtimeDemand": "41121763",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 8.254,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "5.149",
+          "deliveryCapacity": "21224458",
+          "deliveryCapacitySource": "bodyWindow",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "true",
+          "bufferedAheadSeconds": "0.16683332879885082",
+          "buffering": "true",
+          "runtimeDemand": "41121763",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 8.321,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamBodyProgress",
+          "bytes": "2784504",
+          "effectiveBps": "11123926",
+          "qualifiedBodyCapacity": "21224458",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "secondsAfterIntent": 9.275,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "5.149",
+          "deliveryCapacity": "21224458",
+          "deliveryCapacitySource": "bodyWindow",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "true",
+          "bufferedAheadSeconds": "0.5422083185962645",
+          "buffering": "true",
+          "runtimeDemand": "76760932",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 9.964,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamTaskCompleted",
+          "upstreamIssueToHeadersCallbackMs": "22",
+          "upstreamIssueToFirstBodyCallbackMs": "23",
+          "upstreamIssueToLastBodyCallbackMs": "9802",
+          "taskReceivedBytes": "33554432",
+          "expectedBytes": "33554432"
+        },
+        {
+          "secondsAfterIntent": 10.322,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamBodyProgress",
+          "bytes": "9640709",
+          "effectiveBps": "38555479",
+          "qualifiedBodyCapacity": "unknown",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "secondsAfterIntent": 10.339,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "5.149",
+          "deliveryCapacity": "27447433",
+          "deliveryCapacitySource": "completedTransfer",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "false",
+          "bufferedAheadSeconds": "1.126124969392241",
+          "buffering": "true",
+          "runtimeDemand": "76760932",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 11.397,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "5.149",
+          "deliveryCapacity": "27447433",
+          "deliveryCapacitySource": "completedTransfer",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "true",
+          "bufferedAheadSeconds": "1.8768749489870684",
+          "buffering": "true",
+          "runtimeDemand": "76761156",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 12.325,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamBodyProgress",
+          "bytes": "15192416",
+          "effectiveBps": "60660413",
+          "qualifiedBodyCapacity": "60660413",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "secondsAfterIntent": 12.457,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "5.149",
+          "deliveryCapacity": "60660413",
+          "deliveryCapacitySource": "bodyWindow",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "true",
+          "bufferedAheadSeconds": "2.8361665895804586",
+          "buffering": "true",
+          "runtimeDemand": "76761156",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 13.495,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "5.149",
+          "deliveryCapacity": "60660413",
+          "deliveryCapacitySource": "bodyWindow",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "true",
+          "bufferedAheadSeconds": "3.545208236975573",
+          "buffering": "true",
+          "runtimeDemand": "76761156",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 13.922,
+          "event": "engine_ready",
+          "state": "bufferFinished"
+        },
+        {
+          "secondsAfterIntent": 14.331,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamBodyProgress",
+          "bytes": "14149856",
+          "effectiveBps": "56598136",
+          "qualifiedBodyCapacity": "60660413",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "secondsAfterIntent": 14.554,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "5.641",
+          "deliveryCapacity": "60660413",
+          "deliveryCapacitySource": "bodyWindow",
+          "predictiveEligible": "true",
+          "graceAllowsPrediction": "true",
+          "bufferedAheadSeconds": "4.168541552170977",
+          "buffering": "false",
+          "runtimeDemand": "76761156",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 14.665,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamTaskCompleted",
+          "upstreamIssueToHeadersCallbackMs": "99",
+          "upstreamIssueToFirstBodyCallbackMs": "101",
+          "upstreamIssueToLastBodyCallbackMs": "4691",
+          "taskReceivedBytes": "33554432",
+          "expectedBytes": "33554432"
+        },
+        {
+          "secondsAfterIntent": 15.572,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "6.643",
+          "deliveryCapacity": "58451266",
+          "deliveryCapacitySource": "completedTransfer",
+          "predictiveEligible": "true",
+          "graceAllowsPrediction": "true",
+          "bufferedAheadSeconds": "4.003999891172411",
+          "buffering": "false",
+          "runtimeDemand": "76736274",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 16.329,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamBodyProgress",
+          "bytes": "13320079",
+          "effectiveBps": "53166782",
+          "qualifiedBodyCapacity": "56598136",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "secondsAfterIntent": 16.64,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "7.645",
+          "deliveryCapacity": "56598136",
+          "deliveryCapacitySource": "bodyWindow",
+          "predictiveEligible": "true",
+          "graceAllowsPrediction": "true",
+          "bufferedAheadSeconds": "4.649333206367814",
+          "buffering": "false",
+          "runtimeDemand": "72757252",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 17.653,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "8.734",
+          "deliveryCapacity": "56598136",
+          "deliveryCapacitySource": "bodyWindow",
+          "predictiveEligible": "true",
+          "graceAllowsPrediction": "true",
+          "bufferedAheadSeconds": "7.652333124747122",
+          "buffering": "false",
+          "runtimeDemand": "64892049",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 18.33,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamBodyProgress",
+          "bytes": "14420632",
+          "effectiveBps": "57657200",
+          "qualifiedBodyCapacity": "57657200",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "secondsAfterIntent": 18.669,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "9.736",
+          "deliveryCapacity": "57657200",
+          "deliveryCapacitySource": "bodyWindow",
+          "predictiveEligible": "true",
+          "graceAllowsPrediction": "true",
+          "bufferedAheadSeconds": "11.010999700724133",
+          "buffering": "false",
+          "runtimeDemand": "64894314",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 19.739,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "10.738",
+          "deliveryCapacity": "57657200",
+          "deliveryCapacitySource": "bodyWindow",
+          "predictiveEligible": "true",
+          "graceAllowsPrediction": "true",
+          "bufferedAheadSeconds": "12.908582981910916",
+          "buffering": "false",
+          "runtimeDemand": "56172542",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 20.34,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamBodyProgress",
+          "bytes": "7241448",
+          "effectiveBps": "28820201",
+          "qualifiedBodyCapacity": "unknown",
+          "proxyBackpressureMs": "0"
+        }
+      ],
+      "sample206Count": 5
+    },
+    "changedPreferenceCategories": [
+      "diagnostics.entries.v1",
+      "playback.localResume.v1"
+    ],
+    "rebufferDurationSeconds": 8.039,
+    "automaticDownshiftRequested": false,
+    "hlsReplacementCommitted": false
+  },
+  "ipad": {
+    "normalLaunchAndWiFiVerified": true,
+    "deviceInstallReceiptReverified": true,
+    "reinstalled": false,
+    "scenario": {
+      "seedNormalExit": false,
+      "coldResumeNormalExit": true,
+      "normalColdLaunch": true,
+      "existingBookmarkPresent": true,
+      "visibleBookmarkLabels": [],
+      "coldResume": 1794227940.379062,
+      "coldEnd": 1794227959.2101219,
+      "done": 1794227959.210797
+    },
+    "cleanup": {
+      "ready": true,
+      "cleanupVerified": true,
+      "startedAt": "2026-11-09T20:37:03.588300+08:00",
+      "forwarderStopped": true,
+      "remaining": 0,
+      "endedAt": "2026-11-09T20:39:22.208172+08:00"
+    },
+    "seed": {
+      "intentObserved": false
+    },
+    "coldResume": {
+      "intentObserved": true,
+      "sourceKind": "dsmFile",
+      "events": [
+        {
+          "secondsAfterIntent": -0.001,
+          "event": "network_condition_changed",
+          "networkClass": "wifi",
+          "evidence": "devicePathSnapshot"
+        },
+        {
+          "secondsAfterIntent": 0.0,
+          "event": "route_selected",
+          "plannedStartSeconds": "382.253",
+          "routeKind": "localRangeProxy",
+          "connectionAddressKind": "privateIP",
+          "playMethod": "directPlay",
+          "decodeEngine": "ksPlayer"
+        },
+        {
+          "secondsAfterIntent": 0.002,
+          "event": "preload_cancelled",
+          "reason": "bytesNotMaterialized",
+          "preloadedBytes": "0"
+        },
+        {
+          "secondsAfterIntent": 0.078,
+          "event": "engine_ready",
+          "state": "preparing"
+        },
+        {
+          "secondsAfterIntent": 0.078,
+          "event": "engine_ready",
+          "state": "rendererAppeared"
+        },
+        {
+          "secondsAfterIntent": 0.676,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamTaskCompleted",
+          "upstreamIssueToHeadersCallbackMs": "497",
+          "upstreamIssueToFirstBodyCallbackMs": "498",
+          "upstreamIssueToLastBodyCallbackMs": "628",
+          "taskReceivedBytes": "266099",
+          "expectedBytes": "33554432"
+        },
+        {
+          "secondsAfterIntent": 0.692,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamTaskCompleted",
+          "upstreamIssueToHeadersCallbackMs": "114",
+          "upstreamIssueToFirstBodyCallbackMs": "114",
+          "upstreamIssueToLastBodyCallbackMs": "132",
+          "taskReceivedBytes": "16567",
+          "expectedBytes": "16567"
+        },
+        {
+          "secondsAfterIntent": 0.983,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "0.0",
+          "deliveryCapacity": "unknown",
+          "deliveryCapacitySource": "unknown",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "false",
+          "bufferedAheadSeconds": "0.0",
+          "buffering": "true",
+          "runtimeDemand": "unknown",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 0.983,
+          "event": "engine_ready",
+          "state": "readyToPlay"
+        },
+        {
+          "secondsAfterIntent": 0.983,
+          "event": "engine_ready",
+          "state": "buffering"
+        },
+        {
+          "secondsAfterIntent": 1.216,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamTaskCompleted",
+          "upstreamIssueToHeadersCallbackMs": "112",
+          "upstreamIssueToFirstBodyCallbackMs": "113",
+          "upstreamIssueToLastBodyCallbackMs": "515",
+          "taskReceivedBytes": "2459815",
+          "expectedBytes": "33554432"
+        },
+        {
+          "secondsAfterIntent": 2.049,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "0.0",
+          "deliveryCapacity": "unknown",
+          "deliveryCapacitySource": "unknown",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "false",
+          "bufferedAheadSeconds": "0.0",
+          "buffering": "true",
+          "runtimeDemand": "unknown",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 3.071,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "0.0",
+          "deliveryCapacity": "unknown",
+          "deliveryCapacitySource": "unknown",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "false",
+          "bufferedAheadSeconds": "0.0",
+          "buffering": "true",
+          "runtimeDemand": "unknown",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 3.207,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamBodyProgress",
+          "bytes": "2875381",
+          "effectiveBps": "11490536",
+          "qualifiedBodyCapacity": "unknown",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "secondsAfterIntent": 3.673,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamTaskCompleted",
+          "upstreamIssueToHeadersCallbackMs": "260",
+          "upstreamIssueToFirstBodyCallbackMs": "262",
+          "upstreamIssueToLastBodyCallbackMs": "2716",
+          "taskReceivedBytes": "4823696",
+          "expectedBytes": "4823696"
+        },
+        {
+          "secondsAfterIntent": 3.817,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamTaskCompleted",
+          "upstreamIssueToHeadersCallbackMs": "40",
+          "upstreamIssueToFirstBodyCallbackMs": "42",
+          "upstreamIssueToLastBodyCallbackMs": "146",
+          "taskReceivedBytes": "1198605",
+          "expectedBytes": "33554432"
+        },
+        {
+          "secondsAfterIntent": 4.09,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "382.253",
+          "deliveryCapacity": "15708904",
+          "deliveryCapacitySource": "completedTransfer",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "false",
+          "bufferedAheadSeconds": "0.0",
+          "buffering": "true",
+          "runtimeDemand": "unknown",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 4.112,
+          "event": "video_frame_submitted",
+          "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation"
+        },
+        {
+          "secondsAfterIntent": 4.518,
+          "event": "engine_ready",
+          "state": "bufferFinished"
+        },
+        {
+          "secondsAfterIntent": 4.772,
+          "event": "engine_startup_timing",
+          "initialPositionSeconds": "382.253",
+          "evidence": "engineMonotonicStagesAndAdvancingClock"
+        },
+        {
+          "secondsAfterIntent": 4.79,
+          "event": "first_frame",
+          "firstFramePositionSeconds": "382.360",
+          "tapToFirstFrameMs": "4872"
+        },
+        {
+          "secondsAfterIntent": 5.093,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "382.658",
+          "deliveryCapacity": "15708904",
+          "deliveryCapacitySource": "completedTransfer",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "false",
+          "bufferedAheadSeconds": "1.436333333333323",
+          "buffering": "false",
+          "runtimeDemand": "unknown",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 5.808,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamBodyProgress",
+          "bytes": "28920560",
+          "effectiveBps": "115519235",
+          "qualifiedBodyCapacity": "unknown",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "secondsAfterIntent": 6.136,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "383.661",
+          "deliveryCapacity": "15708904",
+          "deliveryCapacitySource": "completedTransfer",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "false",
+          "bufferedAheadSeconds": "2.4998333333332994",
+          "buffering": "false",
+          "runtimeDemand": "44279820",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 6.197,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamTaskCompleted",
+          "upstreamIssueToHeadersCallbackMs": "87",
+          "upstreamIssueToFirstBodyCallbackMs": "89",
+          "upstreamIssueToLastBodyCallbackMs": "2474",
+          "taskReceivedBytes": "33554432",
+          "expectedBytes": "33554432"
+        },
+        {
+          "secondsAfterIntent": 7.144,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "384.664",
+          "deliveryCapacity": "15708904",
+          "deliveryCapacitySource": "completedTransfer",
+          "predictiveEligible": "false",
+          "graceAllowsPrediction": "false",
+          "bufferedAheadSeconds": "2.7905000000000086",
+          "buffering": "false",
+          "runtimeDemand": "44279820",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 7.818,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamBodyProgress",
+          "bytes": "19600056",
+          "effectiveBps": "78397749",
+          "qualifiedBodyCapacity": "115519235",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "secondsAfterIntent": 8.165,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "385.752",
+          "deliveryCapacity": "115519235",
+          "deliveryCapacitySource": "bodyWindow",
+          "predictiveEligible": "true",
+          "graceAllowsPrediction": "true",
+          "bufferedAheadSeconds": "3.0625",
+          "buffering": "false",
+          "runtimeDemand": "41245008",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 9.186,
+          "event": "automatic_prediction_decision",
+          "currentSeconds": "386.754",
+          "deliveryCapacity": "115519235",
+          "deliveryCapacitySource": "bodyWindow",
+          "predictiveEligible": "true",
+          "graceAllowsPrediction": "true",
+          "bufferedAheadSeconds": "3.123833333333323",
+          "buffering": "false",
+          "runtimeDemand": "41558788",
+          "sourceBitrate": "75218094"
+        },
+        {
+          "secondsAfterIntent": 9.818,
+          "event": "proxy_transfer_finished",
+          "stage": "upstreamBodyProgress",
+          "bytes": "12936432",
+          "effectiveBps": "51566090",
+          "qualifiedBodyCapacity": "78397749",
+          "proxyBackpressureMs": "0"
+        }
+      ],
+      "sample206Count": 7
+    },
+    "changedPreferenceCategories": [
+      "diagnostics.entries.v1",
+      "playback.localResume.v1"
+    ],
+    "navigationOnlyAttempts": [
+      {
+        "stage": "first-navigation",
+        "playIntentObserved": false,
+        "cleanup": {
+          "ready": true,
+          "cleanupVerified": true,
+          "startedAt": "2026-11-09T20:25:01.515565+08:00",
+          "forwarderStopped": true,
+          "remaining": 0,
+          "endedAt": "2026-11-09T20:25:39.765113+08:00"
+        }
+      },
+      {
+        "stage": "second-navigation",
+        "playIntentObserved": false,
+        "cleanup": {
+          "ready": true,
+          "cleanupVerified": true,
+          "startedAt": "2026-11-09T20:26:17.566016+08:00",
+          "forwarderStopped": true,
+          "remaining": 0,
+          "endedAt": "2026-11-09T20:26:56.116948+08:00"
+        }
+      },
+      {
+        "stage": "third-navigation",
+        "playIntentObserved": false,
+        "cleanup": {
+          "ready": true,
+          "cleanupVerified": true,
+          "startedAt": "2026-11-09T20:27:25.223111+08:00",
+          "forwarderStopped": true,
+          "remaining": 0,
+          "endedAt": "2026-11-09T20:28:07.886462+08:00"
+        }
+      },
+      {
+        "stage": "fourth-navigation",
+        "playIntentObserved": false,
+        "cleanup": {
+          "ready": true,
+          "cleanupVerified": true,
+          "startedAt": "2026-11-09T20:28:57.567847+08:00",
+          "forwarderStopped": true,
+          "remaining": 0,
+          "endedAt": "2026-11-09T20:31:11.259798+08:00"
+        }
+      }
+    ],
+    "priorRetainedInstallAt": "2026-11-09T17:56:16.852403+08:00",
+    "existingBookmarkMatchedSavedRecord": {
+      "positionSeconds": 382.253,
+      "audioTrackID": 2,
+      "subtitleTrackID": 9
+    },
+    "coldPictureReview": {
+      "6": "actual movie picture",
+      "11": "different actual movie picture with visible Chinese subtitle"
+    }
+  },
+  "offlinePolicyReplay": {
+    "counterfactual": {
+      "cannotDistinguishSyntheticContinuationsAtRequest": true,
+      "capacityAtRequest": 47858011,
+      "firstRequestSeconds": 5.155,
+      "kind": "only change adjacent body window ratio from 2 to 3, preserving production static predictor and startup grace before stall",
+      "leadBeforeObservedStallSeconds": 0.728,
+      "runtimeDemandAtRequest": 41121763,
+      "sharedPrefixThroughSeconds": 5.155,
+      "syntheticSustainedNextWindow": {
+        "observedBodyBps": 20000000,
+        "qualifiedCapacity": 20000000,
+        "timeSeconds": 6.196
+      },
+      "syntheticTransientNextWindow": {
+        "observedBodyBps": 64000000,
+        "qualifiedCapacity": null,
+        "timeSeconds": 6.186
+      }
+    },
+    "decisionTicksBeforeStall": [
+      {
+        "reserveAhead": 3.0237082505790216,
+        "runtimeDemand": null,
+        "t": 1.038,
+        "widenedStaticRequest": false
+      },
+      {
+        "reserveAhead": 2.564916596382183,
+        "runtimeDemand": 4045481,
+        "t": 2.045,
+        "widenedStaticRequest": false
+      },
+      {
+        "reserveAhead": 1.8338749489870683,
+        "runtimeDemand": 8453845,
+        "t": 3.062,
+        "widenedStaticRequest": false
+      },
+      {
+        "reserveAhead": 0.9789999727931025,
+        "runtimeDemand": 8453845,
+        "t": 4.124,
+        "widenedStaticRequest": false
+      },
+      {
+        "reserveAhead": 0.45749998639655143,
+        "runtimeDemand": 41121763,
+        "t": 5.155,
+        "widenedStaticRequest": true
+      }
+    ],
+    "observedBodyWindows": [
+      {
+        "capacityCurrent": null,
+        "capacityWidened": null,
+        "rate": 47858011,
+        "t": 2.178
+      },
+      {
+        "capacityCurrent": null,
+        "capacityWidened": 47858011,
+        "rate": 19580671,
+        "t": 4.178
+      },
+      {
+        "capacityCurrent": 21224458,
+        "capacityWidened": 21224458,
+        "rate": 21224458,
+        "t": 6.32
+      },
+      {
+        "capacityCurrent": 21224458,
+        "capacityWidened": 21224458,
+        "rate": 11123926,
+        "t": 8.321
+      },
+      {
+        "capacityCurrent": null,
+        "capacityWidened": null,
+        "rate": 38555479,
+        "t": 10.322
+      },
+      {
+        "capacityCurrent": 60660413,
+        "capacityWidened": 60660413,
+        "rate": 60660413,
+        "t": 12.325
+      },
+      {
+        "capacityCurrent": 60660413,
+        "capacityWidened": 60660413,
+        "rate": 56598136,
+        "t": 14.331
+      },
+      {
+        "capacityCurrent": 56598136,
+        "capacityWidened": 56598136,
+        "rate": 53166782,
+        "t": 16.329
+      },
+      {
+        "capacityCurrent": 57657200,
+        "capacityWidened": 57657200,
+        "rate": 57657200,
+        "t": 18.33
+      },
+      {
+        "capacityCurrent": null,
+        "capacityWidened": 57657200,
+        "rate": 28820201,
+        "t": 20.34
+      }
+    ],
+    "observedBodyWindowsMatched": 10,
+    "observedDecisionSamplesMatched": 19,
+    "observedRebufferStartSeconds": 5.883,
+    "scope": "native Swift policy replay, no transport, no playback, no replacement/commit timing",
+    "sourceBitrate": 75218094
+  }
+}

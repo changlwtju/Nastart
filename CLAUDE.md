@@ -1,5 +1,9 @@
 # Nastart：协作开工入口
 
+2026-11-11 播放策略（路线决策、SMB 读取计时、换源状态机）的真机验证、调试和调参，开工入口是 [设计 → 真机调试总交接](docs/archive/handoffs/2026-11/2026-11-11-1950-CLAUDE-DESIGN-TO-DEVICE-DEBUG.md)，任务顺序、判定标准和调参规则以它为准。这批策略代码还没有装到任何真机，第一步是从当前工作区构建并装包。设备、签名和窗口仍按下面 11-10 的接续及资源登记核对。
+
+2026-11-10 最新开工入口是 [Codex → Claude 播放调试接续](docs/archive/handoffs/2026-11/2026-11-10-0645-CODEX-TRANSITION-TO-CLAUDE.md)。用户将后续调试转到 Claude；从 S19 的 SMB 供给与播放器缓冲取证开始。三台设备最近确证同一签名包 `01a6ec56…`，只有 18 是本批新装。旧包、旧负责人及旧权限描述保留作历史；新一轮按当前接续及资源登记核对。
+
 2026-11-08当前接续以[Claude阶段总交接](docs/archive/handoffs/2026-11/2026-11-08-0130-CLAUDE-TRANSITION-TO-CODEX.md)和[Codex接收核对](docs/archive/handoffs/2026-11/CODEX-2026-11-08-TRANSITION-INTAKE.md)为总入口。用户说明Claude额度将耗尽，本阶段后续由Codex接手，原Claude第一步代理接入与13/Pad回归也转入Codex队列。
 
 开工依次读取[AGENTS](AGENTS.md)、[PROGRESS](PROGRESS.md)、[当前交接](docs/handoffs/CURRENT-PLAYBACK-HANDOFF.md)、[资源登记](docs/development/AGENT-RESOURCE-STATE.json)、[协作分工](docs/development/CODEX-CLAUDE-COLLABORATION.md)。各旧批授权/任务只代表当时范围，下一次并行实施先登记完整文件和含dirty的同源独立目录。

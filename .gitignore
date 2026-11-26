@@ -42,3 +42,6 @@ __pycache__/
 # Also ignore the compatibility symlink to private local diagnostics.
 /tmp
 **/xcuserdata/
+
+# Xcode / SPM build output
+build/

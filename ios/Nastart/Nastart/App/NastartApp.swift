@@ -284,7 +284,12 @@ private struct NastartApplicationContent: View {
                         }
                     }
                 }
+                .onReceive(NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
+                    .receive(on: RunLoop.main)) { _ in
+                    cloudSyncStore.observePreferencesChange()
+                }
                 .onReceive(NotificationCenter.default.publisher(for: .CKAccountChanged)) { _ in
+                    cloudSyncStore.invalidateMigrationCheck()
                     guard cloudSyncStore.isEnabled else { return }
                     Task {
                         await cloudSyncStore.syncNow(
