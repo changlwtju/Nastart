@@ -14,18 +14,26 @@ import tempfile
 import time
 import unittest
 import sys
-from contextlib import contextmanager, redirect_stderr
+from contextlib import closing, contextmanager, redirect_stderr, redirect_stdout
 from pathlib import Path
-from unittest.mock import patch
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from docker_socket_proxy import DockerSocketProxy, is_allowed
 from nastart_agent import (
+    AGENT_VERSION,
+    AgentHandler,
     AgentServer,
     AgentState,
+    advertise_agent,
+    discovery_agent_version,
     handshake,
     host_snapshot,
+    main,
+    pairing_view_authorization,
+    pairing_view_key,
     sample_interval_seconds,
     valid_pairing_code,
 )
@@ -48,13 +56,18 @@ class AgentStateTests(unittest.TestCase):
             self.assertIsNotNone(token)
             self.assertIsNone(state.pair("123456"))
             self.assertTrue(state.authenticates(f"Bearer {token}"))
-            persisted = (Path(directory) / "pairing-token").read_text(encoding="utf-8")
-            self.assertTrue(persisted.startswith("sha256:"))
+            token_path = Path(directory) / "pairing-tokens.json"
+            persisted = token_path.read_text(encoding="utf-8")
+            records = json.loads(persisted)
+            self.assertEqual(records[0]["sha256"], AgentState._digest(token))
+            self.assertTrue(records[0]["id"])
+            self.assertIsInstance(records[0]["createdAt"], int)
+            self.assertEqual(stat.S_IMODE(token_path.stat().st_mode), 0o600)
             self.assertNotIn(token, persisted)
             restored = AgentState(Path(directory), None)
             self.assertTrue(restored.authenticates(f"Bearer {token}"))
 
-    def test_pairing_is_rate_limited_and_consumed_code_stays_disabled_after_restart(self):
+    def test_pairing_is_rate_limited(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory)
             limited = AgentState(path, "123456")
@@ -62,14 +75,120 @@ class AgentStateTests(unittest.TestCase):
                 self.assertIsNone(limited.pair("000000", source="192.0.2.1"))
             self.assertIsNone(limited.pair("123456", source="192.0.2.1"))
 
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory)
-            state = AgentState(path, "654321")
-            self.assertIsNotNone(state.pair("654321"))
-            restarted = AgentState(path, "654321")
-            self.assertIsNone(restarted.pair("654321"))
-            rotated = AgentState(path, "111111")
-            self.assertIsNotNone(rotated.pair("111111"))
+    def test_restart_rejects_all_issued_codes_including_unused_codes(self):
+        path = Path(self.enterContext(tempfile.TemporaryDirectory()))
+        state = AgentState(path, "123456")
+        first_token = state.pair("123456")
+        with patch("nastart_agent.secrets.randbelow", side_effect=[123456, 234567, 345678]):
+            self.assertEqual(AgentState(path, "123456").pairing_code, "234567")
+            restarted = AgentState(path, "123456")
+        self.assertEqual(restarted.pairing_code, "345678")
+        for code in ["123456", "234567"]:
+            self.assertIsNone(restarted.pair(code))
+        second_token = restarted.pair("345678")
+        self.assertIsNotNone(second_token)
+        restored = AgentState(path, "123456")
+        self.assertTrue(restored.authenticates(f"Bearer {first_token}"))
+        self.assertTrue(restored.authenticates(f"Bearer {second_token}"))
+
+    def test_migrates_legacy_spk_and_revokes_only_the_selected_token(self):
+        path = Path(self.enterContext(tempfile.TemporaryDirectory()))
+        legacy = path / "pairing-token"
+        original = f"sha256:{AgentState._digest('legacy-token')}"
+        legacy.write_text(original)
+        (path / "pairing-code-digest").write_text(AgentState._digest("234567"))
+        (path / "spk-pairing-code").write_text("123456\n")
+        with patch("nastart_agent.secrets.randbelow", side_effect=[123456, 234567, 42]):
+            state = AgentState(path, None)
+        self.assertEqual(state.pairing_code, "000042")
+        self.assertTrue(state.authenticates("Bearer legacy-token"))
+        self.assertEqual(legacy.read_text(), original)
+        self.assertIsNone(state.tokens[0]["createdAt"])
+        new_token = state.pair("000042")
+        self.assertIsNotNone(new_token)
+        self.assertTrue(state.authenticates("Bearer legacy-token"))
+        self.assertTrue(state.authenticates(f"Bearer {new_token}"))
+
+        records = json.loads(state.tokens_path.read_bytes())
+        state.tokens_path.write_text(json.dumps([records[1]]))
+        restarted = AgentState(path, None)
+        self.assertFalse(restarted.authenticates("Bearer legacy-token"))
+        self.assertTrue(restarted.authenticates(f"Bearer {new_token}"))
+        restarted.tokens_path.write_text("[]")
+        self.assertFalse(AgentState(path, None).authenticates("Bearer legacy-token"))
+
+    def test_failed_token_write_preserves_existing_tokens_and_allows_retry(self):
+        path = Path(self.enterContext(tempfile.TemporaryDirectory()))
+        legacy = path / "pairing-token"
+        legacy.write_text(f"sha256:{AgentState._digest('legacy-token')}")
+        with patch("nastart_agent.write_pairing_state", side_effect=OSError):
+            with self.assertRaises(OSError):
+                AgentState(path, None)
+        self.assertTrue(legacy.exists())
+        state = AgentState(path, None)
+        code = state.pairing_code
+        with patch("nastart_agent.write_pairing_state", side_effect=OSError):
+            with self.assertRaises(OSError):
+                state.pair(code)
+        self.assertTrue(state.authenticates("Bearer legacy-token"))
+        self.assertEqual(len(state.tokens), 1)
+        self.assertIsNotNone(state.pair(code))
+
+    def test_damaged_history_is_not_reset(self):
+        path = Path(self.enterContext(tempfile.TemporaryDirectory()))
+        state = AgentState(path, "123456")
+        history = path / "pairing-code-history.json"
+        self.assertEqual(stat.S_IMODE(history.stat().st_mode), 0o600)
+        history.write_text('["invalid"]')
+        with self.assertRaisesRegex(ValueError, "invalid pairing-code-history"):
+            AgentState(path, None)
+        self.assertEqual(history.read_text(), '["invalid"]')
+
+    def test_startup_log_code_pairs_through_http_handler_after_upgrade(self):
+        path = Path(self.enterContext(tempfile.TemporaryDirectory()))
+        (path / "pairing-token").write_text(f"sha256:{AgentState._digest('legacy-token')}")
+        (path / "pairing-code-digest").write_text(AgentState._digest("123456"))
+
+        def start():
+            output = io.StringIO()
+            with patch.object(sys, "argv", ["nastart_agent.py", "--data-dir", str(path), "--pairing-code", "123456"]), \
+                    patch("nastart_agent.AgentServer") as server, \
+                    patch.object(AgentState, "configure_tls", return_value=None), redirect_stdout(output):
+                main()
+            active_state = server.call_args.args[1]
+            code = output.getvalue().split("One-time pairing code: ")[1].strip()
+            self.assertTrue(valid_pairing_code(code))
+            return active_state, code
+
+        def request(state, method, endpoint, *, body=b"", token=""):
+            request_bytes = (
+                f"{method} {endpoint} HTTP/1.0\r\n"
+                f"Content-Type: application/json\r\nContent-Length: {len(body)}\r\n"
+                f"Authorization: Bearer {token}\r\n\r\n"
+            ).encode() + body
+            response = io.BytesIO()
+            transport = SimpleNamespace(
+                makefile=lambda *_: io.BytesIO(request_bytes), sendall=response.write, settimeout=lambda _: None,
+            )
+            with redirect_stdout(io.StringIO()):
+                AgentHandler(transport, ("127.0.0.1", 0), SimpleNamespace(agent_state=state))
+            headers, payload = response.getvalue().split(b"\r\n\r\n", 1)
+            return int(headers.split()[1]), json.loads(payload)
+
+        state, code = start()
+        self.assertEqual(request(state, "GET", "/healthz"), (200, {"ok": True, "version": AGENT_VERSION}))
+        self.assertEqual(request(state, "POST", "/v1/pair", body=b'{"code":"123456"}')[0], 401)
+        body = json.dumps({"code": code}).encode()
+        status, paired = request(state, "POST", "/v1/pair", body=body)
+        self.assertEqual(status, 200)
+        self.assertEqual(request(state, "POST", "/v1/pair", body=body)[0], 401)
+        restarted, new_code = start()
+        self.assertNotIn(new_code, {"123456", code})
+        self.assertEqual(request(restarted, "POST", "/v1/pair", body=body)[0], 401)
+        for token in ("legacy-token", paired["token"]):
+            status, payload = request(restarted, "GET", "/v1/handshake", token=token)
+            self.assertEqual(status, 200)
+            self.assertEqual(payload["agentId"], paired["agentId"])
 
     def test_snapshot_and_handshake_are_read_only_structures(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -78,6 +197,153 @@ class AgentStateTests(unittest.TestCase):
             snapshot = host_snapshot(state)
             self.assertIn("host", snapshot)
             self.assertIn("containers", snapshot)
+
+
+@unittest.skipUnless(shutil.which("openssl"), "OpenSSL required for HTTPS")
+class PairingDisplayTests(unittest.TestCase):
+    def setUp(self):
+        self.path = Path(self.enterContext(tempfile.TemporaryDirectory()))
+        self.address = "https://nas.local:8787"
+        self.enterContext(redirect_stdout(io.StringIO()))
+        self.enterContext(patch.object(AgentHandler, "log_message"))
+
+    def start(self):
+        output = io.StringIO()
+        with patch.object(sys, "argv", ["nastart_agent.py", "--data-dir", str(self.path), "--pairing-code", "012345"]), \
+                patch("nastart_agent.AgentServer") as server, \
+                patch.object(ssl.SSLContext, "wrap_socket"), redirect_stdout(output):
+            main()
+        self.state = server.call_args.args[1]
+        self.context = self.state.configure_tls(None, None)
+        self.authorization = pairing_view_authorization(pairing_view_key(self.path))
+        return output.getvalue().split("One-time pairing code: ")[1].strip()
+
+    @contextmanager
+    def tls_connection(self, *, peer="192.168.1.10"):
+        client, server = socket.socketpair()
+
+        def handle():
+            with server, self.context.wrap_socket(server, server_side=True) as stream:
+                AgentHandler(stream, (peer, 43210), SimpleNamespace(agent_state=self.state))
+
+        worker = threading.Thread(target=handle, daemon=True)
+        worker.start()
+        try:
+            with client, ssl._create_unverified_context().wrap_socket(client, server_hostname="localhost") as stream:
+                yield stream
+        finally:
+            worker.join(timeout=2)
+            self.assertFalse(worker.is_alive())
+
+    def request(self, method, path, *, headers=None, body=None, peer="192.168.1.10"):
+        with self.tls_connection(peer=peer) as stream, closing(http.client.HTTPConnection("nas.local:8787")) as connection:
+            connection.sock = stream
+            connection.request(method, path, body=body, headers=headers or {})
+            response = connection.getresponse()
+            return response.status, response.headers, response.read().decode()
+
+    def page(self):
+        return self.request("GET", "/pairing-info", headers={"Authorization": self.authorization})
+
+    def cli(self):
+        output = io.StringIO()
+        with self.tls_connection(peer="127.0.0.1") as stream, redirect_stdout(output), \
+                patch.object(http.client.HTTPSConnection, "connect", lambda connection: setattr(connection, "sock", stream)), \
+                patch.object(sys, "argv", ["nastart_agent.py", "show-config", "--data-dir", str(self.path),
+                                           "--address", self.address]):
+            main()
+        return output.getvalue()
+
+    def pair(self, code):
+        status, _, payload = self.request("POST", "/v1/pair", headers={"Content-Type": "application/json"},
+                                          body=json.dumps({"code": code}))
+        return status, json.loads(payload)
+
+    def test_page_and_cli_follow_the_live_code_across_pairing_and_restart(self):
+        code = self.start()
+        self.assertEqual(code, "012345")
+        original_key = self.authorization
+        status, headers, page = self.page()
+        self.assertEqual(status, 200)
+        self.assertEqual(headers["Cache-Control"], "no-store")
+        self.assertIn(self.address, page)
+        self.assertIn(f"Pairing code: {code}", page)
+        self.assertIn("<svg", page)
+        self.assertTrue(self.cli().startswith(f"Agent address: {self.address}\nPairing code: {code}\n"))
+        status, paired = self.pair(code)
+        self.assertEqual(status, 200)
+        self.assertIn("No active pairing code", self.cli())
+        self.assertNotIn("<svg", self.page()[2])
+        new_code = self.start()
+        self.assertNotEqual(new_code, code)
+        self.assertEqual(self.authorization, original_key)
+        self.assertEqual(self.pair(code), (401, {"error": "invalid-or-used-pairing-code"}))
+        self.assertIn(f"Pairing code: {new_code}", self.page()[2])
+        self.assertIn(f"Pairing code: {new_code}\n", self.cli())
+        status, other = self.pair(new_code)
+        self.assertEqual(status, 200)
+        for token in (paired["token"], other["token"]):
+            self.assertEqual(self.request("GET", "/v1/handshake", headers={"Authorization": f"Bearer {token}"})[0], 200)
+
+    def test_web_key_is_private_and_independent_from_agent_api(self):
+        code = self.start()
+        self.assertEqual(stat.S_IMODE((self.path / "pairing-view-key").stat().st_mode), 0o600)
+        status, headers, body = self.request("GET", "/pairing-info")
+        self.assertEqual(status, 401)
+        self.assertIn("Basic", headers["WWW-Authenticate"])
+        self.assertNotIn(code, body)
+        authorization = {"Authorization": self.authorization}
+        self.assertEqual(self.request("GET", "/pairing-info", headers=authorization, peer="8.8.8.8")[0], 404)
+        self.assertEqual(self.request("GET", "/v1/handshake", headers=authorization)[0], 401)
+        self.assertEqual(self.request("GET", "/pairing-info", headers={**authorization, "Host": "nas/invalid"})[0], 400)
+        self.state.pairing_view_key = None
+        self.assertEqual(self.request("GET", "/pairing-info", headers=authorization)[0], 404)
+
+
+class AgentDiscoveryTests(unittest.TestCase):
+    def test_only_healthy_https_agent_is_advertised_and_withdrawn(self):
+        args = SimpleNamespace(mdns_address="192.168.1.10", mdns_name="NAS Home", port=8787)
+        stop = threading.Event()
+        publisher = Mock()
+        listener = Mock(return_value=publisher)
+        service_info = Mock()
+        module = SimpleNamespace(Zeroconf=listener, ServiceInfo=service_info, IPVersion=SimpleNamespace(V4Only="IPv4"))
+        intervals = iter((False, False, False, True))
+
+        def advance(_):
+            if next(intervals):
+                stop.set()
+
+        with patch.dict(sys.modules, {"zeroconf": module}), \
+                patch("nastart_agent.discovery_agent_version", side_effect=[None, "0.5.1", "0.5.1", None]) as probe, \
+                patch.object(stop, "wait", side_effect=advance):
+            advertise_agent(args, stop)
+        self.assertEqual(probe.call_count, 4)
+        listener.assert_called_once_with(interfaces=["192.168.1.10"], ip_version="IPv4")
+        service_info.assert_called_once_with(
+            "_nastart-agent._tcp.local.", "Nastart NAS-Home (8787)._nastart-agent._tcp.local.",
+            addresses=[bytes([192, 168, 1, 10])], server="nastart-c0a8010a-8787.local.",
+            port=8787, host_ttl=60, other_ttl=60, properties={"host": "NAS-Home", "version": "0.5.1"},
+        )
+        publisher.register_service.assert_called_once_with(service_info.return_value, allow_name_change=True)
+        publisher.unregister_service.assert_called_once_with(service_info.return_value)
+        publisher.close.assert_called_once()
+
+    def test_health_check_uses_no_pairing_credentials(self):
+        with patch("nastart_agent.http.client.HTTPSConnection") as tls:
+            connection = tls.return_value
+            response = connection.getresponse.return_value
+            response.status = 200
+            response.read.return_value = b'{"ok":true,"version":"0.5.1"}'
+            self.assertEqual(discovery_agent_version("192.168.1.10", 8787), "0.5.1")
+            connection.request.assert_called_once_with("GET", "/healthz")
+            response.read.return_value = b'{"ok":true,"version":"<invalid>"}'
+            self.assertIsNone(discovery_agent_version("192.168.1.10", 8787))
+
+    def test_advertiser_requires_private_non_loopback_address(self):
+        for address in ("127.0.0.1", "0.0.0.0", "192.0.2.20", "203.0.114.20", "example.local"):
+            with self.subTest(address=address), self.assertRaisesRegex(ValueError, "LAN IPv4 address"):
+                advertise_agent(SimpleNamespace(mdns_address=address, mdns_name=None, port=8787), threading.Event())
 
 
 class EventHistoryTests(unittest.TestCase):

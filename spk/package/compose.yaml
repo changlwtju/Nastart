@@ -6,9 +6,7 @@ services:
     command:
       - |
         import os
-        import secrets
         import sys
-        import tempfile
         from pathlib import Path
 
         os.umask(0o077)
@@ -17,16 +15,6 @@ services:
             raise ValueError("Agent data directory must not be a symbolic link")
         state.mkdir(exist_ok=True)
         state.chmod(0o700)
-        code = state / "spk-pairing-code"
-        if not code.exists():
-            with tempfile.NamedTemporaryFile(mode="w", dir=code.parent) as pending:
-                pending.write(f"{secrets.randbelow(1_000_000):06d}\n")
-                pending.flush()
-                try:
-                    os.link(pending.name, code)
-                except FileExistsError:
-                    pass
-        os.environ["NASTART_PAIRING_CODE"] = code.read_text().strip()
         os.execv(sys.executable, [sys.executable, "/app/nastart_agent.py", "--data-dir", str(state)])
     restart: unless-stopped
     read_only: true

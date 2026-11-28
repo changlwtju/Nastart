@@ -8,9 +8,10 @@ incomplete or unstable for Docker/system discovery. It also reserves the future
 compatibility path for other Docker-capable NAS platforms, but deep
 non-Synology support is not a v1 requirement.
 
-The Agent uses the Python standard library and the OpenSSL command-line tool
-for TLS. The Docker image includes OpenSSL, and no Python packages need to be
-installed.
+The Agent uses the Python standard library, the OpenSSL command-line tool
+for TLS and a bundled [QR encoder](qrencoder-LICENSE.txt). The Docker image
+includes these components. No Python packages need to be installed for the
+HTTPS server. The optional discovery image bundles `zeroconf` and `ifaddr`.
 
 Initial responsibilities:
 
@@ -30,6 +31,46 @@ Security defaults:
 - one-time pairing codes with per-client attempt throttling
 - bearer tokens and private keys stay out of logs. The Agent logs an unused
   one-time pairing code at startup so the host administrator can pair.
+
+## Install from the website
+
+On the NAS or Linux host, open an SSH terminal and run:
+
+```sh
+curl -fsSL --proto '=https' --proto-redir '=https' https://nastart.lagransun.cn/install.sh -o install-agent.sh && sh install-agent.sh
+```
+
+The download is generated from this repository when the Agent's versioned
+image is available and the website is deployed. The installer uses the same
+`AGENT_VERSION` for the Docker image, the bundled native Python release and
+the HTTPS health check. The Synology wizard downloads the package from
+`https://nastart.lagransun.cn/nastart-agent.spk`.
+
+- With a reachable local Docker daemon, the installer uses the published
+  `changlwtju/nastart-agent` image. It publishes HTTPS on TCP 8787, runs the
+  Docker inventory proxy in a separate container, and preserves Agent state in
+  `nastart-agent-bootstrap-data`. Agent and proxy use `unless-stopped` when
+  the Docker daemon starts. The host's Docker service must start at boot.
+- On Linux with systemd and no Docker CLI, the script installs the bundled
+  source, enables `nastart-agent-native.service`, and preserves state under
+  `/var/lib/nastart-agent`. This path requires an administrator account,
+  Python 3.10+, OpenSSL, `flock`, `tar`, `base64` and `curl`. Docker inventory
+  is unavailable on a host without Docker.
+- DSM can use its supported Container Manager and the SPK. The standalone
+  installer checks for the SPK project first when Docker is available. On a
+  DSM host without Container Manager, it reports the SPK prerequisite.
+
+Repeat the same version to reuse the existing deployment. If an installed
+instance uses another version, or if the port belongs to another service,
+the installer reports the conflict. Upgrade with the original deployment
+method and keep its data directory or volume. Docker access is checked against
+a local Unix socket. On TrueNAS, the supported SSH workflow targets the
+Linux-based SCALE edition with Docker. Changes to the base OS of an appliance
+may be lost on vendor upgrades.
+
+After `HTTPS` self-check succeeds, run the printed `show-config` command with
+your NAS LAN address to view the code or QR. The HTTPS check is local and sends
+no credentials. For mDNS, see [Advertise the Agent on the LAN](#advertise-the-agent-on-the-lan).
 
 ## Run directly
 
@@ -54,13 +95,138 @@ Agent service's `environment` in Compose) to change the sampling interval. The
 default is 30 seconds. Values below 10 use 10 seconds, and invalid values use
 the default.
 
-A consumed pairing code stays disabled across restarts. Deploying with a new
-six-digit code explicitly rotates pairing; failed attempts are limited to five
-per client address per minute.
+Each Agent startup issues a new six-digit code. Use [the Web page or CLI](#view-the-current-pairing-code)
+to pair one more device. Startup still logs `One-time pairing code:`. A restart invalidates
+the previous code even if it went unused. The CLI option and
+`NASTART_PAIRING_CODE` can choose the first code for a fresh data directory.
+Existing Compose and systemd configurations can keep that setting as-is.
+Failed attempts are limited to five per client address per minute.
+
+Pairing another device adds a Bearer token alongside the existing tokens.
+The private (0600) `pairing-tokens.json` file is a JSON array. Each entry has
+`id` (unique UUID), `sha256` (lowercase hex digest of the Bearer token), and
+`createdAt` (Unix seconds, or `null` for a migrated token whose creation time
+is unknown). No device name is needed. To revoke one token, stop the Agent,
+remove its object by `id` from the array, preserve the file's owner and mode,
+and start the Agent. Use `[]` to revoke all and keep the file in place.
+The legacy `pairing-token` file is retained for rollback to 0.4.0 and is
+imported only if the new file does not exist. If you revoke the migrated
+token, a rollback to 0.4.0 using that legacy file still recognizes it.
+
+Keep `pairing-code-history.json` in the data directory across upgrades and
+restarts. It records the digest of every code issued since 0.5.0, as well as
+the legacy last-used digest and any legacy SPK install code. Versions before
+0.5.0 that overwrote a digest leave no record of those earlier codes. If all
+one million possible codes have been issued, the Agent continues serving
+paired devices and stops issuing codes. Run one Agent per data directory.
+
+## View the current pairing code
+
+Use an Agent image built from source that includes `show-config`. Both views
+read the same running Agent. After a successful pairing they show that no code
+is active. Restart the Agent to issue another code. The page refreshes every
+10 seconds while open. Reload it if the restart interrupts the connection.
+
+### Web page
+
+On the same LAN, open `https://NAS_LAN_HOST:8787/pairing-info`. In the browser
+prompt use the username `nastart`. Retrieve the display password once on the
+Agent host and keep it private. It persists in the Agent data directory as
+`pairing-view-key` (0600) across restarts and is separate from the six-digit
+code and the API tokens.
+
+```sh
+docker exec nastart-agent python3 /app/nastart_agent.py show-config --web-key
+```
+
+The page requires HTTPS and a browser-trusted certificate matching the address.
+With the default self-signed certificate, use the CLI below or configure a
+trusted certificate for the NAS hostname. The route accepts local source
+addresses only. Keep the page off public reverse proxies, which can make
+requests appear local to the Agent. Use the deployment's LAN address when
+opening the page so the QR contains the reachable address.
+
+### Terminal
+
+```sh
+docker exec nastart-agent python3 /app/nastart_agent.py show-config \
+  --address https://NAS_LAN_HOST:8787
+```
+
+Replace `NAS_LAN_HOST` with the reachable NAS hostname or IP. Without
+`--address`, the command shows the local address used by the CLI, which is
+typically container loopback. The command prints the address, live code and an
+ASCII QR, and verifies the Agent's certificate against the locally stored
+certificate before fetching the code. Pairing display requires the running
+Agent's HTTPS listener. For a direct Python installation, run
+`python3 nastart_agent.py show-config` with the same `--data-dir`, `--host`,
+`--port` and custom `--tls-cert` as the running Agent, where applicable.
+
+The QR encodes UTF-8 JSON with `v` (format version `1`), `address` (HTTPS
+origin) and `code` (a six-character string that retains leading zeros). A
+generic QR reader can display the JSON. On Nastart builds with QR import,
+choose **Scan Agent pairing QR code** on the pairing page. Check the filled
+address before tapping **Pair Agent**. Manual entry remains available.
+
+```json
+{"v":1,"address":"https://nas.local:8787","code":"012345"}
+```
+
+## Advertise the Agent on the LAN
+
+The `advertise` command publishes `_nastart-agent._tcp.local.` using the
+configured LAN IPv4 address and HTTPS port. Its service instance shows the
+host label, and the TXT record contains only `host` and `version`. The
+publisher probes the Agent's existing HTTPS `/healthz` without credentials.
+It announces a healthy Agent and withdraws the record if the probe fails.
+The iOS pairing page resolves the record to its LAN IPv4 and port, then waits
+for you to enter a code. The existing certificate setting still applies.
+
+### Docker Compose, DSM SPK and Linux systemd
+
+Keep the Agent and its proxy running with their existing ports and volumes.
+Run a separate publisher on the same NAS or Linux host. Linux host networking
+puts multicast on the host LAN while preserving the Agent's existing Docker
+bridge. Build the publisher for the target NAS architecture, or use a publisher
+image already built for it. The default Docker build still produces the Agent
+image. [Docker host networking](https://docs.docker.com/engine/network/drivers/host/)
+
+From the repository root on the target build host:
+
+```sh
+docker build --target discovery -t nastart-agent-discovery:local agent
+```
+
+On the Agent host, after its HTTPS port is reachable:
+
+```sh
+docker run -d --name nastart-agent-discovery --restart unless-stopped \
+  --network host --read-only --cap-drop ALL --security-opt no-new-privileges:true \
+  nastart-agent-discovery:local advertise \
+  --mdns-address 192.168.1.10 --mdns-name MyNAS --port 8787
+```
+
+Replace `192.168.1.10` with the Agent host's LAN IPv4 address and use the
+host-side HTTPS port. For DSM, run this on the NAS over SSH with Docker
+access. The publisher is a separate Container Manager container from the SPK
+project. For a systemd Docker installation, first start `nastart-agent.service`;
+Docker restarts the publisher independently. A publisher outside the Agent
+bridge cannot use the private Docker container IP as the advertised endpoint.
+
+On bare Linux with Python, install the optional `zeroconf==0.154.0` and
+`ifaddr==0.2.0` in a virtual environment and run `python3 nastart_agent.py
+advertise --mdns-address 192.168.1.10 --mdns-name MyNAS --port 8787` there.
+
+Discovery requires local multicast UDP 5353, a reachable HTTPS service and
+the app's Local Network permission. Keep the phone and NAS on a multicast-
+capable LAN. Guest Wi-Fi, client isolation, routed VLANs, IPv6-only networks
+and Docker Desktop can require manual entry or QR import instead. If the
+advertised address changes, recreate the publisher with the new address. The
+IP selected for pairing also needs updating after a DHCP address change.
 
 ## TLS
 
-Agent 0.4.0 serves HTTPS by default. On first startup it uses OpenSSL to create a
+Agent serves HTTPS by default as of 0.4.0. On first startup it uses OpenSSL to create a
 self-signed RSA-2048 certificate valid for 3,650 days. Its common name is the
 Agent hostname, with subject alternative names for the hostname, `localhost`,
 and `127.0.0.1`. The data directory holds `tls-cert.pem` (0644) and
@@ -85,8 +251,8 @@ reason.
 After upgrading an existing `http://` App connection, pair once with
 `https://` and enable **Skip SSL Verification** for the self-signed certificate.
 The App pins the fingerprint on first connection and logs a pin rotation when
-the certificate changes. Start the Agent with a fresh six-digit pairing code
-if the previous code was consumed.
+the certificate changes. Restart the Agent and use the latest logged code to
+pair another device.
 
 ## Role in Nastart
 
@@ -141,11 +307,11 @@ image with a disposable project and fresh data volume.
 From the repository root, build the SPK with Bash and Python 3:
 
 ```sh
-scripts/build_spk.sh /path/to/nastart-agent-0.4.0-0008.spk
+SPK_BUILD_NUMBER=0009 scripts/build_spk.sh /path/to/nastart-agent-0.5.0-0009.spk
 ```
 
 The SPK contains deployment files, metadata and icons. Installation downloads
-`changlwtju/nastart-agent:0.4.0` from Docker Hub. The build derives the image
+`changlwtju/nastart-agent:0.5.0` from Docker Hub. The build derives the image
 tag and package feature version from `AGENT_VERSION`. DSM requires a numeric
 package build suffix. Set `SPK_BUILD_NUMBER` to the next four-digit build number
 when preparing a newer SPK. [Synology INFO version fields](https://help.synology.com/developer-guide/synology_package/INFO_necessary_fields.html)
@@ -172,37 +338,43 @@ separately. A fresh SPK uses DSM's persistent package directory at
    package user model because DSM 7 rejects unsigned packages requesting root.
    The Agent runs as an unprivileged container user, and the filtered proxy
    alone mounts the Docker socket. [Synology root package restrictions](https://help.synology.com/developer-guide/getting_started/system_requirement.html)
-2. Open **Container Manager → Container**, select the container for the
-   `nastart-agent-spk` project's `agent` service, then open **Details → Log**.
-   Find `One-time pairing code:` in the startup output. The Agent also keeps a
-   mode-0600 copy in the persistent package directory as `spk-pairing-code`.
-   [Synology container details and logs](https://kb.synology.com/en-me/DSM/help/ContainerManager/docker_container?version=7)
+2. In **Container Manager → Container**, identify the `agent` container in
+   the `nastart-agent-spk` project. Over DSM SSH, or in the Agent container's
+   terminal, use the command below. In the container terminal, omit
+   `sudo docker exec AGENT_CONTAINER`. Use `--web-key` in place of `--address …`
+   to get the password for the browser view. Restart the `agent` container
+   in Container Manager when you need a code for another device.
+
+   ```sh
+   sudo docker exec AGENT_CONTAINER python3 /app/nastart_agent.py show-config \
+     --data-dir /data/container-data --address https://NAS_LAN_HOST:8787
+   ```
+
 3. In Nastart, pair using `https://<NAS LAN address>:8787` and enable **Skip SSL
-   Verification** for the self-signed certificate. After the code is used,
-   restart and reinstall preserve the existing pairing. Already-used codes in
-   old logs cannot be used again.
+   Verification** for the self-signed certificate. Keep the package data
+   directory when restarting or upgrading to preserve existing pairings.
 
-Use Package Center to start and stop the stack. To upgrade, manually upload a
-newer SPK for the same package. Upgrade stops the old stack and starts the new
-image using the same external `nastart-agent-spk-data` volume. Pairing state,
-tokens, certificates and event history stay in that volume. An existing App
-connection should continue with its original token and certificate.
+### Upgrade a Synology 0.4.0 SPK to 0.5.0
 
-Uninstall from Package Center to remove both containers, their network and the
-proxy socket volume. The Agent data volume and shared cached image remain.
-To permanently clear the saved pairing, tokens, certificate and event history,
-uninstall first, then run this on the NAS with administrator Docker access:
-
-```sh
-sudo docker volume rm nastart-agent-spk-data
-```
+1. Confirm that Docker Hub has the 0.5.0 tag for the NAS architecture. Build
+   `nastart-agent-0.5.0-0009.spk` with the command above.
+2. In **Package Center → Manual Install**, select the new SPK to upgrade the
+   existing Nastart Agent package in place. The Worker switches images for the
+   same project and reuses `/var/packages/nastart-agent/var/container-data`.
+3. In Container Manager, confirm the Agent is healthy and use the existing
+   iPhone 13 App profile to refresh its connection. Once the service has
+   restarted, the original token, Agent ID and certificate remain usable.
+   Confirm `GET /healthz` reports version `0.5.0`.
+4. Copy the latest code into the iPhone 18 App. Use the display instructions
+   above for an image that includes `show-config`, or **Details → Log** for
+   earlier 0.5.0 images. Refresh on both phones to confirm both pairings work.
 
 The disposable lifecycle test requires Docker Desktop and Python 3.12+ on
 the Mac. From the repository root, pass the built package or omit the path to
 build a temporary one:
 
 ```sh
-scripts/test_spk_lifecycle.sh /path/to/nastart-agent-0.4.0-0001.spk
+scripts/test_spk_lifecycle.sh /path/to/nastart-agent-0.5.0-0009.spk
 ```
 
 ## Install on a Linux Docker host with systemd
@@ -214,13 +386,15 @@ from the repository root:
 ```sh
 sudo scripts/install_agent_systemd.sh
 sudo systemctl status nastart-agent.service
-sudo docker logs nastart-agent
+sudo docker exec nastart-agent python3 /app/nastart_agent.py show-config \
+  --address https://LINUX_LAN_HOST:8787
 ```
 
 The installer pulls the versioned image and copies the existing
 `agent/compose.yaml` into `/opt/nastart-agent` with a root-only `.env`. The
-systemd unit starts the stack after Docker and checks readiness. The Agent logs
-the first-use pairing code. Pair with `https://<Linux LAN address>:8787`.
+systemd unit starts the stack after Docker and checks readiness. Add `sudo`
+to the Web password command above if Docker requires it. Restart with
+`sudo systemctl restart nastart-agent.service` to issue a new code.
 To install a newer version, rerun the installer from the newer checkout.
 The `.env` pairing code and both Compose volumes survive this update.
 
@@ -252,10 +426,9 @@ NASTART_DOCKERHUB_NAMESPACE=YOUR_DOCKER_HUB_NAMESPACE \
 ```
 
 The default mode (`--pull`) requires Docker Compose on the target and waits
-for the downloaded image to become healthy. The SSH `--build` upload still
-uses the earlier four-file bundle, which lacks the proxy source required by
-the Dockerfile. Use the repository Compose commands above for a local image
-build. An existing Compose installation uses the upgrade script.
+for the downloaded image to become healthy. The SSH `--build` installer
+uploads the Agent, proxy and bundled QR encoder for a local build. An existing
+Compose installation uses the upgrade script.
 
 ## Upgrade a Compose installation
 

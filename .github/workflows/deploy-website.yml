@@ -6,6 +6,13 @@ on:
       - main
     paths:
       - 'website/**'
+      - 'agent/nastart_agent.py'
+      - 'agent/qrencoder*'
+      - 'agent/compose.sh'
+      - 'scripts/build_agent_installer.py'
+      - 'scripts/install_agent.sh'
+      - 'scripts/build_spk.sh'
+      - 'spk/**'
       - '.github/workflows/deploy-website.yml'
 
 permissions:
@@ -32,10 +39,21 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
 
+      - name: Build downloads for the published Agent version
+        run: |
+          set -eu
+          image=$(NASTART_DOCKERHUB_NAMESPACE=changlwtju sh agent/compose.sh --image)
+          docker buildx imagetools inspect "$image" > /dev/null
+          mkdir -p pages-output
+          cp -R website/. pages-output/
+          python3 scripts/build_agent_installer.py pages-output/install.sh
+          sh -n pages-output/install.sh
+          SPK_BUILD_NUMBER=$(printf '%04d' "$((GITHUB_RUN_NUMBER + 9))") bash scripts/build_spk.sh pages-output/nastart-agent.spk
+
       - name: Upload website
         uses: actions/upload-pages-artifact@v5
         with:
-          path: website/
+          path: pages-output/
 
       - name: Deploy website
         id: deployment

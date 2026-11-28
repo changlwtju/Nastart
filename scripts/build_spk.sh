@@ -4,10 +4,10 @@ set -euo pipefail
 root=$(cd "$(dirname "$0")/.." && pwd)
 image=$(NASTART_DOCKERHUB_NAMESPACE=changlwtju sh "$root/agent/compose.sh" --image)
 version=${image##*:}
-revision=${SPK_BUILD_NUMBER:-0008}
+revision=${SPK_BUILD_NUMBER:-0009}
 output=${1:-"${TMPDIR:-/tmp}/nastart-agent-$version-$revision.spk"}
 if (( $# > 1 )); then
-    echo "Usage: SPK_BUILD_NUMBER=0008 $0 [output.spk]" >&2
+    echo "Usage: SPK_BUILD_NUMBER=0009 $0 [output.spk]" >&2
     exit 2
 fi
 

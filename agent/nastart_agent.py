@@ -9,16 +9,21 @@ Docker or host state.
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
 import hmac
+import html
 import http.client
 import http.server
+import ipaddress
 import json
 import math
 import os
 import platform
+import re
 import secrets
 import shutil
+import signal
 import socket
 import ssl
 import stat
@@ -29,10 +34,14 @@ import threading
 import time
 import uuid
 from collections import deque
+from contextlib import closing
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
-AGENT_VERSION = "0.4.0"
+from qrencoder import QR8bitByte, QRCode, QRErrorCorrectLevel
+
+AGENT_VERSION = "0.5.1"
 API_VERSION = 1
 DEFAULT_DATA_DIR = Path(os.environ.get("NASTART_DATA_DIR", "/data"))
 DOCKER_SOCKET = os.environ.get("NASTART_DOCKER_SOCKET", "/var/run/docker.sock")
@@ -40,11 +49,18 @@ PAIRING_ATTEMPT_LIMIT = 5
 PAIRING_ATTEMPT_WINDOW_SECONDS = 60
 MAX_PAIRING_BODY_BYTES = 4 * 1024
 MAX_TRACKED_PAIRING_SOURCES = 2_048
+PAIRING_CODE_SPACE = 1_000_000
 MAX_EVENTS = 100
 DEFAULT_SAMPLE_INTERVAL_SECONDS = 30
 MIN_SAMPLE_INTERVAL_SECONDS = 10
 SECONDS_PER_DAY = 86_400
 CERTIFICATE_RENEWAL_DAYS = 30
+PAIRING_VIEW_PATH = "/pairing-info"
+PAIRING_VIEW_KEY_FILE = "pairing-view-key"
+DISCOVERY_TYPE = "_nastart-agent._tcp.local."
+DISCOVERY_NETWORKS = tuple(ipaddress.IPv4Network(network) for network in (
+    "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "169.254.0.0/16",
+))
 EVENT_FIELDS = {
     "container.state": {"containerId": str, "containerName": str, "from": str, "to": str},
     "docker.availability": {"available": bool, "detail": (str, type(None))},
@@ -54,6 +70,67 @@ EVENT_FIELDS = {
 
 def json_bytes(value: Any) -> bytes:
     return json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+
+
+def pairing_view_key(data_dir: Path, *, create: bool = False) -> str:
+    path = data_dir / PAIRING_VIEW_KEY_FILE
+    if create and not path.exists():
+        write_pairing_state(path, secrets.token_urlsafe(32))
+    key = json.loads(path.read_bytes())
+    if not isinstance(key, str) or not re.fullmatch(r"[A-Za-z0-9_-]{43}", key):
+        raise ValueError("invalid pairing display key")
+    return key
+
+
+def pairing_view_authorization(key: str) -> str:
+    credentials = base64.b64encode(f"nastart:{key}".encode("ascii")).decode("ascii")
+    return f"Basic {credentials}"
+
+
+def pairing_address(value: str) -> str:
+    parsed = urlsplit(value)
+    # Validate the host before using it in a QR payload or an HTTP header.
+    if (parsed.scheme != "https" or parsed.path not in ("", "/")
+            or parsed.query or parsed.fragment or parsed.port == 0
+            or not re.fullmatch(r"(?:[A-Za-z0-9.-]{1,253}|\[[0-9A-Fa-f:.]+\])(?::[0-9]{1,5})?", parsed.netloc)):
+        raise ValueError("Agent address must be an HTTPS origin")
+    return f"https://{parsed.netloc}"
+
+
+def pairing_qr(address: str, code: str) -> list[list[bool]]:
+    qr = QRCode(None, QRErrorCorrectLevel.M)
+    qr.addData(QR8bitByte(json_bytes({"v": 1, "address": address, "code": code})))
+    qr.make()
+    return qr.modules
+
+
+def pairing_display(address: str, code: str | None, *, plain: bool) -> str:
+    message = f"Pairing code: {code}" if code else "No active pairing code. Restart the Agent to issue one."
+    if plain:
+        text = f"Agent address: {address}\n{message}\n"
+        if code:
+            modules = pairing_qr(address, code)
+            blank = "  " * (len(modules) + 8)
+            rows = [" " * 8 + "".join("##" if dark else "  " for dark in row) + " " * 8 for row in modules]
+            text += "\n".join([blank] * 4 + rows + [blank] * 4) + "\n"
+        return text
+
+    image = ""
+    if code:
+        modules = pairing_qr(address, code)
+        size = len(modules) + 8  # Four white modules on every side.
+        path = "".join(f"M{x + 4} {y + 4}h1v1h-1z" for y, row in enumerate(modules) for x, dark in enumerate(row) if dark)
+        image = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {size} {size}" width="320" '
+                 f'height="320" role="img" aria-label="Pairing QR code" shape-rendering="crispEdges">'
+                 f'<rect width="{size}" height="{size}" fill="white"/><path d="{path}"/></svg>')
+    return ("<!doctype html><html lang=\"en\"><meta charset=\"utf-8\">"
+            '<meta name="viewport" content="width=device-width, initial-scale=1">'
+            '<meta http-equiv="refresh" content="10">'
+            '<title>Nastart Agent pairing</title><style>'
+            'body{font:1rem system-ui,sans-serif;margin:2rem auto;padding:0 1rem;max-width:28rem}'
+            'code{overflow-wrap:anywhere}svg{display:block;max-width:100%;height:auto}'
+            '</style><main><h1>Pair Nastart Agent</h1>'
+            f'<p>Agent address <code>{html.escape(address)}</code></p><p>{message}</p>{image}</main></html>')
 
 
 def stable_agent_id(data_dir: Path) -> str:
@@ -77,6 +154,23 @@ def atomic_write(path: Path, payload: bytes) -> None:
 
 def valid_pairing_code(value: str | None) -> bool:
     return bool(value) and len(value) == 6 and all("0" <= character <= "9" for character in value)
+
+
+def valid_sha256(value: Any) -> bool:
+    return isinstance(value, str) and len(value) == 64 and all(c in "0123456789abcdef" for c in value)
+
+
+def write_pairing_state(path: Path, value: Any) -> None:
+    with tempfile.NamedTemporaryFile(dir=path.parent, prefix=f".{path.name}.", delete=False) as temporary:
+        pending = Path(temporary.name)
+        try:
+            temporary.write(json_bytes(value) + b"\n")
+            temporary.flush()
+            os.fsync(temporary.fileno())
+            temporary.close()
+            pending.replace(path)
+        finally:
+            pending.unlink(missing_ok=True)
 
 
 def sample_interval_seconds() -> int:
@@ -162,20 +256,10 @@ class AgentState:
         self.data_dir = data_dir
         self.data_dir.mkdir(parents=True, exist_ok=True)
         self.agent_id = stable_agent_id(data_dir)
-        self.token_path = data_dir / "pairing-token"
-        self.pairing_code_digest_path = data_dir / "pairing-code-digest"
-        self.token_digest = self._load_token_digest()
-        previous_code_digest = (
-            self.pairing_code_digest_path.read_text(encoding="utf-8").strip()
-            if self.pairing_code_digest_path.exists()
-            else None
-        )
-        requested_code_digest = self._digest(pairing_code) if pairing_code else None
-        self.pairing_code = (
-            pairing_code
-            if pairing_code and (self.token_digest is None or requested_code_digest != previous_code_digest)
-            else None
-        )
+        self.tokens_path = data_dir / "pairing-tokens.json"
+        self.tokens = self._load_tokens()
+        self.pairing_code = self._issue_pairing_code(pairing_code)
+        self.pairing_view_key: str | None = None
         self.lock = threading.Lock()
         self.failed_pairing_attempts: dict[str, list[float]] = {}
         self.started_at = time.time()
@@ -252,21 +336,84 @@ class AgentState:
     def _digest(value: str) -> str:
         return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
-    def _load_token_digest(self) -> str | None:
-        if not self.token_path.exists():
-            return None
-        persisted = self.token_path.read_text(encoding="utf-8").strip()
-        if not persisted:
-            return None
-        if persisted.startswith("sha256:"):
-            digest = persisted.removeprefix("sha256:")
-            if len(digest) == 64 and all(character in "0123456789abcdef" for character in digest.lower()):
-                return digest.lower()
-            return None
-        # Migrate the early plaintext-token format in place.
-        digest = self._digest(persisted)
-        atomic_write(self.token_path, f"sha256:{digest}".encode("utf-8"))
-        return digest
+    def _load_tokens(self) -> list[dict[str, Any]]:
+        try:
+            tokens = json.loads(self.tokens_path.read_bytes())
+        except FileNotFoundError:
+            legacy = self.data_dir / "pairing-token"
+            persisted = legacy.read_text(encoding="utf-8").strip() if legacy.exists() else ""
+            tokens = []
+            if persisted:
+                digest = (
+                    persisted.removeprefix("sha256:").lower()
+                    if persisted.startswith("sha256:") else self._digest(persisted)
+                )
+                if not valid_sha256(digest):
+                    raise ValueError("invalid legacy pairing token digest")
+                tokens.append({"id": str(uuid.uuid4()), "sha256": digest, "createdAt": None})
+            # The new file, including an empty list, is authoritative after migration.
+            # Keep the original file for rollback to 0.4.0.
+            write_pairing_state(self.tokens_path, tokens)
+            return tokens
+
+        if not isinstance(tokens, list) or any(
+            not isinstance(token, dict)
+            or not isinstance(token.get("id"), str)
+            or not token["id"]
+            or not valid_sha256(token.get("sha256"))
+            or "createdAt" not in token
+            or (token["createdAt"] is not None and type(token["createdAt"]) is not int)
+            for token in tokens
+        ):
+            raise ValueError("invalid pairing-tokens.json")
+        if len({token["id"] for token in tokens}) != len(tokens):
+            raise ValueError("duplicate pairing token ID")
+        return tokens
+
+    def _issue_pairing_code(self, initial_code: str | None) -> str | None:
+        history_path = self.data_dir / "pairing-code-history.json"
+        try:
+            history = json.loads(history_path.read_bytes())
+        except FileNotFoundError:
+            history = []
+        if not isinstance(history, list) or any(not valid_sha256(digest) for digest in history):
+            raise ValueError("invalid pairing-code-history.json")
+        issued = set(history)
+        legacy_digest = self.data_dir / "pairing-code-digest"
+        if legacy_digest.exists():
+            digest = legacy_digest.read_text(encoding="utf-8").strip()
+            if not valid_sha256(digest):
+                raise ValueError("invalid legacy pairing code digest")
+            issued.add(digest)
+        legacy_spk_code = self.data_dir / "spk-pairing-code"
+        if legacy_spk_code.exists():
+            code = legacy_spk_code.read_text(encoding="utf-8").strip()
+            if not valid_pairing_code(code):
+                raise ValueError("invalid legacy SPK pairing code")
+            issued.add(self._digest(code))
+        if self.tokens and initial_code:
+            issued.add(self._digest(initial_code))
+
+        if initial_code and not issued and not self.tokens:
+            code = initial_code
+        else:
+            code = self._random_pairing_code(issued)
+        if code is not None:
+            issued.add(self._digest(code))
+        # Reserve the code before it can appear in logs or be accepted by /v1/pair.
+        if issued != set(history):
+            write_pairing_state(history_path, sorted(issued))
+        return code
+
+    def _random_pairing_code(self, issued: set[str]) -> str | None:
+        for _ in range(32):
+            code = f"{secrets.randbelow(PAIRING_CODE_SPACE):06d}"
+            if self._digest(code) not in issued:
+                return code
+        # A nearly exhausted code space still needs a bounded selection.
+        remaining = [f"{number:06d}" for number in range(PAIRING_CODE_SPACE)
+                     if self._digest(f"{number:06d}") not in issued]
+        return secrets.choice(remaining) if remaining else None
 
     def pair(self, supplied_code: str, source: str = "local") -> str | None:
         now = time.monotonic()
@@ -293,21 +440,23 @@ class AgentState:
                 return None
 
             token = secrets.token_urlsafe(32)
-            self.token_digest = self._digest(token)
-            atomic_write(self.token_path, f"sha256:{self.token_digest}".encode("utf-8"))
-            atomic_write(
-                self.pairing_code_digest_path,
-                self._digest(self.pairing_code).encode("utf-8"),
-            )
+            record = {"id": str(uuid.uuid4()), "sha256": self._digest(token), "createdAt": int(time.time())}
+            tokens = [*self.tokens, record]
+            write_pairing_state(self.tokens_path, tokens)
+            self.tokens = tokens
             self.pairing_code = None
             self.failed_pairing_attempts.pop(source, None)
             return token
 
     def authenticates(self, authorization: str | None) -> bool:
-        if not self.token_digest or not authorization or not authorization.startswith("Bearer "):
+        if not authorization or not authorization.startswith("Bearer "):
             return False
         supplied_token = authorization.removeprefix("Bearer ").strip()
-        return hmac.compare_digest(self.token_digest, self._digest(supplied_token))
+        digest = self._digest(supplied_token)
+        matched = False
+        for token in self.tokens:
+            matched |= hmac.compare_digest(token["sha256"], digest)
+        return matched
 
 
 class UnixHTTPConnection(http.client.HTTPConnection):
@@ -479,6 +628,9 @@ class AgentHandler(http.server.BaseHTTPRequestHandler):
         if self.path == "/healthz":
             self.respond(200, {"ok": True, "version": AGENT_VERSION})
             return
+        if self.path == PAIRING_VIEW_PATH:
+            self.show_pairing_info()
+            return
         if not self.require_authentication():
             return
         if self.path == "/v1/handshake":
@@ -556,13 +708,43 @@ class AgentHandler(http.server.BaseHTTPRequestHandler):
         self.respond(401, {"error": "unauthorized"})
         return False
 
+    def show_pairing_info(self) -> None:
+        peer = ipaddress.ip_address(self.client_address[0])
+        key = self.state.pairing_view_key
+        if key is None or not peer.is_private or peer.is_unspecified or peer.is_multicast:
+            self.respond(404, {"error": "not-found"})
+            return
+        supplied = self.headers.get("Authorization", "").encode("latin-1")
+        if not hmac.compare_digest(supplied, pairing_view_authorization(key).encode("ascii")):
+            self.respond_bytes(401, b"Pairing display key required.\n", "text/plain; charset=utf-8",
+                               {"WWW-Authenticate": 'Basic realm="Nastart pairing display"'})
+            return
+        try:
+            address = pairing_address(f"https://{self.headers.get('Host', '')}")
+        except ValueError:
+            self.respond(400, {"error": "invalid-agent-address"})
+            return
+        with self.state.lock:
+            code = self.state.pairing_code
+        plain = self.headers.get("Accept") == "text/plain"
+        payload = pairing_display(address, code, plain=plain).encode("utf-8")
+        self.respond_bytes(200, payload, "text/plain; charset=utf-8" if plain else "text/html; charset=utf-8", {
+            "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'",
+            "Referrer-Policy": "no-referrer",
+        })
+
     def respond(self, status: int, value: Any) -> None:
-        payload = json_bytes(value)
+        self.respond_bytes(status, json_bytes(value), "application/json; charset=utf-8")
+
+    def respond_bytes(self, status: int, payload: bytes, content_type: str,
+                      headers: dict[str, str] | None = None) -> None:
         self.send_response(status)
-        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(payload)))
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
+        for name, value in (headers or {}).items():
+            self.send_header(name, value)
         self.end_headers()
         try:
             self.wfile.write(payload)
@@ -651,23 +833,131 @@ def loopback_healthcheck() -> bool:
     return False
 
 
+def discovery_agent_version(address: str, port: int) -> str | None:
+    # The health probe sends no credentials. Only advertise once HTTPS is reachable.
+    with closing(http.client.HTTPSConnection(address, port, timeout=2,
+                                              context=ssl._create_unverified_context())) as connection:
+        try:
+            connection.request("GET", "/healthz")
+            response = connection.getresponse()
+            if response.status != 200:
+                return None
+            payload = json.loads(response.read(1024))
+            version = payload.get("version") if isinstance(payload, dict) and payload.get("ok") is True else None
+            if isinstance(version, str) and re.fullmatch(r"[0-9A-Za-z][0-9A-Za-z.+-]{0,31}", version):
+                return version
+        except (OSError, http.client.HTTPException, ValueError):
+            pass
+    return None
+
+
+def advertise_agent(args: argparse.Namespace, stop: threading.Event) -> None:
+    try:
+        address = ipaddress.IPv4Address(args.mdns_address or "")
+    except ipaddress.AddressValueError as error:
+        raise ValueError("--mdns-address must be the host's LAN IPv4 address") from error
+    if not any(address in network for network in DISCOVERY_NETWORKS):
+        raise ValueError("--mdns-address must be a private LAN IPv4 address")
+    if not 1 <= args.port <= 65535:
+        raise ValueError("--port must be between 1 and 65535")
+
+    try:
+        from zeroconf import IPVersion, ServiceInfo, Zeroconf
+    except ImportError as error:
+        raise ValueError("the advertise command requires python-zeroconf") from error
+
+    label = re.sub(r"[^A-Za-z0-9-]", "-", args.mdns_name or socket.gethostname())[:30].strip("-") or "NAS"
+    # A stable address-based target avoids conflicting with the host's own .local. records.
+    target = f"nastart-{address.packed.hex()}-{args.port}.local."
+    name = f"Nastart {label} ({args.port}).{DISCOVERY_TYPE}"
+    current_version = None
+    current_service = None
+    with closing(Zeroconf(interfaces=[str(address)], ip_version=IPVersion.V4Only)) as publisher:
+        while not stop.is_set():
+            version = discovery_agent_version(str(address), args.port)
+            if version != current_version:
+                if current_service is not None:
+                    publisher.unregister_service(current_service)
+                    current_service = None
+                if version is not None and not stop.is_set():
+                    current_service = ServiceInfo(DISCOVERY_TYPE, name, addresses=[address.packed],
+                                                  server=target, port=args.port, host_ttl=60, other_ttl=60,
+                                                  properties={"host": label, "version": version})
+                    publisher.register_service(current_service, allow_name_change=True)
+                current_version = version
+            stop.wait(15)
+
+
+def show_config(args: argparse.Namespace) -> None:
+    key = pairing_view_key(args.data_dir)
+    if args.web_key:
+        print(key)
+        return
+    host = "127.0.0.1" if args.host == "0.0.0.0" else args.host
+    address = pairing_address(args.address or f"https://{host}:{args.port}")
+    certificate = args.tls_cert or (args.data_dir / "tls-cert.pem")
+    openssl = shutil.which("openssl")
+    if openssl is None:
+        raise ValueError("OpenSSL is required to verify the local Agent certificate")
+    fingerprint = certificate_info(openssl, certificate)["fingerprintSha256"]
+    with closing(http.client.HTTPSConnection(host, args.port, timeout=5,
+                                              context=ssl._create_unverified_context())) as connection:
+        connection.connect()
+        # Pin the locally stored certificate before sending the display key.
+        peer = connection.sock.getpeercert(binary_form=True)
+        if not hmac.compare_digest(hashlib.sha256(peer).hexdigest(), fingerprint):
+            raise ValueError("local Agent certificate does not match")
+        connection.request("GET", PAIRING_VIEW_PATH, headers={
+            "Host": urlsplit(address).netloc,
+            "Authorization": pairing_view_authorization(key),
+            "Accept": "text/plain",
+        })
+        response = connection.getresponse()
+        if response.status != 200:
+            raise ValueError(f"pairing display returned HTTP {response.status}")
+        print(response.read().decode("utf-8"), end="")
+    if not args.address:
+        print("For another device, rerun with --address https://<NAS LAN address>:8787.", file=sys.stderr)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Nastart read-only local Agent")
+    parser.add_argument("command", nargs="?", choices=("show-config", "advertise"))
     parser.add_argument("--host", default=os.environ.get("NASTART_HOST", "0.0.0.0"))
     parser.add_argument("--port", type=int, default=int(os.environ.get("NASTART_PORT", "8787")))
     parser.add_argument("--data-dir", type=Path, default=DEFAULT_DATA_DIR)
     parser.add_argument("--pairing-code", default=os.environ.get("NASTART_PAIRING_CODE"))
     parser.add_argument("--tls-cert", type=Path, default=os.environ.get("NASTART_TLS_CERT"))
     parser.add_argument("--tls-key", type=Path, default=os.environ.get("NASTART_TLS_KEY"))
+    parser.add_argument("--address", help="Agent HTTPS origin to encode in the pairing QR")
+    parser.add_argument("--web-key", action="store_true", help="print the protected Web page password")
+    parser.add_argument("--mdns-address", help="host LAN IPv4 address for advertise")
+    parser.add_argument("--mdns-name", help="host name to display in discovery")
     args = parser.parse_args()
+    if args.command == "advertise":
+        stop = threading.Event()
+        signal.signal(signal.SIGTERM, lambda *_: stop.set())
+        signal.signal(signal.SIGINT, lambda *_: stop.set())
+        try:
+            advertise_agent(args, stop)
+        except (OSError, ValueError) as error:
+            parser.exit(1, f"Could not advertise Agent: {error}\n")
+        return
+    if args.command == "show-config":
+        try:
+            show_config(args)
+        except (OSError, subprocess.SubprocessError, http.client.HTTPException, ValueError) as error:
+            parser.exit(1, f"Could not show pairing configuration: {error}\n")
+        return
     if (args.tls_cert is None) != (args.tls_key is None):
         parser.error("--tls-cert and --tls-key must be supplied together")
 
-    pairing_code = args.pairing_code or f"{secrets.randbelow(1_000_000):06d}"
     try:
-        state = AgentState(args.data_dir, pairing_code)
+        state = AgentState(args.data_dir, args.pairing_code or None)
     except ValueError as error:
         parser.error(str(error))
+    except OSError as error:
+        parser.error(f"could not load or persist pairing state ({type(error).__name__})")
     try:
         context = state.configure_tls(args.tls_cert, args.tls_key)
     except (OSError, subprocess.SubprocessError, ValueError) as error:
@@ -677,12 +967,16 @@ def main() -> None:
     if context is not None:
         server.socket = context.wrap_socket(server.socket, server_side=True, do_handshake_on_connect=False)
         scheme = "https"
+        try:
+            state.pairing_view_key = pairing_view_key(args.data_dir, create=True)
+        except (OSError, ValueError) as error:
+            print(f"Warning: pairing display unavailable ({type(error).__name__})", file=sys.stderr, flush=True)
 
     print(f"Nastart Agent {AGENT_VERSION} listening on {scheme}://{args.host}:{args.port}", flush=True)
     if state.pairing_code:
         print(f"One-time pairing code: {state.pairing_code}", flush=True)
     else:
-        print("Pairing is already complete; deploy with a new code to rotate it.", flush=True)
+        print("All six-digit pairing codes have been issued; pairing is unavailable.", flush=True)
     try:
         server.serve_forever(poll_interval=0.5)
     except KeyboardInterrupt:
